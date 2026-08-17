@@ -33,7 +33,6 @@ const Login = () => {
                 const user = response.data.data;
                 login(user);
                 
-                // Role-based redirect
                 if (user.role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (user.role === 'CLASS_TEACHER') {
@@ -52,21 +51,12 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <div className="login-visual">
-                <div className="brand">
-                    <h1>EduCore</h1>
-                    <p>Modern Student Management System</p>
-                </div>
-            </div>
-            
+        <div className="login-container">            
             <div className="login-form-container">
                 <div className="login-card">
-                    <h2>Welcome Back</h2>
-                    <p className="subtitle">Sign in to your account</p>
-                    
-                    {error && <div className="error-message">{error}</div>}
-                    
+                    <h2>Student Management System</h2>
+                    <p className="subtitle">Sign in to your account</p>    
+                    {error && <div className="error-message">{error}</div>}     
                     <form onSubmit={handleLogin} className="login-form">
                         <div className="form-group">
                             <label>Email Address</label>
@@ -110,15 +100,6 @@ const Login = () => {
                             {loading ? <span className="loader"></span> : 'Sign In'}
                         </button>
                     </form>
-
-                    <div className="demo-accounts">
-                        <p>Demo Accounts (password: password123):</p>
-                        <ul>
-                            <li>admin@school.com (Admin)</li>
-                            <li>rahul.teacher@school.com (Teacher)</li>
-                            <li>rajesh.parent@gmail.com (Parent)</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
