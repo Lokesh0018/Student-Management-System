@@ -15,6 +15,7 @@ import AttendanceManagement from './pages/AttendanceManagement'
 import RemarkManagement from './pages/RemarkManagement'
 import PerformanceAnalytics from './pages/PerformanceAnalytics'
 import { useAuth } from './context/AuthContext'
+import { Layout } from './components/layout/Layout'
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
@@ -27,7 +28,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/login" replace />; // or an unauthorized page
     }
     
-    return children;
+    return <Layout>{children}</Layout>;
 };
 
 function App() {

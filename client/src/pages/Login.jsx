@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
+import { Button } from '../components/ui/Button';
 import './Login.css';
 
 const Login = () => {
@@ -52,56 +53,91 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">            
-            <div className="login-form-container">
-                <div className="login-card">
-                    <h2>Student Management System</h2>
-                    <p className="subtitle">Sign in to your account</p>    
-                    {error && <div className="error-message">{error}</div>}     
-                    <form onSubmit={handleLogin} className="login-form">
-                        <div className="form-group">
-                            <label>Email Address</label>
-                            <input 
-                                type="email" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                disabled={loading}
-                            />
+        <div className="login-page-bg">
+            <div className="login-split-card">
+                
+                <div className="login-brand-panel">
+                    <div className="brand-header">
+                        <div className="brand-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22S4 17.5 4 11V5l8-3 8 3v6c0 6.5-8 11-8 11z" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M12 8l1.5 3h3.5l-2.5 2.5 1 3.5-3.5-2-3.5 2 1-3.5-2.5-2.5h3.5L12 8z" fill="#2563eb"/>
+                            </svg>
                         </div>
-                        
-                        <div className="form-group">
-                            <label>Password</label>
-                            <div className="password-input-wrapper">
+                    </div>
+                    
+                    <div className="brand-content">
+                        <h1 className="brand-title">School<br/>Management<br/>System</h1>
+                        <p className="brand-subtitle">Manage students, teachers, parents and academic activities efficiently.</p>
+                    </div>
+                    
+                    <div className="brand-illustration">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYA_qhyqNOCr2HQLs2CMPYwEWcz43Um75QwdtNN88zqhYA81aH4KvnGWAgzsNkWDNowahRyecakrf0kzLZICcQh6QUxR6Awnu08uF5Z791pt27A-A0hVH7jCd8D9xQ3Cbkus7cgAWnUMgc6TP9VnYLzDa0eB8hxfDt6SydULIyiym1V_SAeQ-YPdPeT_KYTkiiHm70-QoMyG1STlzK0_oEJEHLi5eVAOhnYftuYrzTpDiU03dPVqd_YQ" alt="School Illustration" />
+                    </div>
+                </div>
+
+                <div className="login-form-panel">
+                    <div className="login-form-inner">
+                        <div className="form-header">
+                            <h2>Welcome Back! 👋</h2>
+                            <p>Sign in to continue</p>
+                        </div>
+
+                        {error && <div className="error-message">{error}</div>}     
+
+                        <form onSubmit={handleLogin} className="login-form">
+                            <div className="input-group">
+                                <label htmlFor="email">Email</label>
                                 <input 
-                                    type={showPassword ? "text" : "password"} 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter your password"
+                                    id="email"
+                                    type="email" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email"
                                     disabled={loading}
                                 />
-                                <button 
-                                    type="button" 
-                                    className="toggle-password"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
                             </div>
+                            
+                            <div className="input-group password-group">
+                                <label htmlFor="password">Password</label>
+                                <div className="password-input-wrapper">
+                                    <input 
+                                        id="password"
+                                        type={showPassword ? "text" : "password"} 
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Enter your password"
+                                        disabled={loading}
+                                    />
+                                    <button 
+                                        type="button" 
+                                        className="toggle-password"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div className="form-options">
+                                <label className="remember-me">
+                                    <input type="checkbox" /> Remember me
+                                </label>
+                                <a href="#" className="forgot-password">Forgot Password?</a>
+                            </div>
+                            
+                            <Button type="submit" variant="primary" className="login-btn" disabled={loading}>
+                                {loading ? <span className="loader"></span> : 'Sign In'}
+                            </Button>
+                        </form>
+
+                        <div className="form-footer">
+                            <FaLock className="lock-icon" />
+                            <span>Secure access for Admin, Teachers and Parents</span>
                         </div>
-                        
-                        <div className="form-actions">
-                            <label className="remember-me">
-                                <input type="checkbox" /> Remember me
-                            </label>
-                            <a href="#" className="forgot-password">Forgot Password?</a>
-                        </div>
-                        
-                        <button type="submit" className="login-button" disabled={loading}>
-                            {loading ? <span className="loader"></span> : 'Sign In'}
-                        </button>
-                    </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     );

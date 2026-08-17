@@ -22,7 +22,6 @@ const Layout = ({ children }) => {
                 { path: '/admin/students', label: 'Students', icon: '👨‍🎓' },
                 { path: '/admin/teachers', label: 'Teachers', icon: '👨‍🏫' },
                 { path: '/admin/parents', label: 'Parents', icon: '👨‍👩‍👧' },
-                { path: '/admin/classes', label: 'Classes', icon: '🏫' },
                 { path: '/admin/subjects', label: 'Subjects', icon: '📚' },
                 { path: '/admin/exams', label: 'Examinations', icon: '📝' },
                 { path: '/admin/marks', label: 'Marks', icon: '💯' },
@@ -62,7 +61,7 @@ const Layout = ({ children }) => {
             {/* Sidebar */}
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <h2>EduCore</h2>
+                    <h2>School Management System</h2>
                     <button className="close-sidebar" onClick={() => setSidebarOpen(false)}>✕</button>
                 </div>
                 

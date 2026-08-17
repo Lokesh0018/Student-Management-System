@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
 import api from '../utils/api';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
 import './Management.css';
 
 const StudentManagement = () => {
@@ -69,82 +71,75 @@ const StudentManagement = () => {
     };
 
     return (
-        <Layout>
+        <div>
+            <h1 className="page-title" style={{marginBottom: '24px'}}>Student Profile Management</h1>
             <div className="management-container">
-                <div className="form-panel">
-                    <h3>{editingId ? 'Edit Student' : 'Add New Student'}</h3>
-                    <form onSubmit={handleSubmit} className="crud-form">
-                        <div className="form-group">
-                            <label>Admission Number</label>
-                            <input type="text" value={formData.admission_number} onChange={e => setFormData({...formData, admission_number: e.target.value})} required />
-                        </div>
-                        <div className="form-group">
-                            <label>First Name</label>
-                            <input type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Last Name</label>
-                            <input type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Email</label>
-                            <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                        </div>
-                        <div className="form-group">
-                            <label>Class</label>
-                            <select value={formData.class_id} onChange={e => setFormData({...formData, class_id: e.target.value})}>
+                <Card style={{ flex: 1, minWidth: '300px' }}>
+                    <h3 className="section-title">{editingId ? 'Edit Student' : 'Add New Student'}</h3>
+                    <form onSubmit={handleSubmit} style={{marginTop: '24px'}}>
+                        <Input label="Admission Number" value={formData.admission_number} onChange={e => setFormData({...formData, admission_number: e.target.value})} required />
+                        <Input label="First Name" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} required />
+                        <Input label="Last Name" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} required />
+                        <Input label="Email" type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                        
+                        <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>
+                            <label className="caption" style={{ marginBottom: '4px' }}>Class</label>
+                            <select 
+                                value={formData.class_id} 
+                                onChange={e => setFormData({...formData, class_id: e.target.value})}
+                                style={{ padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '6px', fontFamily: 'var(--font-sans)', fontSize: '16px' }}
+                            >
                                 <option value="">Select Class</option>
                                 {classes.map(c => (
                                     <option key={c.id} value={c.id}>{c.class_name} - {c.section}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="form-group">
-                            <label>Roll Number</label>
-                            <input type="text" value={formData.roll_number} onChange={e => setFormData({...formData, roll_number: e.target.value})} />
-                        </div>
-                        <div className="form-actions-inline">
-                            <button type="submit" className="btn-primary">{editingId ? 'Update' : 'Create'}</button>
+                        
+                        <Input label="Roll Number" value={formData.roll_number} onChange={e => setFormData({...formData, roll_number: e.target.value})} />
+                        
+                        <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+                            <Button type="submit" variant="primary">{editingId ? 'Update' : 'Create'}</Button>
                             {editingId && (
-                                <button type="button" className="btn-secondary" onClick={() => { setEditingId(null); setFormData({ admission_number: '', first_name: '', last_name: '', email: '', class_id: '', roll_number: '' }); }}>Cancel</button>
+                                <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setFormData({ admission_number: '', first_name: '', last_name: '', email: '', class_id: '', roll_number: '' }); }}>Cancel</Button>
                             )}
                         </div>
                     </form>
-                </div>
+                </Card>
                 
-                <div className="list-panel">
-                    <h3>Student List</h3>
-                    <div className="table-responsive">
-                        <table className="crud-table">
+                <Card style={{ flex: 2, minWidth: '300px' }}>
+                    <h3 className="section-title" style={{marginBottom: '24px'}}>Student List</h3>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table className="crud-table w-full">
                             <thead>
                                 <tr>
-                                    <th>Adm No</th>
-                                    <th>Name</th>
-                                    <th>Class</th>
-                                    <th>Roll No</th>
-                                    <th>Actions</th>
+                                    <th className="caption">Adm No</th>
+                                    <th className="caption">Name</th>
+                                    <th className="caption">Class</th>
+                                    <th className="caption">Roll No</th>
+                                    <th className="caption">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {students.map(s => (
                                     <tr key={s.id}>
-                                        <td>{s.admission_number}</td>
-                                        <td>{s.first_name} {s.last_name}</td>
-                                        <td>{s.class_name ? `${s.class_name}-${s.section}` : 'N/A'}</td>
-                                        <td>{s.roll_number}</td>
+                                        <td className="body-secondary">{s.admission_number}</td>
+                                        <td className="body-main">{s.first_name} {s.last_name}</td>
+                                        <td className="body-secondary">{s.class_name ? `${s.class_name}-${s.section}` : 'N/A'}</td>
+                                        <td className="body-secondary">{s.roll_number}</td>
                                         <td>
-                                            <button className="btn-action edit" onClick={() => handleEdit(s)}>Edit</button>
-                                            <button className="btn-action delete" onClick={() => handleDelete(s.id)}>Delete</button>
+                                            <Button variant="ghost" onClick={() => handleEdit(s)} style={{padding: '4px 8px'}}>Edit</Button>
+                                            <Button variant="ghost" onClick={() => handleDelete(s.id)} style={{padding: '4px 8px', color: 'var(--danger)'}}>Delete</Button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                        {students.length === 0 && <p className="empty-state">No students found.</p>}
+                        {students.length === 0 && <p className="body-secondary text-center" style={{padding: '24px'}}>No students found.</p>}
                     </div>
-                </div>
+                </Card>
             </div>
-        </Layout>
+        </div>
     );
 };
 

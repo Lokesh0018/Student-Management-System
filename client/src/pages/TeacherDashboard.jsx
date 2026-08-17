@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
 import api from '../utils/api';
+import { Card } from '../components/ui/Card';
 import './AdminDashboard.css'; // Reusing dashboard styles
 
 const TeacherDashboard = () => {
@@ -18,64 +18,60 @@ const TeacherDashboard = () => {
         fetchStats();
     }, []);
 
-    if (!stats) return <Layout><div className="dashboard-container">Loading...</div></Layout>;
+    if (!stats) return <div className="loading-state body-main">Loading...</div>;
 
     return (
-        <Layout>
-            <div className="dashboard-container">
-                <header className="dashboard-header">
-                    <h1>Teacher Dashboard</h1>
-                    <p>Welcome back! Here's what's happening with your students today.</p>
-                </header>
+        <div className="dashboard-container">
+            <header className="dashboard-header">
+                <h1 className="page-title">Teacher Dashboard</h1>
+                <p className="body-secondary">Welcome back! Here's what's happening with your students today.</p>
+            </header>
 
-                <div className="stats-grid">
-                    <div className="stat-card">
-                        <div className="stat-icon" style={{background: 'linear-gradient(135deg, #10B981, #059669)'}}>👨‍🎓</div>
-                        <div className="stat-info">
-                            <h3>Total Students</h3>
-                            <p>{stats.totalStudents}</p>
-                        </div>
+            <div className="stats-grid">
+                <Card className="stat-card">
+                    <div className="stat-icon-wrapper text-success">👨‍🎓</div>
+                    <div className="stat-info">
+                        <h3 className="caption">Total Students</h3>
+                        <p className="stat-value">{stats.totalStudents}</p>
                     </div>
-                    <div className="stat-card">
-                        <div className="stat-icon" style={{background: 'linear-gradient(135deg, #F59E0B, #D97706)'}}>📝</div>
-                        <div className="stat-info">
-                            <h3>Active Exams</h3>
-                            <p>{stats.upcomingExams}</p>
-                        </div>
+                </Card>
+                <Card className="stat-card">
+                    <div className="stat-icon-wrapper text-warning">📝</div>
+                    <div className="stat-info">
+                        <h3 className="caption">Active Exams</h3>
+                        <p className="stat-value">{stats.upcomingExams}</p>
                     </div>
-                    <div className="stat-card">
-                        <div className="stat-icon" style={{background: 'linear-gradient(135deg, #EC4899, #BE185D)'}}>💬</div>
-                        <div className="stat-info">
-                            <h3>Unread Remarks</h3>
-                            <p>{stats.unreadRemarks}</p>
-                        </div>
+                </Card>
+                <Card className="stat-card">
+                    <div className="stat-icon-wrapper text-danger">💬</div>
+                    <div className="stat-info">
+                        <h3 className="caption">Unread Remarks</h3>
+                        <p className="stat-value">{stats.unreadRemarks}</p>
                     </div>
-                </div>
-
-                <div className="dashboard-content" style={{marginTop: '2rem'}}>
-                    <div className="recent-remarks">
-                        <h2>Recently Graded</h2>
-                        {stats.recentMarks && stats.recentMarks.length > 0 ? (
-                            <ul className="remark-list">
-                                {stats.recentMarks.map((mark, idx) => (
-                                    <li key={idx} className="remark-item">
-                                        <div className="remark-header">
-                                            <strong>{mark.first_name} {mark.last_name}</strong>
-                                            <span className="remark-date">Subject: {mark.subject_name}</span>
-                                        </div>
-                                        <p className="remark-body">
-                                            Score: {mark.marks_obtained}/{mark.max_marks} (Grade: {mark.grade})
-                                        </p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="empty-state">No recent grades available.</p>
-                        )}
-                    </div>
-                </div>
+                </Card>
             </div>
-        </Layout>
+
+            <div style={{marginTop: '32px'}}>
+                <h2 className="section-title" style={{marginBottom: '16px'}}>Recently Graded</h2>
+                {stats.recentMarks && stats.recentMarks.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {stats.recentMarks.map((mark, idx) => (
+                            <Card key={idx} condensed>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <strong className="body-main">{mark.first_name} {mark.last_name}</strong>
+                                    <span className="caption" style={{ padding: '4px 12px', backgroundColor: 'var(--bg)', borderRadius: '999px' }}>Subject: {mark.subject_name}</span>
+                                </div>
+                                <p className="body-secondary">
+                                    Score: {mark.marks_obtained}/{mark.max_marks} (Grade: {mark.grade})
+                                </p>
+                            </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-state">No recent grades available.</div>
+                )}
+            </div>
+        </div>
     );
 };
 
