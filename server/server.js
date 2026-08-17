@@ -1,8 +1,22 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+
+// Security Middlewares
+app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
+});
+// Apply to all API routes
+app.use('/api/', limiter);
+
 app.use(cors());
 app.use(express.json());
 
@@ -53,6 +67,15 @@ app.use('/api/parent/dashboard', parentDashboardRoutes);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('Unhandled Error:', err.stack);
+    res.status(500).json({ 
+        success: false, 
+        message: 'An unexpected internal error occurred' 
+    });
 });
 
 const PORT = process.env.PORT || 5000;

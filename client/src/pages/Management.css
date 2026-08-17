@@ -9,9 +9,14 @@
     min-width: 300px;
     background: var(--surface);
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.form-panel:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .list-panel {
@@ -19,9 +24,14 @@
     min-width: 300px;
     background: var(--surface);
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.list-panel:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .form-panel h3, .list-panel h3 {
@@ -47,10 +57,14 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
@@ -61,10 +75,12 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
+    transition: all var(--transition-fast);
 }
 
 .btn-secondary:hover {
     background-color: #F9FAFB;
+    border-color: #CBD5E1;
 }
 
 .table-responsive {
@@ -103,6 +119,7 @@
     font-weight: 500;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
+    transition: all var(--transition-fast);
 }
 
 .btn-action.edit {
