@@ -48,6 +48,9 @@ app.use('/api/teacher/dashboard', teacherDashboardRoutes);
 const performanceRoutes = require('./routes/performanceRoutes');
 app.use('/api/performance', performanceRoutes);
 
+const parentDashboardRoutes = require('./routes/parentDashboardRoutes');
+app.use('/api/parent/dashboard', parentDashboardRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
