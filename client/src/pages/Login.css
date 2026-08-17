@@ -122,18 +122,15 @@ body {
 
 .toggle-password {
     position: absolute;
+    top: 20px;
     right: 1rem;
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: var(--primary);
     font-weight: 500;
     cursor: pointer;
     padding: 0;
     font-size: 0.875rem;
-}
-
-.toggle-password:hover {
-    color: var(--text-main);
 }
 
 .form-actions {

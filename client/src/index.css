@@ -1,7 +1,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -62,7 +62,7 @@ html {
   :root {
     --text: #9ca3af;
     --text-h: #f3f4f6;
-    --bg: #16171d;
+    --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -80,6 +80,8 @@ html {
 
 body {
   margin: 0;
+  background-attachment: fixed;
+  color: var(--text);
 }
 
 #root {
