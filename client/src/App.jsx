@@ -4,6 +4,11 @@ import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import ParentDashboard from './pages/ParentDashboard'
+import ClassManagement from './pages/ClassManagement'
+import SubjectManagement from './pages/SubjectManagement'
+import StudentManagement from './pages/StudentManagement'
+import TeacherManagement from './pages/TeacherManagement'
+import ParentManagement from './pages/ParentManagement'
 import { useAuth } from './context/AuthContext'
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -29,6 +34,36 @@ function App() {
       <Route path="/admin/dashboard" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
           <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/admin/classes" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <ClassManagement />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/subjects" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <SubjectManagement />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/admin/students" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <StudentManagement />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/teachers" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <TeacherManagement />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/parents" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <ParentManagement />
         </ProtectedRoute>
       } />
       

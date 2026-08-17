@@ -15,6 +15,21 @@ app.use('/api/test', testRoutes);
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/api/admin', adminRoutes);
 
+const classRoutes = require('./routes/classRoutes');
+app.use('/api/classes', classRoutes);
+
+const subjectRoutes = require('./routes/subjectRoutes');
+app.use('/api/subjects', subjectRoutes);
+
+const studentRoutes = require('./routes/studentRoutes');
+app.use('/api/students', studentRoutes);
+
+const teacherRoutes = require('./routes/teacherRoutes');
+app.use('/api/teachers', teacherRoutes);
+
+const parentRoutes = require('./routes/parentRoutes');
+app.use('/api/parents', parentRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
