@@ -13,6 +13,7 @@ import ExamManagement from './pages/ExamManagement'
 import MarkManagement from './pages/MarkManagement'
 import AttendanceManagement from './pages/AttendanceManagement'
 import RemarkManagement from './pages/RemarkManagement'
+import PerformanceAnalytics from './pages/PerformanceAnalytics'
 import { useAuth } from './context/AuthContext'
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -94,6 +95,12 @@ function App() {
           <RemarkManagement />
         </ProtectedRoute>
       } />
+
+      <Route path="/admin/performance" element={
+        <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
+          <PerformanceAnalytics />
+        </ProtectedRoute>
+      } />
       
       <Route path="/teacher/dashboard" element={
         <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
@@ -116,6 +123,12 @@ function App() {
       <Route path="/teacher/remarks" element={
         <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
           <RemarkManagement />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/teacher/performance" element={
+        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+          <PerformanceAnalytics />
         </ProtectedRoute>
       } />
       

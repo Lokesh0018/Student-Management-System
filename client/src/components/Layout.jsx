@@ -38,6 +38,7 @@ const Layout = ({ children }) => {
                 { path: '/teacher/students', label: 'My Class', icon: '👨‍🎓' },
                 { path: '/teacher/marks', label: 'Marks', icon: '💯' },
                 { path: '/teacher/remarks', label: 'Remarks', icon: '💬' },
+                { path: '/teacher/performance', label: 'Performance', icon: '📈' },
             ];
         }
         if (user.role === 'PARENT') {

@@ -42,6 +42,12 @@ app.use('/api/attendance', attendanceRoutes);
 const remarkRoutes = require('./routes/remarkRoutes');
 app.use('/api/remarks', remarkRoutes);
 
+const teacherDashboardRoutes = require('./routes/teacherDashboardRoutes');
+app.use('/api/teacher/dashboard', teacherDashboardRoutes);
+
+const performanceRoutes = require('./routes/performanceRoutes');
+app.use('/api/performance', performanceRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
