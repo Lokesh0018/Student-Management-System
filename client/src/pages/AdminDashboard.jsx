@@ -80,13 +80,13 @@ const AdminDashboard = () => {
                 
                 <div className="stat-card">
                     <div className="stat-icon-wrap" style={{ backgroundColor: '#dcfce7', color: '#16a34a' }}>
-                        <FaBook />
+                        <FaRegClipboard />
                     </div>
                     <div className="stat-data">
-                        <span className="stat-label">Classes</span>
+                        <span className="stat-label">Remarks</span>
                         <div className="stat-value-row">
-                            <span className="stat-num">{stats?.totalClasses?.toLocaleString() || '32'}</span>
-                            <span className="stat-trend trend-up">+1</span>
+                            <span className="stat-num">12</span>
+                            <span className="stat-trend trend-up">+3</span>
                         </div>
                     </div>
                 </div>

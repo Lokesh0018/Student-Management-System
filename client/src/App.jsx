@@ -6,6 +6,7 @@ import TeacherDashboard from './pages/TeacherDashboard'
 import ParentDashboard from './pages/ParentDashboard'
 import ClassManagement from './pages/ClassManagement'
 import SubjectManagement from './pages/SubjectManagement'
+import StudentList from './pages/StudentList'
 import StudentManagement from './pages/StudentManagement'
 import TeacherManagement from './pages/TeacherManagement'
 import ParentManagement from './pages/ParentManagement'
@@ -56,6 +57,12 @@ function App() {
       } />
       
       <Route path="/admin/students" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <StudentList />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/students/:id" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
           <StudentManagement />
         </ProtectedRoute>

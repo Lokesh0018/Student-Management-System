@@ -29,7 +29,7 @@ export const Layout = ({ children }) => {
             </button>
             <div className="user-profile">
               <div className="avatar">
-                <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin" />
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin" />
               </div>
               <div className="user-info">
                   <span className="user-name">Admin</span>

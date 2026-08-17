@@ -1,143 +1,221 @@
-import React, { useState, useEffect } from 'react';
-import api from '../utils/api';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import './Management.css';
+import React, { useState } from 'react';
+import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
+import './StudentProfile.css';
 
 const StudentManagement = () => {
-    const [students, setStudents] = useState([]);
-    const [classes, setClasses] = useState([]);
-    const [formData, setFormData] = useState({
-        admission_number: '', first_name: '', last_name: '', email: '', class_id: '', roll_number: ''
-    });
-    const [editingId, setEditingId] = useState(null);
+    const [activeTab, setActiveTab] = useState('Performance');
 
-    const fetchData = async () => {
-        try {
-            const [studentsRes, classesRes] = await Promise.all([
-                api.get('/students'),
-                api.get('/classes')
-            ]);
-            setStudents(studentsRes.data.data);
-            setClasses(classesRes.data.data);
-        } catch (error) {
-            console.error('Error fetching data', error);
-        }
-    };
+    const tabs = ['Overview', 'Performance', 'Attendance', 'Remarks', 'Documents'];
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const renderPerformanceTab = () => (
+        <div className="profile-content-split">
+            {/* Left Column: Results Table */}
+            <div className="profile-panel panel-results">
+                <div className="panel-header">
+                    <h3>Term 1 Results (2023-24)</h3>
+                    <button className="btn-icon-text"><FaPrint /> Print</button>
+                </div>
+                
+                <table className="results-table">
+                    <thead>
+                        <tr>
+                            <th>SUBJECT</th>
+                            <th className="text-center">MARKS OBTAINED</th>
+                            <th className="text-center">MAX MARKS</th>
+                            <th className="text-center">GRADE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td className="text-center fw-700">92</td>
+                            <td className="text-center text-secondary">100</td>
+                            <td className="text-center"><span className="grade-badge grade-aplus">A+</span></td>
+                        </tr>
+                        <tr>
+                            <td>Science</td>
+                            <td className="text-center fw-700">87</td>
+                            <td className="text-center text-secondary">100</td>
+                            <td className="text-center"><span className="grade-badge grade-a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>English</td>
+                            <td className="text-center fw-700">84</td>
+                            <td className="text-center text-secondary">100</td>
+                            <td className="text-center"><span className="grade-badge grade-a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>Social Studies</td>
+                            <td className="text-center fw-700">79</td>
+                            <td className="text-center text-secondary">100</td>
+                            <td className="text-center"><span className="grade-badge grade-bplus">B+</span></td>
+                        </tr>
+                        <tr>
+                            <td>Hindi</td>
+                            <td className="text-center fw-700">95</td>
+                            <td className="text-center text-secondary">100</td>
+                            <td className="text-center"><span className="grade-badge grade-aplus">A+</span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td className="text-center total-val">437</td>
+                            <td className="text-center total-max">500</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (editingId) {
-                await api.put(`/students/${editingId}`, formData);
-            } else {
-                await api.post('/students', formData);
-            }
-            setFormData({ admission_number: '', first_name: '', last_name: '', email: '', class_id: '', roll_number: '' });
-            setEditingId(null);
-            fetchData();
-        } catch (error) {
-            console.error('Error saving student', error);
-            alert('Failed to save student.');
-        }
-    };
+            {/* Right Column: Performance & Actions */}
+            <div className="profile-sidebars">
+                
+                <div className="profile-panel panel-overall">
+                    <h3>Overall Performance</h3>
+                    
+                    <div className="overall-score-wrap">
+                        <span className="overall-score">87.4%</span>
+                        <span className="overall-trend"><FaArrowUp /> +2.1%</span>
+                    </div>
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this student?')) {
-            try {
-                await api.delete(`/students/${id}`);
-                fetchData();
-            } catch (error) {
-                console.error('Error deleting student', error);
-            }
-        }
-    };
+                    <div className="progress-section">
+                        <div className="progress-labels">
+                            <span>Class Standing</span>
+                            <strong>4th <span className="text-secondary">/ 42</span></strong>
+                        </div>
+                        <div className="progress-bar-wrap">
+                            <div className="progress-fill" style={{ width: '90%' }}></div>
+                        </div>
+                    </div>
 
-    const handleEdit = (student) => {
-        setFormData({
-            admission_number: student.admission_number || '',
-            first_name: student.first_name || '',
-            last_name: student.last_name || '',
-            email: student.email || '',
-            class_id: student.class_id || '',
-            roll_number: student.roll_number || ''
-        });
-        setEditingId(student.id);
-    };
+                    <div className="progress-section">
+                        <div className="progress-labels">
+                            <span>Percentile</span>
+                            <strong>91st</strong>
+                        </div>
+                        <div className="progress-bar-wrap">
+                            <div className="progress-fill" style={{ width: '91%' }}></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="profile-panel panel-quick-actions">
+                    <h3>Quick Actions</h3>
+                    
+                    <div className="action-list">
+                        <button className="action-card">
+                            <div className="action-card-icon" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
+                                <FaEnvelope />
+                            </div>
+                            <div className="action-card-info">
+                                <h4>Email Report to Parents</h4>
+                                <p>Send Term 1 results via email</p>
+                            </div>
+                            <FaAngleRight className="action-card-arrow" />
+                        </button>
+
+                        <button className="action-card">
+                            <div className="action-card-icon" style={{ backgroundColor: '#f5f3ff', color: '#8b5cf6' }}>
+                                <FaChartBar />
+                            </div>
+                            <div className="action-card-info">
+                                <h4>Generate Detailed Analytics</h4>
+                                <p>View subject-wise trends</p>
+                            </div>
+                            <FaAngleRight className="action-card-arrow" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 
     return (
-        <div>
-            <h1 className="page-title" style={{marginBottom: '24px'}}>Student Profile Management</h1>
-            <div className="management-container">
-                <Card style={{ flex: 1, minWidth: '300px' }}>
-                    <h3 className="section-title">{editingId ? 'Edit Student' : 'Add New Student'}</h3>
-                    <form onSubmit={handleSubmit} style={{marginTop: '24px'}}>
-                        <Input label="Admission Number" value={formData.admission_number} onChange={e => setFormData({...formData, admission_number: e.target.value})} required />
-                        <Input label="First Name" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} required />
-                        <Input label="Last Name" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} required />
-                        <Input label="Email" type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                        
-                        <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>
-                            <label className="caption" style={{ marginBottom: '4px' }}>Class</label>
-                            <select 
-                                value={formData.class_id} 
-                                onChange={e => setFormData({...formData, class_id: e.target.value})}
-                                style={{ padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '6px', fontFamily: 'var(--font-sans)', fontSize: '16px' }}
-                            >
-                                <option value="">Select Class</option>
-                                {classes.map(c => (
-                                    <option key={c.id} value={c.id}>{c.class_name} - {c.section}</option>
-                                ))}
-                            </select>
-                        </div>
-                        
-                        <Input label="Roll Number" value={formData.roll_number} onChange={e => setFormData({...formData, roll_number: e.target.value})} />
-                        
-                        <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
-                            <Button type="submit" variant="primary">{editingId ? 'Update' : 'Create'}</Button>
-                            {editingId && (
-                                <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setFormData({ admission_number: '', first_name: '', last_name: '', email: '', class_id: '', roll_number: '' }); }}>Cancel</Button>
-                            )}
-                        </div>
-                    </form>
-                </Card>
-                
-                <Card style={{ flex: 2, minWidth: '300px' }}>
-                    <h3 className="section-title" style={{marginBottom: '24px'}}>Student List</h3>
-                    <div style={{ overflowX: 'auto' }}>
-                        <table className="crud-table w-full">
-                            <thead>
-                                <tr>
-                                    <th className="caption">Adm No</th>
-                                    <th className="caption">Name</th>
-                                    <th className="caption">Class</th>
-                                    <th className="caption">Roll No</th>
-                                    <th className="caption">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {students.map(s => (
-                                    <tr key={s.id}>
-                                        <td className="body-secondary">{s.admission_number}</td>
-                                        <td className="body-main">{s.first_name} {s.last_name}</td>
-                                        <td className="body-secondary">{s.class_name ? `${s.class_name}-${s.section}` : 'N/A'}</td>
-                                        <td className="body-secondary">{s.roll_number}</td>
-                                        <td>
-                                            <Button variant="ghost" onClick={() => handleEdit(s)} style={{padding: '4px 8px'}}>Edit</Button>
-                                            <Button variant="ghost" onClick={() => handleDelete(s.id)} style={{padding: '4px 8px', color: 'var(--danger)'}}>Delete</Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {students.length === 0 && <p className="body-secondary text-center" style={{padding: '24px'}}>No students found.</p>}
+        <div className="student-profile-page">
+            <div className="breadcrumbs">
+                Dashboard &gt; Students &gt; <span className="current-crumb">Rahul Kumar</span>
+            </div>
+
+            <div className="page-header-row">
+                <h1 className="page-title">Student Profile</h1>
+                <div className="header-actions">
+                    <button className="btn-outline-dark"><FaEdit /> Edit Profile</button>
+                    <button className="btn-primary"><FaDownload /> Export Report</button>
+                </div>
+            </div>
+
+            <div className="profile-summary-card">
+                <div className="summary-left">
+                    <div className="summary-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/51.jpg" alt="Rahul Kumar" />
                     </div>
-                </Card>
+                    <div className="summary-basic">
+                        <div className="summary-name-row">
+                            <h2>Rahul Kumar</h2>
+                            <span className="badge-active">ACTIVE</span>
+                        </div>
+                        <div className="summary-meta-row">
+                            <span>🎓 Class 10-A • Roll No. 1023</span>
+                        </div>
+                        <div className="summary-meta-row">
+                            <span>🎂 15 Years, 3 Months</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="summary-right">
+                    <div className="info-grid">
+                        <div className="info-item">
+                            <FaEnvelope className="info-icon" />
+                            <div className="info-data">
+                                <span className="info-label">EMAIL</span>
+                                <span className="info-val">rahul.kumar@email.com</span>
+                            </div>
+                        </div>
+                        <div className="info-item">
+                            <FaUserTie className="info-icon" />
+                            <div className="info-data">
+                                <span className="info-label">FATHER</span>
+                                <span className="info-val">Rajesh Kumar</span>
+                            </div>
+                        </div>
+                        <div className="info-item">
+                            <FaPhone className="info-icon" />
+                            <div className="info-data">
+                                <span className="info-label">PHONE</span>
+                                <span className="info-val">+91 9876543210</span>
+                            </div>
+                        </div>
+                        <div className="info-item">
+                            <FaTint className="info-icon" />
+                            <div className="info-data">
+                                <span className="info-label">BLOOD GROUP</span>
+                                <span className="info-val">A+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="profile-tabs">
+                {tabs.map(tab => (
+                    <button 
+                        key={tab}
+                        className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        {tab}
+                    </button>
+                ))}
+            </div>
+
+            <div className="tab-content">
+                {activeTab === 'Performance' ? renderPerformanceTab() : (
+                    <div className="placeholder-tab">
+                        <h3>{activeTab} content coming soon</h3>
+                    </div>
+                )}
             </div>
         </div>
     );

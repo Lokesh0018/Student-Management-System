@@ -28,31 +28,31 @@ export const Sidebar = ({ isOpen, onClose }) => {
           <NavLink to="/admin/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaTachometerAlt className="sidebar-icon" /> Dashboard
           </NavLink>
-          <NavLink to="/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaUserGraduate className="sidebar-icon" /> Students
           </NavLink>
-          <NavLink to="/teachers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/teachers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaChalkboardTeacher className="sidebar-icon" /> Teachers
           </NavLink>
-          <NavLink to="/parents" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/parents" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaUsers className="sidebar-icon" /> Parents
           </NavLink>
           <NavLink to="/exams" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaClipboardList className="sidebar-icon" /> Exams
           </NavLink>
-          <NavLink to="/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaCalendarCheck className="sidebar-icon" /> Attendance
           </NavLink>
-          <NavLink to="/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaRegFileAlt className="sidebar-icon" /> Remarks
           </NavLink>
-          <NavLink to="/performance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/performance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaChartLine className="sidebar-icon" /> Performance
           </NavLink>
-          <NavLink to="/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaChartLine className="sidebar-icon" /> Reports
           </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/admin/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaCog className="sidebar-icon" /> Settings
           </NavLink>
         </nav>
