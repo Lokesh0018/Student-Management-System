@@ -30,6 +30,18 @@ app.use('/api/teachers', teacherRoutes);
 const parentRoutes = require('./routes/parentRoutes');
 app.use('/api/parents', parentRoutes);
 
+const examRoutes = require('./routes/examRoutes');
+app.use('/api/exams', examRoutes);
+
+const markRoutes = require('./routes/markRoutes');
+app.use('/api/marks', markRoutes);
+
+const attendanceRoutes = require('./routes/attendanceRoutes');
+app.use('/api/attendance', attendanceRoutes);
+
+const remarkRoutes = require('./routes/remarkRoutes');
+app.use('/api/remarks', remarkRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
