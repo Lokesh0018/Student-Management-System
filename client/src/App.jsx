@@ -27,6 +27,7 @@ import MarkManagement from './pages/MarkManagement'
 import AttendanceManagement from './pages/AttendanceManagement'
 import RemarkManagement from './pages/RemarkManagement'
 import PerformanceAnalytics from './pages/PerformanceAnalytics'
+import ReportsList from './pages/ReportsList'
 import { useAuth } from './context/AuthContext'
 import { Layout } from './components/layout/Layout'
 
@@ -187,6 +188,12 @@ function App() {
       <Route path="/admin/performance" element={
         <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
           <PerformanceAnalytics />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/reports" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <ReportsList />
         </ProtectedRoute>
       } />
       

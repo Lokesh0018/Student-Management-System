@@ -67,7 +67,7 @@ const AddStudent = () => {
     };
 
     return (
-        <div className="add-student-page">
+        <div className="add-student-page fade-in">
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Add Student</h1>
@@ -86,7 +86,7 @@ const AddStudent = () => {
                     {/* Personal Information */}
                     <div className="form-section">
                         <h3 className="form-section-title">Personal Information</h3>
-                        {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+                        {error && <div className="error-alert"><span>⚠️</span> {error}</div>}
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>First Name <span className="req">*</span></label>

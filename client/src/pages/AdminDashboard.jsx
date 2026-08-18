@@ -27,7 +27,12 @@ const AdminDashboard = () => {
         fetchStats();
     }, []);
 
-    if (loading) return <div className="loading-state">Loading dashboard...</div>;
+    if (loading) return (
+        <div className="loading-state">
+            <div className="spinner"></div>
+            <span>Loading dashboard...</span>
+        </div>
+    );
 
     const performanceData = [
       { name: '1 May', score: 75 },
@@ -54,7 +59,7 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container fade-in">
             <div className="dashboard-header-main">
                 <h1 className="dash-title">Good Morning, Admin! 👋</h1>
                 <p className="dash-subtitle">Here's what's happening in your school today.</p>
