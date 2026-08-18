@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
+import api from '../utils/api';
 import './StudentProfile.css';
 
 const StudentManagement = () => {
+    const { id } = useParams();
     const [activeTab, setActiveTab] = useState('Overview');
+    const [student, setStudent] = useState(null);
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            try {
+                const res = await api.get(`/students/${id}`);
+                if (res.data.success) {
+                    setStudent(res.data.data);
+                }
+            } catch (err) {
+                console.error("Error fetching student:", err);
+            }
+        };
+        fetchStudent();
+    }, [id]);
 
     const tabs = ['Overview', 'Performance', 'Attendance', 'Remarks'];
+
+    if (!student) return <div className="student-profile-page">Loading...</div>;
 
     const renderPerformanceTab = () => (
         <div className="profile-content-split">
@@ -141,15 +160,15 @@ const StudentManagement = () => {
                         <div className="info-grid-2">
                             <div className="info-block">
                                 <span>Date of Birth</span>
-                                <strong>15 Jan 2009</strong>
+                                <strong>{student.dob ? new Date(student.dob).toLocaleDateString() : 'N/A'}</strong>
                             </div>
                             <div className="info-block">
                                 <span>Gender</span>
-                                <strong>Male</strong>
+                                <strong>{student.gender || 'N/A'}</strong>
                             </div>
                             <div className="info-block full-width">
                                 <span>Address</span>
-                                <strong>123, Green Park,<br/>New Delhi</strong>
+                                <strong>{student.address || 'N/A'}</strong>
                             </div>
                         </div>
                     </div>
@@ -158,19 +177,19 @@ const StudentManagement = () => {
                         <div className="info-grid-2">
                             <div className="info-block">
                                 <span>Class</span>
-                                <strong>10-A</strong>
+                                <strong>{student.class_name ? `${student.class_name}-${student.section || ''}` : 'N/A'}</strong>
                             </div>
                             <div className="info-block">
-                                <span>Section</span>
-                                <strong>A</strong>
+                                <span>Roll No.</span>
+                                <strong>{student.roll_number}</strong>
                             </div>
                             <div className="info-block">
                                 <span>Admission No.</span>
-                                <strong>ADM12345</strong>
+                                <strong>{student.admission_number}</strong>
                             </div>
                             <div className="info-block">
                                 <span>Admission Date</span>
-                                <strong>10 Apr 2022</strong>
+                                <strong>{student.admission_date ? new Date(student.admission_date).toLocaleDateString() : 'N/A'}</strong>
                             </div>
                         </div>
                     </div>
@@ -222,13 +241,13 @@ const StudentManagement = () => {
                 <span className="crumb-separator"> &gt; </span>
                 <Link to="/admin/students" className="crumb-link">Students</Link>
                 <span className="crumb-separator"> &gt; </span>
-                <span className="current-crumb">Rahul Kumar</span>
+                <span className="current-crumb">{student.first_name} {student.last_name}</span>
             </div>
 
             <div className="page-header-row">
                 <h1 className="page-title">Student Profile</h1>
                 <div className="header-actions">
-                    <button className="btn-outline-dark"><FaEdit /> Edit Profile</button>
+                    <Link to={`/admin/students/${student.id}/edit`} className="btn-outline-dark" style={{textDecoration: 'none'}}><FaEdit /> Edit Profile</Link>
                     <button className="btn-primary"><FaDownload /> Export Report</button>
                 </div>
             </div>
@@ -236,18 +255,21 @@ const StudentManagement = () => {
             <div className="profile-summary-card">
                 <div className="summary-left">
                     <div className="summary-avatar">
-                        <img src="https://randomuser.me/api/portraits/men/51.jpg" alt="Rahul Kumar" />
+                        {student.photo ? (
+                            <img src={`http://localhost:5000/api/students/${student.id}/photo`} alt={`${student.first_name}`} />
+                        ) : (
+                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#818cf8', color: 'white', fontSize: '32px', fontWeight: 'bold' }}>
+                                {student.first_name.charAt(0)}{student.last_name.charAt(0)}
+                            </div>
+                        )}
                     </div>
                     <div className="summary-basic">
                         <div className="summary-name-row">
-                            <h2>Rahul Kumar</h2>
+                            <h2>{student.first_name} {student.last_name}</h2>
                             <span className="badge-active">ACTIVE</span>
                         </div>
                         <div className="summary-meta-row">
-                            <span>🎓 Class 10-A • Roll No. 1023</span>
-                        </div>
-                        <div className="summary-meta-row">
-                            <span>🎂 15 Years, 3 Months</span>
+                            <span>🎓 Class {student.class_name ? `${student.class_name}-${student.section || ''}` : 'N/A'} • Roll No. {student.roll_number}</span>
                         </div>
                     </div>
                 </div>
@@ -256,21 +278,21 @@ const StudentManagement = () => {
                     <div className="info-grid-clean">
                         <div className="info-item-clean">
                             <span className="info-label-clean">Father</span>
-                            <span className="info-val-clean">Rajesh Kumar</span>
-                            <span className="info-sub-clean">9876543211</span>
+                            <span className="info-val-clean">N/A</span>
+                            <span className="info-sub-clean">N/A</span>
                         </div>
                         <div className="info-item-clean">
                             <span className="info-label-clean">Mother</span>
-                            <span className="info-val-clean">Neha Kumar</span>
-                            <span className="info-sub-clean">9876543212</span>
+                            <span className="info-val-clean">N/A</span>
+                            <span className="info-sub-clean">N/A</span>
                         </div>
                         <div className="info-item-clean">
                             <span className="info-label-clean"><FaEnvelope /> EMAIL</span>
-                            <span className="info-val-clean text-blue">rahul.kumar@email.com</span>
+                            <span className="info-val-clean text-blue">{student.email || 'N/A'}</span>
                         </div>
                         <div className="info-item-clean">
                             <span className="info-label-clean"><FaPhone /> PHONE</span>
-                            <span className="info-val-clean">+91 9876543210</span>
+                            <span className="info-val-clean">{student.phone || 'N/A'}</span>
                         </div>
                     </div>
                 </div>

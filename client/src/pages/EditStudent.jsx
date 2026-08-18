@@ -1,9 +1,102 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
+import { FaCloudUploadAlt } from 'react-icons/fa';
+import api from '../utils/api';
 import './AddStudent.css';
 
 const EditStudent = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        class_id: '',
+        roll_number: '',
+        admission_number: '',
+        dob: '',
+        gender: '',
+        phone: '',
+        address: '',
+        admission_date: '',
+        status: 'ACTIVE'
+    });
+    const [photo, setPhoto] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            try {
+                const res = await api.get(`/students/${id}`);
+                if (res.data.success) {
+                    const s = res.data.data;
+                    setFormData({
+                        first_name: s.first_name || '',
+                        last_name: s.last_name || '',
+                        email: s.email || '',
+                        class_id: s.class_id || '',
+                        roll_number: s.roll_number || '',
+                        admission_number: s.admission_number || '',
+                        dob: s.dob ? s.dob.split('T')[0] : '',
+                        gender: s.gender || '',
+                        phone: s.phone || '',
+                        address: s.address || '',
+                        admission_date: s.admission_date ? s.admission_date.split('T')[0] : '',
+                        status: s.status || 'ACTIVE'
+                    });
+                    if (s.photo) {
+                        setPhotoPreview(`http://localhost:5000/api/students/${id}/photo`);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                setError('Failed to fetch student details');
+            }
+        };
+        fetchStudent();
+    }, [id]);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handlePhotoChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setPhoto(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+        
+        try {
+            const data = new FormData();
+            Object.keys(formData).forEach(key => {
+                data.append(key, formData[key]);
+            });
+            if (photo) {
+                data.append('photo', photo);
+            }
+
+            await api.put(`/students/${id}`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            navigate('/admin/students');
+        } catch (err) {
+            console.error(err);
+            setError(err.response?.data?.message || 'Failed to update student');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="add-student-page">
@@ -20,27 +113,28 @@ const EditStudent = () => {
                 </div>
             </div>
 
-            <div className="form-container">
+            <form className="form-container" onSubmit={handleSubmit}>
                 <div className="form-left-col">
                     {/* Personal Information */}
                     <div className="form-section">
                         <h3 className="form-section-title">Personal Information</h3>
+                        {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>First Name <span className="req">*</span></label>
-                                <input type="text" defaultValue="Rahul" />
+                                <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
                                 <label>Last Name <span className="req">*</span></label>
-                                <input type="text" defaultValue="Kumar" />
+                                <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>Date of Birth <span className="req">*</span></label>
-                                <input type="date" defaultValue="2009-01-15" />
+                                <label>Date of Birth</label>
+                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
                             </div>
                             <div className="form-group">
-                                <label>Gender <span className="req">*</span></label>
-                                <select defaultValue="Male">
+                                <label>Gender</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange}>
                                     <option value="">Select gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -48,15 +142,15 @@ const EditStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Email</label>
-                                <input type="email" defaultValue="" />
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} />
                             </div>
                             <div className="form-group">
                                 <label>Phone</label>
-                                <input type="tel" defaultValue="9876543210" />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
                             </div>
                             <div className="form-group full-width">
                                 <label>Address</label>
-                                <textarea defaultValue="123, Green Park, New Delhi" rows="2"></textarea>
+                                <textarea name="address" value={formData.address} onChange={handleChange} rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -67,37 +161,29 @@ const EditStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Class <span className="req">*</span></label>
-                                <select defaultValue="10">
+                                <select name="class_id" value={formData.class_id} onChange={handleChange} required>
                                     <option value="">Select class</option>
-                                    <option value="10">10th</option>
-                                    <option value="9">9th</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Section <span className="req">*</span></label>
-                                <select defaultValue="A">
-                                    <option value="">Select section</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
+                                    <option value="1">Class 10</option>
+                                    <option value="2">Class 9</option>
                                 </select>
                             </div>
                             <div className="form-group">
                                 <label>Roll Number <span className="req">*</span></label>
-                                <input type="text" defaultValue="1025" />
+                                <input type="text" name="roll_number" value={formData.roll_number} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
                                 <label>Admission Number <span className="req">*</span></label>
-                                <input type="text" defaultValue="ADM12345" />
+                                <input type="text" name="admission_number" value={formData.admission_number} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>Admission Date <span className="req">*</span></label>
-                                <input type="date" defaultValue="2022-04-10" />
+                                <label>Admission Date</label>
+                                <input type="date" name="admission_date" value={formData.admission_date} onChange={handleChange} />
                             </div>
                             <div className="form-group">
                                 <label>Status <span className="req">*</span></label>
-                                <select defaultValue="Active">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
+                                <select name="status" value={formData.status} onChange={handleChange} required>
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="INACTIVE">Inactive</option>
                                 </select>
                             </div>
                         </div>
@@ -106,20 +192,34 @@ const EditStudent = () => {
 
                 <div className="form-right-col">
                     <div className="form-section photo-upload-section">
-                        <div className="edit-avatar-preview">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul" className="edit-avatar-img" />
-                            <h4>Rahul Kumar</h4>
-                            <span className="edit-avatar-sub">Class 10-A | Roll No: 1025</span>
-                            <button className="btn-outline" style={{ marginTop: '16px', width: '100%' }}>Change Photo</button>
+                        <h3 className="form-section-title">Student Photo</h3>
+                        <div className="upload-box" style={{ position: 'relative' }}>
+                            <input 
+                                type="file" 
+                                accept="image/jpeg, image/png" 
+                                onChange={handlePhotoChange} 
+                                style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                            />
+                            {photoPreview ? (
+                                <img src={photoPreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                            ) : (
+                                <>
+                                    <FaCloudUploadAlt className="upload-icon" />
+                                    <p>Click to upload photo</p>
+                                    <span>JPG, PNG up to 2MB</span>
+                                </>
+                            )}
                         </div>
                     </div>
 
                     <div className="form-actions">
-                        <button className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
-                        <button className="btn-primary">Update Student</button>
+                        <button type="button" className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
+                        <button type="submit" className="btn-primary" disabled={loading}>
+                            {loading ? 'Updating...' : 'Update Student'}
+                        </button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

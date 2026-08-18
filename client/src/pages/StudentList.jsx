@@ -1,31 +1,55 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import api from '../utils/api';
 import './StudentList.css';
-
-const MOCK_STUDENTS = [
-    { id: '#S001', name: 'Aarav Sharma', classSec: '10-A', rollNo: '1023', parents: 'Rajesh Kumar', status: 'Active', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
-    { id: '#S002', name: 'Isha Patel', classSec: '10-A', rollNo: '1024', parents: 'Sanjay Patel', status: 'Active', avatar: 'IP' },
-    { id: '#S003', name: 'Rohan Gupta', classSec: '9-B', rollNo: '9045', parents: 'Amit Gupta', status: 'Inactive', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
-    { id: '#S004', name: 'Meera Singh', classSec: '10-B', rollNo: '1056', parents: 'Vikram Singh', status: 'Pending', avatar: 'MS' },
-    { id: '#S005', name: 'Kabir Khan', classSec: '8-A', rollNo: '8012', parents: 'Imran Khan', status: 'Active', avatar: 'https://randomuser.me/api/portraits/women/68.jpg' },
-];
 
 const StudentList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterClass, setFilterClass] = useState('');
     const [filterSection, setFilterSection] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
+    const [students, setStudents] = useState([]);
     const navigate = useNavigate();
 
-    const filteredStudents = MOCK_STUDENTS.filter(student => {
-        const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || student.id.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesClass = filterClass ? student.classSec.startsWith(filterClass) : true;
-        const matchesSection = filterSection ? student.classSec.endsWith(filterSection) : true;
-        const matchesStatus = filterStatus ? student.status === filterStatus : true;
-        return matchesSearch && matchesClass && matchesSection && matchesStatus;
+    const fetchStudents = async () => {
+        try {
+            const res = await api.get('/students');
+            if (res.data.success) {
+                setStudents(res.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching students:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudents();
+    }, []);
+
+    const filteredStudents = students.filter(student => {
+        const name = `${student.first_name} ${student.last_name}`;
+        const className = `${student.class_name || ''} ${student.section || ''}`.trim();
+        
+        const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                              String(student.admission_number).toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesClass = filterClass ? student.class_id == filterClass : true;
+        // Skipping section and status filters since DB doesn't fully track them yet
+        return matchesSearch && matchesClass;
     });
+
+    const handleDelete = async (e, id) => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure you want to delete this student?")) {
+            try {
+                await api.delete(`/students/${id}`);
+                fetchStudents();
+            } catch (error) {
+                console.error("Error deleting student:", error);
+                alert("Failed to delete student");
+            }
+        }
+    };
 
     const clearFilters = () => {
         setSearchTerm('');
@@ -35,9 +59,7 @@ const StudentList = () => {
     };
 
     const handleRowClick = (studentId) => {
-        // Remove the '#' before navigating
-        const id = studentId.replace('#', '');
-        navigate(`/admin/students/${id}`);
+        navigate(`/admin/students/${studentId}`);
     };
 
     return (
@@ -69,20 +91,8 @@ const StudentList = () => {
                 <div className="filter-dropdowns">
                     <select className="filter-select" value={filterClass} onChange={(e) => setFilterClass(e.target.value)}>
                         <option value="">Class</option>
-                        <option value="10">Class 10</option>
-                        <option value="9">Class 9</option>
-                        <option value="8">Class 8</option>
-                    </select>
-                    <select className="filter-select" value={filterSection} onChange={(e) => setFilterSection(e.target.value)}>
-                        <option value="">Section</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                    </select>
-                    <select className="filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                        <option value="">Status</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                        <option value="Pending">Pending</option>
+                        <option value="1">Class 10</option>
+                        <option value="2">Class 9</option>
                     </select>
                     <button className="btn-clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
@@ -104,36 +114,36 @@ const StudentList = () => {
                     <tbody>
                         {filteredStudents.map(student => (
                             <tr key={student.id} onClick={() => handleRowClick(student.id)} className="clickable-row">
-                                <td className="text-secondary">{student.id}</td>
+                                <td className="text-secondary">#{student.admission_number}</td>
                                 <td>
                                     <div className="student-name-cell">
-                                        {student.avatar.length > 2 ? (
-                                            <img src={student.avatar} alt={student.name} className="table-avatar" />
+                                        {student.photo ? (
+                                            <img src={`http://localhost:5000/api/students/${student.id}/photo`} alt={`${student.first_name}`} className="table-avatar" />
                                         ) : (
-                                            <div className="table-avatar-placeholder" style={{ backgroundColor: student.status === 'Pending' ? '#be123c' : '#818cf8' }}>
-                                                {student.avatar}
+                                            <div className="table-avatar-placeholder" style={{ backgroundColor: '#818cf8' }}>
+                                                {student.first_name.charAt(0)}{student.last_name.charAt(0)}
                                             </div>
                                         )}
-                                        <span className="fw-500">{student.name}</span>
+                                        <span className="fw-500">{student.first_name} {student.last_name}</span>
                                     </div>
                                 </td>
-                                <td>{student.classSec}</td>
-                                <td>{student.rollNo}</td>
-                                <td>{student.parents}</td>
+                                <td>{student.class_name ? `${student.class_name}-${student.section || ''}` : 'N/A'}</td>
+                                <td>{student.roll_number}</td>
+                                <td>N/A</td>
                                 <td>
-                                    <span className={`status-badge status-${student.status.toLowerCase()}`}>
-                                        {student.status}
+                                    <span className="status-badge status-active">
+                                        Active
                                     </span>
                                 </td>
                                 <td className="text-right">
                                     <div className="action-buttons-group">
-                                        <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id.replace('#', '')}`); }}>
+                                        <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id}`); }}>
                                             <FaEye />
                                         </button>
-                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id.replace('#', '')}/edit`); }}>
+                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id}/edit`); }}>
                                             <FaPen />
                                         </button>
-                                        <button className="action-btn-icon text-red" onClick={(e) => { e.stopPropagation(); }}>
+                                        <button className="action-btn-icon text-red" onClick={(e) => handleDelete(e, student.id)}>
                                             <FaTrash />
                                         </button>
                                     </div>

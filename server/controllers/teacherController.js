@@ -17,7 +17,7 @@ exports.createTeacher = async (req, res) => {
         
         // 1. Create User
         const [userResult] = await connection.execute(
-            'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)',
+            'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
             [name, email, 'password123', 'CLASS_TEACHER']
         );
         const userId = userResult.insertId;

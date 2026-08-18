@@ -18,13 +18,13 @@ exports.login = async (req, res) => {
         // Extremely basic login: no bcrypt, just string match
         // Note: the original setup script hashed passwords as 'password123'. 
         // We assume they have been updated to plaintext for this basic version, or user enters the hash.
-        // For simplicity, we just compare plaintext directly.
-        if (user.password_hash !== password) {
-             return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        // Extremely basic login: no bcrypt, just string match
+        if (user.password !== password) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
-        // Remove password from response
-        delete user.password_hash;
+        // Generate token
+        delete user.password;
 
         // Return user data (no JWT token as requested)
         res.json({
