@@ -165,8 +165,11 @@ async function initDB() {
             );
         `);
 
-        console.log("Inserting default admin user...");
-        await connection.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin User', 'admin@example.com', 'admin123', 'ADMIN']);
+        console.log("Inserting default admin user and classes...");
+        await connection.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@school.com', 'admin123', 'ADMIN']);
+
+        await connection.query('INSERT IGNORE INTO classes (id, class_name, section) VALUES (?, ?, ?)', [1, 'Class 10', 'A']);
+        await connection.query('INSERT IGNORE INTO classes (id, class_name, section) VALUES (?, ?, ?)', [2, 'Class 9', 'A']);
 
         console.log("Database initialization complete.");
         await connection.end();

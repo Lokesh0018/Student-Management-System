@@ -154,16 +154,8 @@ const StudentList = () => {
                 </table>
                 
                 <div className="pagination-footer">
-                    <span className="pagination-info">Showing 1 to 5 of 45 results</span>
-                    <div className="pagination-controls">
-                        <button className="page-btn disabled">&lt;</button>
-                        <button className="page-btn active">1</button>
-                        <button className="page-btn">2</button>
-                        <button className="page-btn">3</button>
-                        <span className="page-dots">...</span>
-                        <button className="page-btn">9</button>
-                        <button className="page-btn">&gt;</button>
-                    </div>
+                    <span className="pagination-info">Showing {filteredStudents.length} results</span>
+                    {/* Pagination controls hidden until backend supports it */}
                 </div>
             </div>
         </div>
