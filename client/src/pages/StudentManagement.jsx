@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
 import api from '../utils/api';
+import StudentImage from '../components/StudentImage';
 import './StudentProfile.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
@@ -258,7 +259,11 @@ const StudentManagement = () => {
                 <div className="summary-left">
                     <div className="summary-avatar">
                         {student.photo ? (
-                            <img src={`http://localhost:5000/api/students/${student.id}/photo?t=${SESSION_CACHE_BUSTER}`} alt={`${student.first_name}`} />
+                            <StudentImage 
+                                studentId={student.id} 
+                                studentName={`${student.first_name}`} 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
                         ) : (
                             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#818cf8', color: 'white', fontSize: '32px', fontWeight: 'bold' }}>
                                 {student.first_name.charAt(0)}{student.last_name.charAt(0)}

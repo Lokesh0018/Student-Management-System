@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import api from '../utils/api';
+import { getDirectImageUrl } from '../utils/imageUtils';
 import './AddStudent.css';
 
 const AddStudent = () => {
@@ -18,10 +19,9 @@ const AddStudent = () => {
         phone: '',
         address: '',
         admission_date: '',
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        photo: ''
     });
-    const [photo, setPhoto] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -29,13 +29,7 @@ const AddStudent = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handlePhotoChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setPhoto(file);
-            setPhotoPreview(URL.createObjectURL(file));
-        }
-    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,19 +37,7 @@ const AddStudent = () => {
         setError('');
         
         try {
-            const data = new FormData();
-            Object.keys(formData).forEach(key => {
-                data.append(key, formData[key]);
-            });
-            if (photo) {
-                data.append('photo', photo);
-            }
-
-            await api.post('/students', data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            await api.post('/students', formData);
             navigate('/admin/students');
         } catch (err) {
             console.error(err);
@@ -159,24 +141,30 @@ const AddStudent = () => {
 
                 <div className="form-right-col">
                     <div className="form-section photo-upload-section">
-                        <h3 className="form-section-title">Student Photo</h3>
-                        <div className="upload-box" style={{ position: 'relative' }}>
+                        <h3 className="form-section-title">Student Photo URL</h3>
+                        <div className="form-group full-width">
+                            <label>Image Link</label>
                             <input 
-                                type="file" 
-                                accept="image/jpeg, image/png" 
-                                onChange={handlePhotoChange} 
-                                style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                                type="url" 
+                                name="photo" 
+                                value={formData.photo} 
+                                onChange={handleChange} 
+                                placeholder="https://example.com/image.jpg"
                             />
-                            {photoPreview ? (
-                                <img src={photoPreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-                            ) : (
-                                <>
-                                    <FaCloudUploadAlt className="upload-icon" />
-                                    <p>Click to upload photo</p>
-                                    <span>JPG, PNG up to 2MB</span>
-                                </>
-                            )}
                         </div>
+                        {formData.photo && (
+                            <div className="upload-box" style={{ marginTop: '16px', padding: 0, overflow: 'hidden', border: 'none' }}>
+                                <img 
+                                    src={getDirectImageUrl(formData.photo)} 
+                                    alt="Preview" 
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = "/default-avatar.png";
+                                    }} 
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="form-actions">
