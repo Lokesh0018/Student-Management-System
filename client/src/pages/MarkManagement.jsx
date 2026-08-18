@@ -6,22 +6,18 @@ import './Management.css';
 const MarkManagement = () => {
     const [exams, setExams] = useState([]);
     const [classes, setClasses] = useState([]);
-    const [subjects, setSubjects] = useState([]);
     const [students, setStudents] = useState([]);
-    
-    const [filters, setFilters] = useState({ exam_id: '', class_id: '', subject_id: '' });
+    const [filters, setFilters] = useState({ exam_id: '', class_id: '' });
     const [marksData, setMarksData] = useState({}); // { student_id: { marks_obtained, max_marks, remarks } }
     
     const fetchDropdowns = async () => {
         try {
-            const [e, c, s] = await Promise.all([
+            const [e, c] = await Promise.all([
                 api.get('/exams'),
-                api.get('/classes'),
-                api.get('/subjects')
+                api.get('/classes')
             ]);
             setExams(e.data.data);
             setClasses(c.data.data);
-            setSubjects(s.data.data);
         } catch (error) {
             console.error('Error fetching dropdowns', error);
         }
@@ -32,12 +28,12 @@ const MarkManagement = () => {
     }, []);
 
     const fetchStudentsAndMarks = async () => {
-        if (!filters.exam_id || !filters.class_id || !filters.subject_id) return;
+        if (!filters.exam_id || !filters.class_id) return;
         
         try {
             const [studentsRes, marksRes] = await Promise.all([
                 api.get('/students'),
-                api.get(`/marks?exam_id=${filters.exam_id}&class_id=${filters.class_id}&subject_id=${filters.subject_id}`)
+                api.get(`/marks?exam_id=${filters.exam_id}&class_id=${filters.class_id}`)
             ]);
             
             const classStudents = studentsRes.data.data.filter(s => s.class_id == filters.class_id);
@@ -79,7 +75,6 @@ const MarkManagement = () => {
         const payload = Object.keys(marksData).map(studentId => ({
             student_id: studentId,
             exam_id: filters.exam_id,
-            subject_id: filters.subject_id,
             marks_obtained: marksData[studentId].marks_obtained,
             max_marks: marksData[studentId].max_marks,
             remarks: marksData[studentId].remarks
@@ -116,13 +111,6 @@ const MarkManagement = () => {
                         <select value={filters.class_id} onChange={e => setFilters({...filters, class_id: e.target.value})}>
                             <option value="">Select Class</option>
                             {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
-                        </select>
-                    </div>
-                    <div className="form-group" style={{marginBottom: 0, flex: 1}}>
-                        <label>Subject</label>
-                        <select value={filters.subject_id} onChange={e => setFilters({...filters, subject_id: e.target.value})}>
-                            <option value="">Select Subject</option>
-                            {subjects.map(s => <option key={s.id} value={s.id}>{s.subject_name}</option>)}
                         </select>
                     </div>
                     <button className="btn-primary" onClick={fetchStudentsAndMarks}>Load Students</button>

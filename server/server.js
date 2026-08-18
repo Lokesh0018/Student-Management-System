@@ -64,6 +64,9 @@ app.use('/api/performance', performanceRoutes);
 const parentDashboardRoutes = require('./routes/parentDashboardRoutes');
 app.use('/api/parent/dashboard', parentDashboardRoutes);
 
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/api/notifications', notificationRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });

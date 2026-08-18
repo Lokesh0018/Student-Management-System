@@ -35,6 +35,40 @@ exports.sendRemark = async (req, res) => {
             [sender_id, receiver_id, student_id || null, title, message]
         );
         
+        if (student_id) {
+            // Notify Class Teacher
+            const [teacherRows] = await pool.execute(`
+                SELECT t.user_id 
+                FROM students s 
+                JOIN classes c ON s.class_id = c.id 
+                JOIN teachers t ON c.teacher_id = t.id 
+                WHERE s.id = ?
+            `, [student_id]);
+            
+            if (teacherRows.length > 0 && teacherRows[0].user_id) {
+                await pool.execute(
+                    'INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)',
+                    [teacherRows[0].user_id, 'New Remark', `A new remark has been added regarding your student (${title}).`]
+                );
+            }
+
+            // Notify Parents
+            const [parentRows] = await pool.execute(`
+                SELECT p.user_id 
+                FROM parent_student ps 
+                JOIN parents p ON ps.parent_id = p.id 
+                WHERE ps.student_id = ? AND p.user_id IS NOT NULL
+            `, [student_id]);
+
+            const uniqueParents = [...new Set(parentRows.map(r => r.user_id))];
+            for (const userId of uniqueParents) {
+                await pool.execute(
+                    'INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)',
+                    [userId, 'New Remark', `A new remark has been added regarding your child (${title}).`]
+                );
+            }
+        }
+        
         res.json({ success: true, message: 'Remark sent successfully' });
     } catch (error) {
         console.error(error);

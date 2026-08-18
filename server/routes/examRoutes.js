@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 // Admin has full access, Teachers can view
 router.get('/', roleMiddleware('ADMIN', 'CLASS_TEACHER'), examController.getAllExams);
+router.get('/:id', roleMiddleware('ADMIN', 'CLASS_TEACHER'), examController.getExamById);
 router.post('/', roleMiddleware('ADMIN'), examController.createExam);
 router.put('/:id', roleMiddleware('ADMIN'), examController.updateExam);
 router.delete('/:id', roleMiddleware('ADMIN'), examController.deleteExam);

@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
+import api from '../utils/api';
 import './StudentList.css'; 
 
-const MOCK_EXAMS = [
-    { id: '1', name: 'Unit Test - 1', type: 'Unit Test', classes: '6th - 12th', startDate: '24 May 2024', endDate: '29 May 2024', status: 'Upcoming' },
-    { id: '2', name: 'Mid Term Exam', type: 'Mid Term', classes: '6th - 12th', startDate: '10 Jun 2024', endDate: '15 Jun 2024', status: 'Upcoming' },
-    { id: '3', name: 'Quarterly Exam', type: 'Quarterly', classes: '6th - 12th', startDate: '22 Jun 2024', endDate: '27 Jun 2024', status: 'Upcoming' },
-    { id: '4', name: 'Half Yearly Exam', type: 'Half Yearly', classes: '6th - 12th', startDate: '05 Sep 2024', endDate: '15 Sep 2024', status: 'Upcoming' },
-    { id: '5', name: 'Pre-Final Exam', type: 'Pre-Final', classes: '10th, 12th', startDate: '10 Nov 2024', endDate: '20 Nov 2024', status: 'Upcoming' },
-    { id: '6', name: 'Final Exam', type: 'Final', classes: '6th - 12th', startDate: '25 Feb 2025', endDate: '15 Mar 2025', status: 'Upcoming' }
-];
-
 const ExaminationsList = () => {
+    const [exams, setExams] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [examToDelete, setExamToDelete] = useState(null);
     const navigate = useNavigate();
+
+    const fetchExams = async () => {
+        try {
+            const res = await api.get('/exams');
+            if (res.data.success) {
+                setExams(res.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching exams:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchExams();
+    }, []);
+
+    const openDeleteModal = (e, id) => {
+        e.stopPropagation();
+        setExamToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!examToDelete) return;
+        try {
+            await api.delete(`/exams/${examToDelete}`);
+            fetchExams();
+            setIsDeleteModalOpen(false);
+            setExamToDelete(null);
+        } catch (error) {
+            console.error('Error deleting exam:', error);
+            alert('Failed to delete exam');
+        }
+    };
+
+    const filteredExams = exams.filter(e => 
+        e.exam_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div className="student-list-page">
@@ -58,27 +91,24 @@ const ExaminationsList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {MOCK_EXAMS.map(exam => (
+                        {filteredExams.map(exam => (
                             <tr key={exam.id} className="clickable-row">
-                                <td className="fw-500">{exam.name}</td>
-                                <td>{exam.type}</td>
-                                <td>{exam.classes}</td>
-                                <td>{exam.startDate}</td>
-                                <td>{exam.endDate}</td>
+                                <td className="fw-500">{exam.exam_name}</td>
+                                <td>{exam.exam_type || 'Regular'}</td>
+                                <td>{exam.class_name ? `${exam.class_name} - ${exam.section}` : 'Common'}</td>
+                                <td className="text-secondary">{exam.start_date ? new Date(exam.start_date).toLocaleDateString() : '-'}</td>
+                                <td className="text-secondary">{exam.end_date ? new Date(exam.end_date).toLocaleDateString() : '-'}</td>
                                 <td>
-                                    <span className={`status-badge status-${exam.status.toLowerCase()}`}>
-                                        {exam.status}
+                                    <span className={`status-badge status-${(exam.status || 'Upcoming').toLowerCase()}`}>
+                                        {exam.status || 'Upcoming'}
                                     </span>
                                 </td>
                                 <td className="text-right">
                                     <div className="action-buttons-group">
-                                        <button className="action-btn-icon text-blue">
-                                            <FaEye />
-                                        </button>
-                                        <button className="action-btn-icon text-gray">
+                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/exams/${exam.id}/edit`); }}>
                                             <FaPen />
                                         </button>
-                                        <button className="action-btn-icon text-red">
+                                        <button className="action-btn-icon text-red" onClick={(e) => openDeleteModal(e, exam.id)}>
                                             <FaTrash />
                                         </button>
                                     </div>
@@ -89,18 +119,22 @@ const ExaminationsList = () => {
                 </table>
                 
                 <div className="pagination-footer">
-                    <span className="pagination-info">Showing 1 to 6 of 24 results</span>
-                    <div className="pagination-controls">
-                        <button className="page-btn disabled">&lt;</button>
-                        <button className="page-btn active">1</button>
-                        <button className="page-btn">2</button>
-                        <button className="page-btn">3</button>
-                        <span className="page-dots">...</span>
-                        <button className="page-btn">4</button>
-                        <button className="page-btn">&gt;</button>
-                    </div>
+                    <span className="pagination-info">Showing {filteredExams.length} results</span>
                 </div>
             </div>
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this exam? This action cannot be undone.</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+                            <button className="btn-primary" style={{backgroundColor: '#ef4444', borderColor: '#ef4444'}} onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

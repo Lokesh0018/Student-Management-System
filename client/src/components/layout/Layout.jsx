@@ -8,13 +8,42 @@ import './Layout.css';
 export const Layout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "New student registration pending", time: "5m ago" },
-    { id: 2, text: "System maintenance scheduled", time: "1h ago" }
-  ]);
+  const [notifications, setNotifications] = useState([]);
   
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user) {
+      fetchNotifications();
+    }
+  }, [user]);
+
+  const fetchNotifications = async () => {
+      try {
+          const res = await fetch('/api/notifications', {
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          });
+          const data = await res.json();
+          if (data.success) {
+              setNotifications(data.data);
+          }
+      } catch (error) {
+          console.error('Error fetching notifications:', error);
+      }
+  };
+
+  const handleClearAll = async () => {
+      try {
+          await fetch('/api/notifications/clear', {
+              method: 'PUT',
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          });
+          setNotifications([]);
+      } catch (error) {
+          console.error('Error clearing notifications:', error);
+      }
+  };
 
   const getAvatarLetter = (role) => {
     switch (role?.toLowerCase()) {
@@ -67,15 +96,18 @@ export const Layout = ({ children }) => {
                   <div className="notif-header">
                     <h4>Notifications</h4>
                     {notifications.length > 0 && (
-                      <button className="clear-btn" onClick={() => setNotifications([])}>Clear All</button>
+                      <button className="clear-btn" onClick={handleClearAll}>Clear All</button>
                     )}
                   </div>
                   <div className="notif-body">
                     {notifications.length > 0 ? (
                       notifications.map(n => (
-                        <div key={n.id} className="notif-item">
-                          <p>{n.text}</p>
-                          <span>{n.time}</span>
+                        <div key={n.id} className={`notif-item ${!n.is_read ? 'unread' : ''}`}>
+                          <strong>{n.title}</strong>
+                          <p>{n.message}</p>
+                          <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                              {new Date(n.created_at).toLocaleString()}
+                          </span>
                         </div>
                       ))
                     ) : (
