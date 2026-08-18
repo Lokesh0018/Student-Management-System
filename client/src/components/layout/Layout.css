@@ -94,6 +94,84 @@
     border: 2px solid #f8fafc;
 }
 
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: -60px;
+  margin-top: 12px;
+  width: 320px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.notif-header {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8fafc;
+}
+
+.notif-header h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.clear-btn:hover {
+  text-decoration: underline;
+}
+
+.notif-body {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  text-align: left;
+}
+
+.notif-item:hover {
+  background-color: #f8fafc;
+}
+
+.notif-item p {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.notif-item span {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.notif-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
 .user-profile {
   display: flex;
   align-items: center;
@@ -107,7 +185,17 @@
   border-radius: 50%;
   overflow: hidden;
   background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
 }
+
+.avatar.admin { background-color: #3b82f6; }
+.avatar.teacher { background-color: #10b981; }
+.avatar.parent { background-color: #f59e0b; }
 
 .avatar img {
     width: 100%;

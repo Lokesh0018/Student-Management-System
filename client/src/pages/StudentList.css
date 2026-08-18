@@ -18,10 +18,32 @@
     margin: 0 0 4px 0;
 }
 
-.page-subtitle {
-    font-size: 14px;
+.page-header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
     color: #64748b;
-    margin: 0;
+    margin-top: 4px;
+}
+
+.crumb-link {
+    color: #64748b;
+    text-decoration: none;
+}
+
+.crumb-link:hover {
+    color: #3b82f6;
+}
+
+.current-crumb {
+    color: #0f172a;
+    font-weight: 500;
 }
 
 .btn-primary {
@@ -207,14 +229,33 @@
 .status-inactive { background-color: #fee2e2; color: #dc2626; }
 .status-pending { background-color: #fef3c7; color: #d97706; }
 
-.action-btn-dot {
+.action-buttons-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.action-btn-icon {
     background: none;
     border: none;
-    color: #94a3b8;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 16px;
-    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
 }
+
+.action-btn-icon:hover {
+    background-color: #f1f5f9;
+}
+
+.text-blue { color: #3b82f6; }
+.text-gray { color: #64748b; }
+.text-red { color: #ef4444; }
 
 /* Pagination */
 .pagination-footer {

@@ -1,6 +1,7 @@
 .sidebar {
   width: 280px;
-  background-color: #2f3b89; /* Deep blue from new design */
+  background-color: #0f172a; /* Dark navy slate from new design */
+  border-right: none;
   border-right: none;
   height: 100vh;
   position: fixed;
@@ -56,6 +57,23 @@
   overflow-y: auto;
 }
 
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .sidebar-link {
   display: flex;
   align-items: center;
@@ -76,7 +94,7 @@
 
 .sidebar-link.active {
   color: white;
-  background-color: #4f61c6; /* Lighter blue active state */
+  background-color: #3b82f6; /* Bright blue active state */
 }
 
 .sidebar-icon {
@@ -107,7 +125,8 @@
 }
 
 .logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 @media (max-width: 1024px) {

@@ -5,11 +5,18 @@ import AdminDashboard from './pages/AdminDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import ParentDashboard from './pages/ParentDashboard'
 import ClassManagement from './pages/ClassManagement'
+import ClassesList from './pages/ClassesList'
 import SubjectManagement from './pages/SubjectManagement'
+import SubjectsList from './pages/SubjectsList'
 import StudentList from './pages/StudentList'
 import StudentManagement from './pages/StudentManagement'
+import AddStudent from './pages/AddStudent'
+import EditStudent from './pages/EditStudent'
+import TeachersList from './pages/TeachersList'
+import TeacherDetails from './pages/TeacherDetails'
 import TeacherManagement from './pages/TeacherManagement'
 import ParentManagement from './pages/ParentManagement'
+import ExaminationsList from './pages/ExaminationsList'
 import ExamManagement from './pages/ExamManagement'
 import MarkManagement from './pages/MarkManagement'
 import AttendanceManagement from './pages/AttendanceManagement'
@@ -46,19 +53,31 @@ function App() {
       
       <Route path="/admin/classes" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ClassManagement />
+          <ClassesList />
         </ProtectedRoute>
       } />
 
       <Route path="/admin/subjects" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <SubjectManagement />
+          <SubjectsList />
         </ProtectedRoute>
       } />
       
       <Route path="/admin/students" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
           <StudentList />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/students/add" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <AddStudent />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/students/:id/edit" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <EditStudent />
         </ProtectedRoute>
       } />
 
@@ -70,7 +89,13 @@ function App() {
 
       <Route path="/admin/teachers" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <TeacherManagement />
+          <TeachersList />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/teachers/:id" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <TeacherDetails />
         </ProtectedRoute>
       } />
 
@@ -82,7 +107,7 @@ function App() {
 
       <Route path="/admin/exams" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ExamManagement />
+          <ExaminationsList />
         </ProtectedRoute>
       } />
 

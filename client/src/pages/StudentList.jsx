@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaPlus, FaEllipsisV } from 'react-icons/fa';
+import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './StudentList.css';
 
 const MOCK_STUDENTS = [
@@ -13,7 +14,25 @@ const MOCK_STUDENTS = [
 
 const StudentList = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterClass, setFilterClass] = useState('');
+    const [filterSection, setFilterSection] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
     const navigate = useNavigate();
+
+    const filteredStudents = MOCK_STUDENTS.filter(student => {
+        const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || student.id.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesClass = filterClass ? student.classSec.startsWith(filterClass) : true;
+        const matchesSection = filterSection ? student.classSec.endsWith(filterSection) : true;
+        const matchesStatus = filterStatus ? student.status === filterStatus : true;
+        return matchesSearch && matchesClass && matchesSection && matchesStatus;
+    });
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setFilterClass('');
+        setFilterSection('');
+        setFilterStatus('');
+    };
 
     const handleRowClick = (studentId) => {
         // Remove the '#' before navigating
@@ -26,9 +45,13 @@ const StudentList = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Students</h1>
-                    <p className="page-subtitle">Manage student records, classes, and statuses.</p>
+                    <div className="breadcrumbs">
+                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
+                        <span className="crumb-separator">&gt;</span>
+                        <span className="current-crumb">Students</span>
+                    </div>
                 </div>
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={() => navigate('/admin/students/add')}>
                     <FaPlus /> Add Student
                 </button>
             </div>
@@ -44,22 +67,24 @@ const StudentList = () => {
                     />
                 </div>
                 <div className="filter-dropdowns">
-                    <select className="filter-select">
+                    <select className="filter-select" value={filterClass} onChange={(e) => setFilterClass(e.target.value)}>
                         <option value="">Class</option>
                         <option value="10">Class 10</option>
                         <option value="9">Class 9</option>
+                        <option value="8">Class 8</option>
                     </select>
-                    <select className="filter-select">
+                    <select className="filter-select" value={filterSection} onChange={(e) => setFilterSection(e.target.value)}>
                         <option value="">Section</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                     </select>
-                    <select className="filter-select">
+                    <select className="filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                         <option value="">Status</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
+                        <option value="Pending">Pending</option>
                     </select>
-                    <button className="btn-clear-filters">Clear Filters</button>
+                    <button className="btn-clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
             </div>
 
@@ -77,7 +102,7 @@ const StudentList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {MOCK_STUDENTS.map(student => (
+                        {filteredStudents.map(student => (
                             <tr key={student.id} onClick={() => handleRowClick(student.id)} className="clickable-row">
                                 <td className="text-secondary">{student.id}</td>
                                 <td>
@@ -101,9 +126,17 @@ const StudentList = () => {
                                     </span>
                                 </td>
                                 <td className="text-right">
-                                    <button className="action-btn-dot" onClick={(e) => { e.stopPropagation(); /* Add dropdown logic */ }}>
-                                        <FaEllipsisV />
-                                    </button>
+                                    <div className="action-buttons-group">
+                                        <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id.replace('#', '')}`); }}>
+                                            <FaEye />
+                                        </button>
+                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id.replace('#', '')}/edit`); }}>
+                                            <FaPen />
+                                        </button>
+                                        <button className="action-btn-icon text-red" onClick={(e) => { e.stopPropagation(); }}>
+                                            <FaTrash />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

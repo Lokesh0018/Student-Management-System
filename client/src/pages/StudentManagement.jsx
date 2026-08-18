@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
 import './StudentProfile.css';
 
 const StudentManagement = () => {
-    const [activeTab, setActiveTab] = useState('Performance');
+    const [activeTab, setActiveTab] = useState('Overview');
 
-    const tabs = ['Overview', 'Performance', 'Attendance', 'Remarks', 'Documents'];
+    const tabs = ['Overview', 'Performance', 'Attendance', 'Remarks'];
 
     const renderPerformanceTab = () => (
         <div className="profile-content-split">
@@ -131,10 +132,97 @@ const StudentManagement = () => {
         </div>
     );
 
+    const renderOverviewTab = () => (
+        <div className="overview-tab-content">
+            <div className="profile-panel">
+                <div className="overview-grid">
+                    <div className="overview-section">
+                        <h4 className="overview-section-title">Personal Information</h4>
+                        <div className="info-grid-2">
+                            <div className="info-block">
+                                <span>Date of Birth</span>
+                                <strong>15 Jan 2009</strong>
+                            </div>
+                            <div className="info-block">
+                                <span>Gender</span>
+                                <strong>Male</strong>
+                            </div>
+                            <div className="info-block full-width">
+                                <span>Address</span>
+                                <strong>123, Green Park,<br/>New Delhi</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="overview-section">
+                        <h4 className="overview-section-title">Academic Information</h4>
+                        <div className="info-grid-2">
+                            <div className="info-block">
+                                <span>Class</span>
+                                <strong>10-A</strong>
+                            </div>
+                            <div className="info-block">
+                                <span>Section</span>
+                                <strong>A</strong>
+                            </div>
+                            <div className="info-block">
+                                <span>Admission No.</span>
+                                <strong>ADM12345</strong>
+                            </div>
+                            <div className="info-block">
+                                <span>Admission Date</span>
+                                <strong>10 Apr 2022</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderAttendanceTab = () => (
+        <div className="overview-tab-content">
+            <div className="profile-panel">
+                <h4 className="overview-section-title">Attendance Record</h4>
+                <div className="info-grid-2">
+                    <div className="info-block">
+                        <span>Overall Attendance</span>
+                        <strong>94% (Present 180 / Total 192 Days)</strong>
+                    </div>
+                    <div className="info-block">
+                        <span>Status</span>
+                        <strong className="text-green">Excellent</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderRemarksTab = () => (
+        <div className="overview-tab-content">
+            <div className="profile-panel">
+                <h4 className="overview-section-title">Teacher Remarks</h4>
+                <div className="action-list" style={{ marginTop: '16px' }}>
+                    <div className="info-block full-width" style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+                        <strong>Excellent improvement in Mathematics</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '12px' }}>By: Class Teacher • 2 hours ago</p>
+                    </div>
+                    <div className="info-block full-width" style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', marginTop: '12px' }}>
+                        <strong>Good performance in Science but needs focus on practicals</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '12px' }}>By: Science Teacher • 2 days ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="student-profile-page">
             <div className="breadcrumbs">
-                Dashboard &gt; Students &gt; <span className="current-crumb">Rahul Kumar</span>
+                <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
+                <span className="crumb-separator"> &gt; </span>
+                <Link to="/admin/students" className="crumb-link">Students</Link>
+                <span className="crumb-separator"> &gt; </span>
+                <span className="current-crumb">Rahul Kumar</span>
             </div>
 
             <div className="page-header-row">
@@ -165,34 +253,24 @@ const StudentManagement = () => {
                 </div>
                 
                 <div className="summary-right">
-                    <div className="info-grid">
-                        <div className="info-item">
-                            <FaEnvelope className="info-icon" />
-                            <div className="info-data">
-                                <span className="info-label">EMAIL</span>
-                                <span className="info-val">rahul.kumar@email.com</span>
-                            </div>
+                    <div className="info-grid-clean">
+                        <div className="info-item-clean">
+                            <span className="info-label-clean">Father</span>
+                            <span className="info-val-clean">Rajesh Kumar</span>
+                            <span className="info-sub-clean">9876543211</span>
                         </div>
-                        <div className="info-item">
-                            <FaUserTie className="info-icon" />
-                            <div className="info-data">
-                                <span className="info-label">FATHER</span>
-                                <span className="info-val">Rajesh Kumar</span>
-                            </div>
+                        <div className="info-item-clean">
+                            <span className="info-label-clean">Mother</span>
+                            <span className="info-val-clean">Neha Kumar</span>
+                            <span className="info-sub-clean">9876543212</span>
                         </div>
-                        <div className="info-item">
-                            <FaPhone className="info-icon" />
-                            <div className="info-data">
-                                <span className="info-label">PHONE</span>
-                                <span className="info-val">+91 9876543210</span>
-                            </div>
+                        <div className="info-item-clean">
+                            <span className="info-label-clean"><FaEnvelope /> EMAIL</span>
+                            <span className="info-val-clean text-blue">rahul.kumar@email.com</span>
                         </div>
-                        <div className="info-item">
-                            <FaTint className="info-icon" />
-                            <div className="info-data">
-                                <span className="info-label">BLOOD GROUP</span>
-                                <span className="info-val">A+</span>
-                            </div>
+                        <div className="info-item-clean">
+                            <span className="info-label-clean"><FaPhone /> PHONE</span>
+                            <span className="info-val-clean">+91 9876543210</span>
                         </div>
                     </div>
                 </div>
@@ -211,7 +289,11 @@ const StudentManagement = () => {
             </div>
 
             <div className="tab-content">
-                {activeTab === 'Performance' ? renderPerformanceTab() : (
+                {activeTab === 'Overview' && renderOverviewTab()}
+                {activeTab === 'Performance' && renderPerformanceTab()}
+                {activeTab === 'Attendance' && renderAttendanceTab()}
+                {activeTab === 'Remarks' && renderRemarksTab()}
+                {activeTab !== 'Overview' && activeTab !== 'Performance' && activeTab !== 'Attendance' && activeTab !== 'Remarks' && (
                     <div className="placeholder-tab">
                         <h3>{activeTab} content coming soon</h3>
                     </div>

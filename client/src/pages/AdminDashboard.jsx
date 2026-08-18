@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus } from 'react-icons/fa';
+import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import api from '../utils/api';
 import './AdminDashboard.css';
 
@@ -10,11 +11,9 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                // Fetch stats, fallback to mock data if it fails
                 const response = await api.get('/admin/dashboard/stats');
                 setStats(response.data.data);
             } catch (err) {
-                console.warn("Using fallback data for dashboard");
                 setStats({
                     totalStudents: 1245,
                     totalTeachers: 68,
@@ -30,6 +29,30 @@ const AdminDashboard = () => {
 
     if (loading) return <div className="loading-state">Loading dashboard...</div>;
 
+    const performanceData = [
+      { name: '1 May', score: 75 },
+      { name: '8 May', score: 82 },
+      { name: '15 May', score: 85 },
+      { name: '22 May', score: 80 },
+      { name: '29 May', score: 90 },
+    ];
+
+    const attendanceData = [
+      { name: 'Present', value: 94, color: '#3b82f6' },
+      { name: 'Absent', value: 4, color: '#ef4444' },
+      { name: 'Leave', value: 2, color: '#cbd5e1' },
+    ];
+
+    const classData = [
+      { name: '6th', students: 120 },
+      { name: '7th', students: 140 },
+      { name: '8th', students: 160 },
+      { name: '9th', students: 150 },
+      { name: '10th', students: 180 },
+      { name: '11th', students: 170 },
+      { name: '12th', students: 140 },
+    ];
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-header-main">
@@ -40,198 +63,222 @@ const AdminDashboard = () => {
             {/* Top Stat Cards */}
             <div className="stats-row">
                 <div className="stat-card">
-                    <div className="stat-icon-wrap" style={{ backgroundColor: '#eef2ff', color: '#4f46e5' }}>
+                    <div className="stat-icon-square" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
                         <FaUserGraduate />
                     </div>
                     <div className="stat-data">
                         <span className="stat-label">Students</span>
                         <div className="stat-value-row">
                             <span className="stat-num">{stats?.totalStudents?.toLocaleString() || '1,245'}</span>
-                            <span className="stat-trend trend-up">+4.2%</span>
                         </div>
+                        <span className="stat-trend trend-up">+4.2% this month</span>
                     </div>
                 </div>
                 
                 <div className="stat-card">
-                    <div className="stat-icon-wrap" style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}>
+                    <div className="stat-icon-square" style={{ backgroundColor: '#fef2f2', color: '#ef4444' }}>
                         <FaChalkboardTeacher />
                     </div>
                     <div className="stat-data">
                         <span className="stat-label">Teachers</span>
                         <div className="stat-value-row">
                             <span className="stat-num">{stats?.totalTeachers?.toLocaleString() || '68'}</span>
-                            <span className="stat-trend trend-up">+2</span>
                         </div>
+                        <span className="stat-trend trend-up">+2 this month</span>
                     </div>
                 </div>
                 
                 <div className="stat-card">
-                    <div className="stat-icon-wrap" style={{ backgroundColor: '#f3e8ff', color: '#9333ea' }}>
+                    <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#3b82f6' }}>
                         <FaUsers />
                     </div>
                     <div className="stat-data">
                         <span className="stat-label">Parents</span>
                         <div className="stat-value-row">
                             <span className="stat-num">{stats?.totalParents?.toLocaleString() || '1,080'}</span>
-                            <span className="stat-trend trend-up">+5.1%</span>
                         </div>
+                        <span className="stat-trend trend-up">+5.1% this month</span>
                     </div>
                 </div>
                 
                 <div className="stat-card">
-                    <div className="stat-icon-wrap" style={{ backgroundColor: '#dcfce7', color: '#16a34a' }}>
-                        <FaRegClipboard />
+                    <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}>
+                        <FaBook />
                     </div>
                     <div className="stat-data">
-                        <span className="stat-label">Remarks</span>
+                        <span className="stat-label">Classes</span>
                         <div className="stat-value-row">
-                            <span className="stat-num">12</span>
-                            <span className="stat-trend trend-up">+3</span>
+                            <span className="stat-num">{stats?.totalClasses?.toLocaleString() || '32'}</span>
                         </div>
+                        <span className="stat-trend trend-up">+1 this month</span>
                     </div>
                 </div>
             </div>
 
-            {/* Middle Section */}
+            {/* Middle Row */}
             <div className="middle-row">
-                {/* Left: Line Chart Mock */}
+                {/* Line Chart */}
                 <div className="dash-panel panel-chart">
                     <div className="panel-header-split">
                         <h3 className="panel-title">Student Performance Overview</h3>
-                        <button className="btn-outline">This Month</button>
+                        <button className="btn-outline">This Month <span>&#9662;</span></button>
                     </div>
-                    <div className="line-chart-mock">
-                        {/* SVG mock for line chart */}
-                        <svg viewBox="0 0 400 200" preserveAspectRatio="none" className="chart-svg">
-                            {/* Grid lines */}
-                            <line x1="0" y1="50" x2="400" y2="50" stroke="#f1f5f9" strokeWidth="1" />
-                            <line x1="0" y1="100" x2="400" y2="100" stroke="#f1f5f9" strokeWidth="1" />
-                            <line x1="0" y1="150" x2="400" y2="150" stroke="#f1f5f9" strokeWidth="1" />
-                            <line x1="0" y1="200" x2="400" y2="200" stroke="#e2e8f0" strokeWidth="1.5" />
-                            
-                            {/* Dashed line */}
-                            <path d="M 0 180 Q 50 140 100 140 T 200 180 T 300 130 T 400 130" fill="none" stroke="#93c5fd" strokeWidth="2" strokeDasharray="5,5" />
-                            
-                            {/* Solid line */}
-                            <path d="M 0 150 C 50 100, 100 50, 200 150 S 300 -20, 400 50" fill="none" stroke="#233b8f" strokeWidth="3" />
-                        </svg>
-                        <div className="chart-x-axis">
-                            <span>1 May</span><span>8 May</span><span>15 May</span><span>22 May</span><span>29 May</span>
-                        </div>
+                    <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                                <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Center: Donut Chart Mock */}
+                {/* Donut Chart */}
                 <div className="dash-panel panel-donut">
-                    <h3 className="panel-title">Attendance Overview</h3>
-                    <div className="donut-chart-wrap">
-                        <div className="donut-chart">
-                            <span className="donut-value">94%</span>
-                        </div>
+                    <div className="panel-header-split">
+                        <h3 className="panel-title">Attendance Overview</h3>
+                        <button className="btn-outline">This Month <span>&#9662;</span></button>
                     </div>
-                    <div className="donut-legend">
-                        <div className="legend-item">
-                            <span className="legend-dot" style={{ backgroundColor: '#2f3b89'}}></span>
-                            <span className="legend-label">Present</span>
-                            <span className="legend-val">94%</span>
-                        </div>
-                        <div className="legend-item">
-                            <span className="legend-dot" style={{ backgroundColor: '#dc2626'}}></span>
-                            <span className="legend-label">Absent</span>
-                            <span className="legend-val">4%</span>
-                        </div>
-                        <div className="legend-item">
-                            <span className="legend-dot" style={{ backgroundColor: '#cbd5e1'}}></span>
-                            <span className="legend-label">Leave</span>
-                            <span className="legend-val">2%</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right: Stacked Cards */}
-                <div className="stacked-panels">
-                    <div className="dash-panel panel-remarks">
-                        <div className="panel-header-split">
-                            <h3 className="panel-title">Recent Remarks</h3>
-                            <a href="#" className="link-view-all">View All</a>
-                        </div>
-                        <div className="remark-list">
-                            <div className="remark-item">
-                                <div className="remark-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Rahul+Kumar&background=e0e7ff&color=4f46e5" alt="Rahul" />
-                                </div>
-                                <div className="remark-content">
-                                    <h4>Rahul Kumar</h4>
-                                    <p>Excellent improvement in Mathematics</p>
-                                    <span className="remark-meta">By: Class Teacher • 2 hours ago</span>
-                                </div>
-                            </div>
-                            <div className="remark-item">
-                                <div className="remark-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Priya+Sharma&background=f3f4f6&color=6b7280" alt="Priya" />
-                                </div>
-                                <div className="remark-content">
-                                    <h4>Priya Sharma</h4>
-                                    <p>Good performance in Science</p>
-                                    <span className="remark-meta">By: Class Teacher • 5 hours ago</span>
-                                </div>
+                    <div className="donut-content-row">
+                        <div className="donut-chart-wrap" style={{ position: 'relative', width: '150px', height: '150px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={attendanceData}
+                                        innerRadius={55}
+                                        outerRadius={70}
+                                        paddingAngle={2}
+                                        dataKey="value"
+                                        stroke="none"
+                                    >
+                                        {attendanceData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b' }}>94%</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="dash-panel panel-events">
-                        <h3 className="panel-title">Upcoming Events</h3>
-                        <div className="event-list">
-                            <div className="event-card">
-                                <div className="event-icon" style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}>
-                                    <FaCalendarCheck />
-                                </div>
-                                <div className="event-info">
-                                    <h4>PTM Meeting</h4>
-                                    <span>24 May 2024</span>
-                                </div>
+                        <div className="donut-legend">
+                            <div className="legend-item">
+                                <span className="legend-dot" style={{ backgroundColor: '#3b82f6'}}></span>
+                                <span className="legend-label">Present</span>
+                                <span className="legend-val">94%</span>
                             </div>
-                            <div className="event-card">
-                                <div className="event-icon" style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }}>
-                                    <FaRegClipboard />
-                                </div>
-                                <div className="event-info">
-                                    <h4>Monthly Examination</h4>
-                                    <span>1 Jun 2024</span>
-                                </div>
+                            <div className="legend-item">
+                                <span className="legend-dot" style={{ backgroundColor: '#ef4444'}}></span>
+                                <span className="legend-label">Absent</span>
+                                <span className="legend-val">4%</span>
+                            </div>
+                            <div className="legend-item">
+                                <span className="legend-dot" style={{ backgroundColor: '#cbd5e1'}}></span>
+                                <span className="legend-label">Leave</span>
+                                <span className="legend-val">2%</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Bottom Quick Actions */}
-            <div className="dash-panel panel-actions">
-                <h3 className="panel-title">Quick Actions</h3>
-                <div className="action-grid">
-                    <button className="action-btn">
-                        <div className="action-icon" style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }}><FaUserGraduate /></div>
-                        <span>Add<br/>Student</span>
-                    </button>
-                    <button className="action-btn">
-                        <div className="action-icon" style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}><FaChalkboardTeacher /></div>
-                        <span>Add<br/>Teacher</span>
-                    </button>
-                    <button className="action-btn">
-                        <div className="action-icon" style={{ backgroundColor: '#dcfce7', color: '#16a34a' }}><FaChartPie /></div>
-                        <span>Send<br/>Remark</span>
-                    </button>
-                    <button className="action-btn">
-                        <div className="action-icon" style={{ backgroundColor: '#ffedd5', color: '#ea580c' }}><FaBook /></div>
-                        <span>Add<br/>Class</span>
-                    </button>
-                    <button className="action-btn">
-                        <div className="action-icon" style={{ backgroundColor: '#f1f5f9', color: '#475569' }}><FaRegClipboard /></div>
-                        <span>Generate<br/>Report</span>
-                    </button>
+                {/* Remarks List */}
+                <div className="dash-panel panel-remarks">
+                    <div className="panel-header-split">
+                        <h3 className="panel-title">Recent Remarks</h3>
+                        <a href="#" className="link-view-all">View All</a>
+                    </div>
+                    <div className="remark-list">
+                        <div className="remark-item">
+                            <div className="remark-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Rahul" />
+                            </div>
+                            <div className="remark-content">
+                                <h4>Rahul Kumar</h4>
+                                <p>Excellent improvement in Mathematics</p>
+                                <span className="remark-meta">By: Class Teacher • 2 hours ago</span>
+                            </div>
+                        </div>
+                        <div className="remark-item">
+                            <div className="remark-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya" />
+                            </div>
+                            <div className="remark-content">
+                                <h4>Priya Sharma</h4>
+                                <p>Good performance in Science</p>
+                                <span className="remark-meta">By: Class Teacher • 5 hours ago</span>
+                            </div>
+                        </div>
+                        <div className="remark-item">
+                            <div className="remark-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Aarav" />
+                            </div>
+                            <div className="remark-content">
+                                <h4>Aarav Mehta</h4>
+                                <p>Needs to focus more on Social Studies</p>
+                                <span className="remark-meta">By: Class Teacher • 1 day ago</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            {/* Bottom Row */}
+            <div className="bottom-row">
+                <div className="dash-panel panel-exams">
+                    <div className="panel-header-split">
+                        <h3 className="panel-title">Upcoming Examinations</h3>
+                        <a href="#" className="link-view-all">View All</a>
+                    </div>
+                    <table className="mini-table">
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Class</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="fw-500 text-blue">Unit Test - 1</td>
+                                <td>Class 10-A</td>
+                                <td>24 May 2024</td>
+                            </tr>
+                            <tr>
+                                <td className="fw-500 text-blue">Mid Term Exam</td>
+                                <td>Class 9-B</td>
+                                <td>10 Jun 2024</td>
+                            </tr>
+                            <tr>
+                                <td className="fw-500 text-blue">Quarterly Exam</td>
+                                <td>Class 8-A</td>
+                                <td>22 Jun 2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="dash-panel panel-students-class">
+                    <div className="panel-header-split">
+                        <h3 className="panel-title">Students by Class</h3>
+                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                    </div>
+                    <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={classData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                                <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} cursor={{ fill: '#f8fafc' }} />
+                                <Bar dataKey="students" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
