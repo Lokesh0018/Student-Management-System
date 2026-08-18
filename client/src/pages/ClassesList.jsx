@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
+import api from '../utils/api';
 import './StudentList.css'; // Reusing the same CSS for consistency
 
-const MOCK_CLASSES = [
-    { id: '1', name: '6th', section: 'A', teacher: 'Amit Mehta', students: '45', status: 'Active' },
-    { id: '2', name: '7th', section: 'A', teacher: 'Neha Verma', students: '42', status: 'Active' },
-    { id: '3', name: '8th', section: 'A', teacher: 'Sneha Iyer', students: '40', status: 'Active' },
-    { id: '4', name: '9th', section: 'A', teacher: 'Priya Sharma', students: '44', status: 'Active' },
-    { id: '5', name: '10th', section: 'A', teacher: 'Rahul Kumar', students: '42', status: 'Active' },
-    { id: '6', name: '11th', section: 'B', teacher: 'Rohit Singh', students: '40', status: 'Active' }
-];
-
 const ClassesList = () => {
+    const [classes, setClasses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [classToDelete, setClassToDelete] = useState(null);
     const navigate = useNavigate();
+
+    const fetchClasses = async () => {
+        try {
+            const res = await api.get('/classes');
+            if (res.data.success) {
+                setClasses(res.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching classes:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchClasses();
+    }, []);
+
+    const openDeleteModal = (e, id) => {
+        e.stopPropagation();
+        setClassToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!classToDelete) return;
+        try {
+            await api.delete(`/classes/${classToDelete}`);
+            fetchClasses();
+            setIsDeleteModalOpen(false);
+            setClassToDelete(null);
+        } catch (error) {
+            console.error('Error deleting class:', error);
+            alert('Failed to delete class');
+        }
+    };
+
+    const handleRowClick = (classId) => {
+        navigate(`/admin/classes/${classId}`);
+    };
 
     return (
         <div className="student-list-page">
@@ -35,9 +68,9 @@ const ClassesList = () => {
             <div className="filter-card">
                 <div className="search-input-wrap">
                     <FaSearch className="search-icon" />
-                    <input 
-                        type="text" 
-                        placeholder="Search classes..." 
+                    <input
+                        type="text"
+                        placeholder="Search classes..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -57,26 +90,26 @@ const ClassesList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {MOCK_CLASSES.map(cls => (
-                            <tr key={cls.id} className="clickable-row">
-                                <td className="fw-500">{cls.name}</td>
+                        {classes.map(cls => (
+                            <tr key={cls.id} onClick={() => handleRowClick(cls.id)} className="clickable-row">
+                                <td className="fw-500">{cls.class_name}</td>
                                 <td>{cls.section}</td>
-                                <td>{cls.teacher}</td>
-                                <td>{cls.students}</td>
+                                <td>{cls.teacher_name || '-'}</td>
+                                <td>{cls.student_count || '0'}</td>
                                 <td>
-                                    <span className={`status-badge status-${cls.status.toLowerCase()}`}>
-                                        {cls.status}
+                                    <span className={`status-badge status-${(cls.status || 'Active').toLowerCase()}`}>
+                                        {cls.status || 'Active'}
                                     </span>
                                 </td>
                                 <td className="text-right">
                                     <div className="action-buttons-group">
-                                        <button className="action-btn-icon text-blue">
+                                        <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/admin/classes/${cls.id}`); }}>
                                             <FaEye />
                                         </button>
-                                        <button className="action-btn-icon text-gray">
+                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/classes/${cls.id}/edit`); }}>
                                             <FaPen />
                                         </button>
-                                        <button className="action-btn-icon text-red">
+                                        <button className="action-btn-icon text-red" onClick={(e) => openDeleteModal(e, cls.id)}>
                                             <FaTrash />
                                         </button>
                                     </div>
@@ -85,20 +118,31 @@ const ClassesList = () => {
                         ))}
                     </tbody>
                 </table>
-                
-                <div className="pagination-footer">
-                    <span className="pagination-info">Showing 1 to 6 of 32 results</span>
-                    <div className="pagination-controls">
-                        <button className="page-btn disabled">&lt;</button>
-                        <button className="page-btn active">1</button>
-                        <button className="page-btn">2</button>
-                        <button className="page-btn">3</button>
-                        <span className="page-dots">...</span>
-                        <button className="page-btn">6</button>
-                        <button className="page-btn">&gt;</button>
+
+                {classes.length === 0 && (
+                    <div className="empty-state">
+                        <p>No classes found.</p>
                     </div>
+                )}
+
+                <div className="pagination-footer">
+                    <span className="pagination-info">Showing {classes.length} results</span>
+                    {/* Pagination controls hidden until backend supports it */}
                 </div>
             </div>
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this class? This action cannot be undone.</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+                            <button className="btn-primary" style={{backgroundColor: '#ef4444', borderColor: '#ef4444'}} onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -4,10 +4,10 @@ import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import ParentDashboard from './pages/ParentDashboard'
-import ClassManagement from './pages/ClassManagement'
+import ClassDetails from './pages/ClassDetails'
+import AddClass from './pages/AddClass'
+import EditClass from './pages/EditClass'
 import ClassesList from './pages/ClassesList'
-import SubjectManagement from './pages/SubjectManagement'
-import SubjectsList from './pages/SubjectsList'
 import StudentList from './pages/StudentList'
 import StudentManagement from './pages/StudentManagement'
 import AddStudent from './pages/AddStudent'
@@ -61,11 +61,24 @@ function App() {
         </ProtectedRoute>
       } />
 
-      <Route path="/admin/subjects" element={
+      <Route path="/admin/classes/add" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <SubjectsList />
+          <AddClass />
         </ProtectedRoute>
       } />
+
+      <Route path="/admin/classes/:id/edit" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <EditClass />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/classes/:id" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <ClassDetails />
+        </ProtectedRoute>
+      } />
+
       
       <Route path="/admin/students" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>

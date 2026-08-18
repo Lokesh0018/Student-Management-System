@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import api from '../utils/api';
@@ -24,6 +24,21 @@ const AddStudent = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [classes, setClasses] = useState([]);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const res = await api.get('/classes');
+                if (res.data.success) {
+                    setClasses(res.data.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch classes", err);
+            }
+        };
+        fetchClasses();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -112,8 +127,11 @@ const AddStudent = () => {
                                 <label>Class <span className="req">*</span></label>
                                 <select name="class_id" value={formData.class_id} onChange={handleChange} required>
                                     <option value="">Select class</option>
-                                    <option value="1">Class 10</option>
-                                    <option value="2">Class 9</option>
+                                    {classes.map(c => (
+                                        <option key={c.id} value={c.id}>
+                                            {c.class_name} - {c.section}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="form-group">

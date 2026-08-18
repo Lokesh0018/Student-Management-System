@@ -43,9 +43,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           <NavLink to="/admin/classes" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaBook className="sidebar-icon" /> Classes
           </NavLink>
-          <NavLink to="/admin/subjects" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaBookOpen className="sidebar-icon" /> Subjects
-          </NavLink>
+
           <NavLink to="/admin/exams" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaClipboardList className="sidebar-icon" /> Examinations
           </NavLink>
