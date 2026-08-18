@@ -65,7 +65,7 @@ const ParentDetails = () => {
                             </div>
                             <div className="profile-identity">
                                 <h2>{parent.name}</h2>
-                                <p>Parent / Guardian</p>
+                                <p>{parent.relationship || 'Parent / Guardian'}</p>
                             </div>
                         </div>
                         <div className="summary-right">

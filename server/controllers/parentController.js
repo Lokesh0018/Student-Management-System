@@ -22,7 +22,8 @@ exports.getParentById = async (req, res) => {
         const [parent] = await pool.execute(`
             SELECT p.*, 
                    GROUP_CONCAT(s.id SEPARATOR ',') as studentIds,
-                   GROUP_CONCAT(s.first_name, ' ', s.last_name SEPARATOR ', ') as children_names
+                   GROUP_CONCAT(s.first_name, ' ', s.last_name SEPARATOR ', ') as children_names,
+                   MAX(ps.relationship) as relationship
             FROM parents p
             LEFT JOIN parent_student ps ON p.id = ps.parent_id
             LEFT JOIN students s ON ps.student_id = s.id
@@ -49,7 +50,7 @@ exports.createParent = async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
-        const { name, email, phone, address, studentIds } = req.body;
+        const { name, email, phone, address, studentIds, relationship } = req.body;
         
         // 1. Create User
         const [userResult] = await connection.execute(
@@ -70,7 +71,7 @@ exports.createParent = async (req, res) => {
             for (const studentId of studentIds) {
                 await connection.execute(
                     'INSERT INTO parent_student (parent_id, student_id, relationship) VALUES (?, ?, ?)',
-                    [parentId, studentId, 'Parent']
+                    [parentId, studentId, relationship || 'Parent']
                 );
             }
         }
@@ -96,7 +97,7 @@ exports.updateParent = async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
-        const { name, email, phone, address, studentIds } = req.body;
+        const { name, email, phone, address, studentIds, relationship } = req.body;
         
         await connection.execute(
             'UPDATE parents SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?',
@@ -111,7 +112,7 @@ exports.updateParent = async (req, res) => {
             for (const studentId of studentIds) {
                 await connection.execute(
                     'INSERT INTO parent_student (parent_id, student_id, relationship) VALUES (?, ?, ?)',
-                    [req.params.id, studentId, 'Parent']
+                    [req.params.id, studentId, relationship || 'Parent']
                 );
             }
         }

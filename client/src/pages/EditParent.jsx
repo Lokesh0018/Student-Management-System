@@ -11,6 +11,7 @@ const EditParent = () => {
         email: '',
         phone: '',
         address: '',
+        relationship: 'Parent',
         studentIds: []
     });
     const [students, setStudents] = useState([]);
@@ -32,6 +33,7 @@ const EditParent = () => {
                         email: p.email || '',
                         phone: p.phone || '',
                         address: p.address || '',
+                        relationship: p.relationship || 'Parent',
                         studentIds: p.studentIds ? p.studentIds.map(String) : []
                     });
                 }
@@ -114,6 +116,16 @@ const EditParent = () => {
                             <div className="form-group full-width">
                                 <label>Address</label>
                                 <textarea name="address" value={formData.address} onChange={handleChange} rows="3"></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Relationship to Children</label>
+                                <select name="relationship" value={formData.relationship} onChange={handleChange} className="form-select">
+                                    <option value="Parent">Parent</option>
+                                    <option value="Father">Father</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Guardian">Guardian</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
                             <div className="form-group full-width">
                                 <label>Linked Children (Hold Ctrl/Cmd to select multiple)</label>
