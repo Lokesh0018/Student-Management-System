@@ -12,10 +12,14 @@ import StudentList from './pages/StudentList'
 import StudentManagement from './pages/StudentManagement'
 import AddStudent from './pages/AddStudent'
 import EditStudent from './pages/EditStudent'
+import AddTeacher from './pages/AddTeacher'
+import EditTeacher from './pages/EditTeacher'
 import TeachersList from './pages/TeachersList'
 import TeacherDetails from './pages/TeacherDetails'
-import TeacherManagement from './pages/TeacherManagement'
-import ParentManagement from './pages/ParentManagement'
+import ParentsList from './pages/ParentsList'
+import AddParent from './pages/AddParent'
+import EditParent from './pages/EditParent'
+import ParentDetails from './pages/ParentDetails'
 import ExaminationsList from './pages/ExaminationsList'
 import ExamManagement from './pages/ExamManagement'
 import MarkManagement from './pages/MarkManagement'
@@ -93,6 +97,18 @@ function App() {
         </ProtectedRoute>
       } />
 
+      <Route path="/admin/teachers/add" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <AddTeacher />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/teachers/:id/edit" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <EditTeacher />
+        </ProtectedRoute>
+      } />
+
       <Route path="/admin/teachers/:id" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
           <TeacherDetails />
@@ -101,7 +117,25 @@ function App() {
 
       <Route path="/admin/parents" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ParentManagement />
+          <ParentsList />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/parents/add" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <AddParent />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/parents/:id/edit" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <EditParent />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/parents/:id" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <ParentDetails />
         </ProtectedRoute>
       } />
 

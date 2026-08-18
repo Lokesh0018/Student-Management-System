@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
         }
 
         // Extremely basic login: no bcrypt, just string match
-        // Note: the original setup script hashed passwords as 'password123'. 
+        // Note: the original setup script hashed passwords as 'teacher123'. 
         // We assume they have been updated to plaintext for this basic version, or user enters the hash.
         // Extremely basic login: no bcrypt, just string match
         if (user.password !== password) {

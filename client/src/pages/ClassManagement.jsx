@@ -5,7 +5,8 @@ import './Management.css';
 
 const ClassManagement = () => {
     const [classes, setClasses] = useState([]);
-    const [formData, setFormData] = useState({ class_name: '', section: '' });
+    const [teachers, setTeachers] = useState([]);
+    const [formData, setFormData] = useState({ class_name: '', section: '', teacher_id: '' });
     const [editingId, setEditingId] = useState(null);
 
     const fetchClasses = async () => {
@@ -17,8 +18,18 @@ const ClassManagement = () => {
         }
     };
 
+    const fetchTeachers = async () => {
+        try {
+            const res = await api.get('/teachers');
+            setTeachers(res.data.data);
+        } catch (error) {
+            console.error('Error fetching teachers', error);
+        }
+    };
+
     useEffect(() => {
         fetchClasses();
+        fetchTeachers();
     }, []);
 
     const handleSubmit = async (e) => {
@@ -29,7 +40,7 @@ const ClassManagement = () => {
             } else {
                 await api.post('/classes', formData);
             }
-            setFormData({ class_name: '', section: '' });
+            setFormData({ class_name: '', section: '', teacher_id: '' });
             setEditingId(null);
             fetchClasses();
         } catch (error) {
@@ -50,7 +61,7 @@ const ClassManagement = () => {
     };
 
     const handleEdit = (cls) => {
-        setFormData({ class_name: cls.class_name, section: cls.section });
+        setFormData({ class_name: cls.class_name, section: cls.section, teacher_id: cls.teacher_id || '' });
         setEditingId(cls.id);
     };
 
@@ -78,12 +89,25 @@ const ClassManagement = () => {
                                 required 
                             />
                         </div>
+                        <div className="form-group">
+                            <label>Class Teacher</label>
+                            <select 
+                                value={formData.teacher_id} 
+                                onChange={(e) => setFormData({...formData, teacher_id: e.target.value})}
+                                className="form-select"
+                            >
+                                <option value="">None</option>
+                                {teachers.map(t => (
+                                    <option key={t.id} value={t.id}>{t.name}</option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="form-actions-inline">
                             <button type="submit" className="btn-primary">
                                 {editingId ? 'Update' : 'Create'}
                             </button>
                             {editingId && (
-                                <button type="button" className="btn-secondary" onClick={() => { setEditingId(null); setFormData({ class_name: '', section: ''}); }}>
+                                <button type="button" className="btn-secondary" onClick={() => { setEditingId(null); setFormData({ class_name: '', section: '', teacher_id: ''}); }}>
                                     Cancel
                                 </button>
                             )}
@@ -100,6 +124,7 @@ const ClassManagement = () => {
                                     <th>ID</th>
                                     <th>Class Name</th>
                                     <th>Section</th>
+                                    <th>Class Teacher</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -109,6 +134,7 @@ const ClassManagement = () => {
                                         <td>{cls.id}</td>
                                         <td>{cls.class_name}</td>
                                         <td>{cls.section}</td>
+                                        <td>{cls.teacher_name || '-'}</td>
                                         <td>
                                             <button className="btn-action edit" onClick={() => handleEdit(cls)}>Edit</button>
                                             <button className="btn-action delete" onClick={() => handleDelete(cls.id)}>Delete</button>

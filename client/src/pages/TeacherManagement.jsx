@@ -66,7 +66,7 @@ const TeacherManagement = () => {
             <div className="management-container">
                 <div className="form-panel">
                     <h3>{editingId ? 'Edit Teacher' : 'Add New Teacher'}</h3>
-                    <p className="subtitle" style={{fontSize: '0.8rem', marginTop: '-1rem'}}>Default password is 'password123'</p>
+                    <p className="subtitle" style={{fontSize: '0.8rem', marginTop: '-1rem'}}>Default password is 'teacher123'</p>
                     <form onSubmit={handleSubmit} className="crud-form">
                         <div className="form-group">
                             <label>Full Name</label>

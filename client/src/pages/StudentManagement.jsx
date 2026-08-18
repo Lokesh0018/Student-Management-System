@@ -299,7 +299,7 @@ const StudentManagement = () => {
                         </div>
                         <div className="info-item-clean">
                             <span className="info-label-clean"><FaPhone /> PHONE</span>
-                            <span className="info-val-clean">{student.phone || 'N/A'}</span>
+                            <span className="info-val-clean text-blue">{student.phone || 'N/A'}</span>
                         </div>
                     </div>
                 </div>

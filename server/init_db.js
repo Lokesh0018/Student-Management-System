@@ -33,7 +33,9 @@ async function initDB() {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 class_name VARCHAR(50),
                 section VARCHAR(10),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                teacher_id INT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
             );
         `);
 
@@ -66,6 +68,11 @@ async function initDB() {
                 email VARCHAR(100),
                 phone VARCHAR(20),
                 department VARCHAR(100),
+                description TEXT,
+                qualification VARCHAR(100),
+                employee_id VARCHAR(50),
+                joining_date DATE,
+                assigned_classes VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
