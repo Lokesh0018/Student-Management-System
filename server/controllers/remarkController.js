@@ -54,10 +54,9 @@ exports.sendRemark = async (req, res) => {
 
             // Notify Parents
             const [parentRows] = await pool.execute(`
-                SELECT p.user_id 
-                FROM parent_student ps 
-                JOIN parents p ON ps.parent_id = p.id 
-                WHERE ps.student_id = ? AND p.user_id IS NOT NULL
+                SELECT parent_user_id as user_id 
+                FROM students 
+                WHERE id = ? AND parent_user_id IS NOT NULL
             `, [student_id]);
 
             const uniqueParents = [...new Set(parentRows.map(r => r.user_id))];

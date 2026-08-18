@@ -25,6 +25,9 @@ app.use(express.json());
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
+
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/api/admin', adminRoutes);
 
@@ -40,8 +43,6 @@ app.use('/api/students', studentRoutes);
 const teacherRoutes = require('./routes/teacherRoutes');
 app.use('/api/teachers', teacherRoutes);
 
-const parentRoutes = require('./routes/parentRoutes');
-app.use('/api/parents', parentRoutes);
 
 const examRoutes = require('./routes/examRoutes');
 app.use('/api/exams', examRoutes);

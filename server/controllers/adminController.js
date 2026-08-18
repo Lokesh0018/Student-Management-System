@@ -4,7 +4,7 @@ exports.getDashboardStats = async (req, res) => {
     try {
         const [studentCount] = await pool.execute('SELECT COUNT(*) as count FROM students');
         const [teacherCount] = await pool.execute('SELECT COUNT(*) as count FROM teachers');
-        const [parentCount] = await pool.execute('SELECT COUNT(*) as count FROM parents');
+        const [parentCount] = await pool.execute('SELECT COUNT(DISTINCT parent_user_id) as count FROM students WHERE parent_user_id IS NOT NULL');
         const [classCount] = await pool.execute('SELECT COUNT(*) as count FROM classes');
         
         // Mocking some other stats for the dashboard

@@ -48,7 +48,7 @@
 }
 
 .btn-primary {
-    background: #3b82f6;
+    background: var(--primary);
     border: none;
     padding: 10px 16px;
     border-radius: 8px;
@@ -201,7 +201,7 @@
 }
 
 .tab-btn.active {
-    color: #3b82f6;
+    color: var(--primary);
 }
 
 .tab-btn.active::after {
@@ -211,7 +211,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background-color: #3b82f6;
+    background-color: var(--primary);
 }
 
 /* Split Content */
@@ -245,7 +245,7 @@
 .btn-icon-text {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: var(--primary);
     font-size: 14px;
     font-weight: 600;
     display: flex;
@@ -297,7 +297,7 @@
 }
 
 .total-val {
-    color: #3b82f6;
+    color: var(--primary);
     font-size: 18px;
     font-weight: 700;
 }
@@ -386,7 +386,7 @@
 
 .progress-fill {
     height: 100%;
-    background-color: #3b82f6;
+    background-color: var(--primary);
     border-radius: 4px;
 }
 
@@ -509,7 +509,7 @@
 }
 
 .text-blue {
-    color: #3b82f6 !important;
+    color: var(--primary) !important;
 }
 
 /* Overview Tab Content */

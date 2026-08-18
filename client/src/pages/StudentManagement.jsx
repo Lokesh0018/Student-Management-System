@@ -284,14 +284,9 @@ const StudentManagement = () => {
                 <div className="summary-right">
                     <div className="info-grid-clean">
                         <div className="info-item-clean">
-                            <span className="info-label-clean">Father</span>
-                            <span className="info-val-clean">N/A</span>
-                            <span className="info-sub-clean">N/A</span>
-                        </div>
-                        <div className="info-item-clean">
-                            <span className="info-label-clean">Mother</span>
-                            <span className="info-val-clean">N/A</span>
-                            <span className="info-sub-clean">N/A</span>
+                            <span className="info-label-clean">{student.parent_relationship || 'Parent'}</span>
+                            <span className="info-val-clean">{student.parent_name || 'N/A'}</span>
+                            <span className="info-sub-clean">{student.parent_phone || 'N/A'}</span>
                         </div>
                         <div className="info-item-clean">
                             <span className="info-label-clean"><FaEnvelope /> EMAIL</span>

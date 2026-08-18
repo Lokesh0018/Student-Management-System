@@ -55,8 +55,14 @@ async function initDB() {
                 address TEXT,
                 admission_date DATE,
                 status VARCHAR(20) DEFAULT 'ACTIVE',
+                parent_name VARCHAR(100) DEFAULT NULL,
+                parent_email VARCHAR(100) DEFAULT NULL,
+                parent_phone VARCHAR(20) DEFAULT NULL,
+                parent_relationship VARCHAR(50) DEFAULT NULL,
+                parent_user_id INT DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL
+                FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL,
+                FOREIGN KEY (parent_user_id) REFERENCES users(id) ON DELETE SET NULL
             );
         `);
 
@@ -78,29 +84,7 @@ async function initDB() {
             );
         `);
 
-        await connection.query(`
-            CREATE TABLE IF NOT EXISTS parents (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT,
-                name VARCHAR(100),
-                email VARCHAR(100),
-                phone VARCHAR(20),
-                address TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            );
-        `);
 
-        await connection.query(`
-            CREATE TABLE IF NOT EXISTS parent_student (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                parent_id INT,
-                student_id INT,
-                relationship VARCHAR(50),
-                FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE CASCADE,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
-            );
-        `);
 
         await connection.query(`
             CREATE TABLE IF NOT EXISTS subjects (

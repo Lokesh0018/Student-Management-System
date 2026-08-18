@@ -68,11 +68,9 @@ exports.createExam = async (req, res) => {
 
             // Notify Parents
             const [parentRows] = await pool.execute(`
-                SELECT p.user_id 
-                FROM parent_student ps 
-                JOIN students s ON ps.student_id = s.id 
-                JOIN parents p ON ps.parent_id = p.id 
-                WHERE s.class_id = ? AND p.user_id IS NOT NULL
+                SELECT parent_user_id as user_id 
+                FROM students 
+                WHERE class_id = ? AND parent_user_id IS NOT NULL
             `, [class_id]);
 
             const uniqueParents = [...new Set(parentRows.map(r => r.user_id))];

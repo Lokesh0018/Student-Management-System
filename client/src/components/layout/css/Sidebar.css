@@ -1,7 +1,6 @@
 .sidebar {
   width: 280px;
-  background-color: #0f172a; /* Dark navy slate from new design */
-  border-right: none;
+  background-color: var(--primary); /* Deep navy to match brand logo */
   border-right: none;
   height: 100vh;
   position: fixed;
@@ -21,8 +20,8 @@
 }
 
 .brand-icon-small {
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,7 +93,7 @@
 
 .sidebar-link.active {
   color: white;
-  background-color: #3b82f6; /* Bright blue active state */
+  background-color: rgba(255, 255, 255, 0.15); /* Soft highlight on dark navy */
 }
 
 .sidebar-icon {

@@ -56,7 +56,7 @@
 }
 
 .search-bar input:focus {
-    border-color: #3b82f6;
+    border-color: var(--primary);
 }
 
 .header-right {
@@ -126,7 +126,7 @@
 .clear-btn {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: var(--primary);
   font-size: 12px;
   cursor: pointer;
   font-weight: 500;
@@ -193,7 +193,7 @@
   color: white;
 }
 
-.avatar.admin { background-color: #3b82f6; }
+.avatar.admin { background-color: var(--primary); }
 .avatar.teacher { background-color: #10b981; }
 .avatar.parent { background-color: #f59e0b; }
 

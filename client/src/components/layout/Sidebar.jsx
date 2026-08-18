@@ -17,9 +17,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
       <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
           <div className="brand-icon-small">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <div className="brand-text">
             <h2 className="sidebar-logo">SMS</h2>
@@ -36,9 +34,6 @@ export const Sidebar = ({ isOpen, onClose }) => {
           </NavLink>
           <NavLink to="/admin/teachers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaChalkboardTeacher className="sidebar-icon" /> Teachers
-          </NavLink>
-          <NavLink to="/admin/parents" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaUsers className="sidebar-icon" /> Parents
           </NavLink>
           <NavLink to="/admin/classes" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaBook className="sidebar-icon" /> Classes
@@ -59,12 +54,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           <NavLink to="/admin/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaRegFileAlt className="sidebar-icon" /> Remarks
           </NavLink>
-          <NavLink to="/admin/performance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaChartLine className="sidebar-icon" /> Performance
-          </NavLink>
-          <NavLink to="/admin/academic-years" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaCalendarCheck className="sidebar-icon" /> Academic Years
-          </NavLink>
+
           <NavLink to="/admin/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <FaChartLine className="sidebar-icon" /> Reports
           </NavLink>

@@ -4,21 +4,13 @@ exports.getParentDashboardStats = async (req, res) => {
     try {
         const userId = req.user.id;
         
-        // Find parent ID from user ID
-        const [parentRec] = await pool.execute('SELECT id FROM parents WHERE user_id = ?', [userId]);
-        if (parentRec.length === 0) {
-            return res.status(404).json({ success: false, message: 'Parent profile not found' });
-        }
-        const parentId = parentRec[0].id;
-
         // Fetch children
         const [children] = await pool.execute(`
             SELECT s.*, c.class_name, c.section 
             FROM students s
-            JOIN parent_student ps ON s.id = ps.student_id
             LEFT JOIN classes c ON s.class_id = c.id
-            WHERE ps.parent_id = ?
-        `, [parentId]);
+            WHERE s.parent_user_id = ?
+        `, [userId]);
 
         // If no children, return empty early
         if (children.length === 0) {

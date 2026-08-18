@@ -38,7 +38,7 @@
 }
 
 .crumb-link:hover {
-    color: #3b82f6;
+    color: var(--primary);
 }
 
 .current-crumb {
@@ -47,7 +47,7 @@
 }
 
 .btn-primary {
-    background: #3b82f6;
+    background: var(--primary);
     border: none;
     padding: 10px 16px;
     border-radius: 8px;
@@ -103,7 +103,7 @@
 }
 
 .search-input-wrap input:focus {
-    border-color: #3b82f6;
+    border-color: var(--primary);
 }
 
 .filter-dropdowns {
@@ -131,7 +131,7 @@
 .btn-clear-filters {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: var(--primary);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -253,7 +253,7 @@
     background-color: #f1f5f9;
 }
 
-.text-blue { color: #3b82f6; }
+.text-blue { color: var(--primary); }
 .text-gray { color: #64748b; }
 .text-red { color: #ef4444; }
 
@@ -296,7 +296,7 @@
 }
 
 .page-btn.active {
-    background-color: #3b82f6;
+    background-color: var(--primary);
     color: white;
     font-weight: 600;
 }

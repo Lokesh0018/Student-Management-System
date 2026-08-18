@@ -59,10 +59,7 @@ const Login = () => {
                 <div className="login-brand-panel">
                     <div className="brand-header">
                         <div className="brand-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 22S4 17.5 4 11V5l8-3 8 3v6c0 6.5-8 11-8 11z" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M12 8l1.5 3h3.5l-2.5 2.5 1 3.5-3.5-2-3.5 2 1-3.5-2.5-2.5h3.5L12 8z" fill="#2563eb"/>
-                            </svg>
+                            <img src="/icon.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                         </div>
                     </div>
                     

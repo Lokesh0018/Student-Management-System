@@ -16,10 +16,7 @@ import AddTeacher from './pages/AddTeacher'
 import EditTeacher from './pages/EditTeacher'
 import TeachersList from './pages/TeachersList'
 import TeacherDetails from './pages/TeacherDetails'
-import ParentsList from './pages/ParentsList'
-import AddParent from './pages/AddParent'
-import EditParent from './pages/EditParent'
-import ParentDetails from './pages/ParentDetails'
+
 import ExaminationsList from './pages/ExaminationsList'
 import AddExam from './pages/AddExam'
 import EditExam from './pages/EditExam'
@@ -132,29 +129,6 @@ function App() {
         </ProtectedRoute>
       } />
 
-      <Route path="/admin/parents" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ParentsList />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/admin/parents/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddParent />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/admin/parents/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditParent />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/admin/parents/:id" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ParentDetails />
-        </ProtectedRoute>
-      } />
 
       <Route path="/admin/exams" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>

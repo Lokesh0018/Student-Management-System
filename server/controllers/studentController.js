@@ -4,13 +4,31 @@ const http = require('http');
 
 exports.getAllStudents = async (req, res) => {
     try {
-        const [students] = await pool.execute(`
-            SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, c.class_name, c.section
+        const { role, id } = req.user;
+        let query = `
+            SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, c.class_name, c.section, s.parent_name
             FROM students s
             LEFT JOIN classes c ON s.class_id = c.id
-        `);
+        `;
+        let params = [];
+        
+        if (role === 'CLASS_TEACHER') {
+            query += `
+                INNER JOIN teachers t ON c.teacher_id = t.id
+                WHERE t.user_id = ?
+            `;
+            params.push(id);
+        } else if (role === 'PARENT') {
+            query += `
+                WHERE s.parent_user_id = ?
+            `;
+            params.push(id);
+        }
+
+        const [students] = await pool.execute(query, params);
         res.json({ success: true, data: students });
     } catch (error) {
+        console.error('Error fetching students:', error);
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
@@ -18,7 +36,10 @@ exports.getAllStudents = async (req, res) => {
 exports.getStudentById = async (req, res) => {
     try {
         const [rows] = await pool.execute(`
-            SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, c.class_name, c.section
+            SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, 
+                   s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, 
+                   c.class_name, c.section,
+                   s.parent_name, s.parent_email, s.parent_phone, s.parent_relationship
             FROM students s
             LEFT JOIN classes c ON s.class_id = c.id
             WHERE s.id = ?
@@ -35,57 +56,109 @@ exports.getStudentById = async (req, res) => {
 };
 
 exports.createStudent = async (req, res) => {
+    let connection;
     try {
-        const { admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, phone, address, admission_date, status } = req.body;
+        const { 
+            admission_number, first_name, last_name, email, class_id, roll_number, 
+            photo, dob, gender, phone, address, admission_date, status,
+            parent_name, parent_email, parent_phone, parent_relationship 
+        } = req.body;
         
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
         // Check for duplicates
-        const [existingAdmission] = await pool.execute('SELECT id FROM students WHERE admission_number = ?', [admission_number]);
+        const [existingAdmission] = await connection.execute('SELECT id FROM students WHERE admission_number = ?', [admission_number]);
         if (existingAdmission.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ success: false, message: 'Admission number already exists.' });
         }
         
-        const [existingRoll] = await pool.execute('SELECT id FROM students WHERE class_id = ? AND roll_number = ?', [class_id, roll_number]);
+        const [existingRoll] = await connection.execute('SELECT id FROM students WHERE class_id = ? AND roll_number = ?', [class_id, roll_number]);
         if (existingRoll.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ success: false, message: 'Roll number already exists in this class.' });
         }
 
-        const [result] = await pool.execute(
-            'INSERT INTO students (admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, phone, address, admission_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE']
+        // Check if parent user already exists
+        const [existingUser] = await connection.execute('SELECT id FROM users WHERE email = ? AND role = "PARENT"', [parent_email]);
+        let parentUserId;
+        
+        if (existingUser.length > 0) {
+            parentUserId = existingUser[0].id;
+        } else {
+            // Create user for parent
+            const [userResult] = await connection.execute(
+                'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+                [parent_name, parent_email, 'parent123', 'PARENT']
+            );
+            parentUserId = userResult.insertId;
+        }
+
+        const [studentResult] = await connection.execute(
+            'INSERT INTO students (admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, phone, address, admission_date, status, parent_name, parent_email, parent_phone, parent_relationship, parent_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, parentUserId]
         );
-        res.json({ success: true, message: 'Student created', data: { id: result.insertId } });
+        const studentId = studentResult.insertId;
+
+        await connection.commit();
+        res.json({ success: true, message: 'Student created and linked to parent', data: { id: studentId } });
     } catch (error) {
+        if (connection) await connection.rollback();
         console.error(error);
         res.status(500).json({ success: false, message: 'Server error' });
+    } finally {
+        if (connection) connection.release();
     }
 };
 
 exports.updateStudent = async (req, res) => {
+    let connection;
     try {
-        const { admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, phone, address, admission_date, status } = req.body;
+        const { 
+            admission_number, first_name, last_name, email, class_id, roll_number, 
+            photo, dob, gender, phone, address, admission_date, status,
+            parent_name, parent_email, parent_phone, parent_relationship 
+        } = req.body;
         
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
         // Check for duplicates
-        const [existingAdmission] = await pool.execute('SELECT id FROM students WHERE admission_number = ? AND id != ?', [admission_number, req.params.id]);
+        const [existingAdmission] = await connection.execute('SELECT id FROM students WHERE admission_number = ? AND id != ?', [admission_number, req.params.id]);
         if (existingAdmission.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ success: false, message: 'Admission number already exists.' });
         }
         
-        const [existingRoll] = await pool.execute('SELECT id FROM students WHERE class_id = ? AND roll_number = ? AND id != ?', [class_id, roll_number, req.params.id]);
+        const [existingRoll] = await connection.execute('SELECT id FROM students WHERE class_id = ? AND roll_number = ? AND id != ?', [class_id, roll_number, req.params.id]);
         if (existingRoll.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ success: false, message: 'Roll number already exists in this class.' });
         }
 
-        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, phone = ?, address = ?, admission_date = ?, status = ?';
-        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE'];
+        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, phone = ?, address = ?, admission_date = ?, status = ?, parent_name = ?, parent_email = ?, parent_phone = ?, parent_relationship = ? WHERE id = ?';
+        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, req.params.id];
 
-        query += ' WHERE id = ?';
-        params.push(req.params.id);
+        await connection.execute(query, params);
 
-        await pool.execute(query, params);
-        res.json({ success: true, message: 'Student updated' });
+        // Try to update the user account associated with the parent (if we can find it)
+        const [student] = await connection.execute('SELECT parent_user_id FROM students WHERE id = ?', [req.params.id]);
+        if (student.length > 0 && student[0].parent_user_id) {
+            await connection.execute(
+                'UPDATE users SET name = ?, email = ? WHERE id = ?',
+                [parent_name, parent_email, student[0].parent_user_id]
+            );
+        }
+
+        await connection.commit();
+        res.json({ success: true, message: 'Student and Parent updated' });
     } catch (error) {
+        if (connection) await connection.rollback();
         console.error(error);
         res.status(500).json({ success: false, message: 'Server error' });
+    } finally {
+        if (connection) connection.release();
     }
 };
 

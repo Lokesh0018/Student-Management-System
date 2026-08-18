@@ -21,7 +21,11 @@ const EditStudent = () => {
         address: '',
         admission_date: '',
         status: 'ACTIVE',
-        photo: ''
+        photo: '',
+        parent_name: '',
+        parent_email: '',
+        parent_phone: '',
+        parent_relationship: 'Father'
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -60,7 +64,11 @@ const EditStudent = () => {
                         address: s.address || '',
                         admission_date: s.admission_date ? s.admission_date.split('T')[0] : '',
                         status: s.status || 'ACTIVE',
-                        photo: s.photo || ''
+                        photo: s.photo || '',
+                        parent_name: s.parent_name || '',
+                        parent_email: s.parent_email || '',
+                        parent_phone: s.parent_phone || '',
+                        parent_relationship: s.parent_relationship || 'Father'
                     });
                 }
             } catch (err) {
@@ -182,6 +190,33 @@ const EditStudent = () => {
                                 <select name="status" value={formData.status} onChange={handleChange} required>
                                     <option value="ACTIVE">Active</option>
                                     <option value="INACTIVE">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Parent Information */}
+                    <div className="form-section">
+                        <h3 className="form-section-title">Parent Information</h3>
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label>Parent Name <span className="req">*</span></label>
+                                <input type="text" name="parent_name" value={formData.parent_name} onChange={handleChange} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Parent Email <span className="req">*</span></label>
+                                <input type="email" name="parent_email" value={formData.parent_email} onChange={handleChange} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Parent Phone <span className="req">*</span></label>
+                                <input type="tel" name="parent_phone" value={formData.parent_phone} onChange={handleChange} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Relationship <span className="req">*</span></label>
+                                <select name="parent_relationship" value={formData.parent_relationship} onChange={handleChange} required>
+                                    <option value="Father">Father</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Guardian">Guardian</option>
                                 </select>
                             </div>
                         </div>

@@ -169,7 +169,7 @@
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    background: conic-gradient(#3b82f6 0% 94%, #ef4444 94% 98%, #cbd5e1 98% 100%);
+    background: conic-gradient(var(--primary) 0% 94%, #ef4444 94% 98%, #cbd5e1 98% 100%);
     position: relative;
     display: flex;
     align-items: center;
@@ -226,7 +226,7 @@
 /* Remarks */
 .link-view-all {
     font-size: 12px;
-    color: #3b82f6;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 600;
 }
@@ -303,7 +303,7 @@
 }
 
 .text-blue {
-    color: #3b82f6;
+    color: var(--primary);
 }
 
 /* Bar Chart (Students by Class) */
@@ -345,7 +345,7 @@
 
 .bar {
     width: 16px;
-    background-color: #3b82f6;
+    background-color: var(--primary);
     border-radius: 4px 4px 0 0;
     transition: height 0.3s ease;
 }

@@ -71,7 +71,7 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #3b82f6;
+    border-color: var(--primary);
 }
 
 .upload-box {
@@ -89,13 +89,13 @@
 }
 
 .upload-box:hover {
-    border-color: #3b82f6;
+    border-color: var(--primary);
     background-color: #eff6ff;
 }
 
 .upload-icon {
     font-size: 32px;
-    color: #3b82f6;
+    color: var(--primary);
     margin-bottom: 12px;
 }
 

@@ -145,7 +145,7 @@ const StudentList = () => {
                                 </td>
                                 <td>{student.class_name ? `${student.class_name}-${student.section || ''}` : 'N/A'}</td>
                                 <td>{student.roll_number}</td>
-                                <td>N/A</td>
+                                <td>{student.parent_name || 'N/A'}</td>
                                 <td>
                                     <span className="status-badge status-active">
                                         Active
