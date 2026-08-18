@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
+
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import './css/Management.css';
@@ -69,7 +69,7 @@ const RemarkManagement = () => {
     };
 
     return (
-        <Layout>
+        <div className="page-container">
             <div className="management-container" style={{flexDirection: 'column'}}>
                 
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -152,7 +152,7 @@ const RemarkManagement = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </div>
     );
 };
 

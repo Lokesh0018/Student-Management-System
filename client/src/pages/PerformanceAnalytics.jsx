@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
+
 import api from '../utils/api';
 import './css/Management.css'; // Reusing for general styles
 
@@ -18,7 +18,7 @@ const PerformanceAnalytics = () => {
         fetchStats();
     }, []);
 
-    if (!stats) return <Layout><div className="dashboard-container">Loading...</div></Layout>;
+    if (!stats) return <div className="page-container"><div className="dashboard-container">Loading...</div></div>;
 
     const renderBar = (percentage) => (
         <div style={{width: '100%', backgroundColor: '#E2E8F0', borderRadius: '9999px', height: '12px', marginTop: '0.5rem'}}>
@@ -32,7 +32,7 @@ const PerformanceAnalytics = () => {
     );
 
     return (
-        <Layout>
+        <div className="page-container">
             <div className="dashboard-container">
                 <header className="dashboard-header" style={{marginBottom: '2rem'}}>
                     <h1>Performance Analytics</h1>
@@ -100,7 +100,7 @@ const PerformanceAnalytics = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </div>
     );
 };
 

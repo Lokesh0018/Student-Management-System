@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
+
 import api from '../utils/api';
 import './css/AdminDashboard.css'; // Reusing dashboard styles
 
@@ -18,10 +18,10 @@ const ParentDashboard = () => {
         fetchStats();
     }, []);
 
-    if (!stats) return <Layout><div className="dashboard-container">Loading...</div></Layout>;
+    if (!stats) return <div className="page-container"><div className="dashboard-container">Loading...</div></div>;
 
     return (
-        <Layout>
+        <div className="page-container">
             <div className="dashboard-container">
                 <header className="dashboard-header">
                     <h1>Parent Dashboard</h1>
@@ -86,7 +86,7 @@ const ParentDashboard = () => {
                     </div>
                 )}
             </div>
-        </Layout>
+        </div>
     );
 };
 

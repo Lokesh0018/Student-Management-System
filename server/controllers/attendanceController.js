@@ -4,7 +4,7 @@ exports.getAttendanceByClassAndDate = async (req, res) => {
     try {
         const { class_id, date } = req.query;
         let query = `
-            SELECT a.*, s.first_name, s.last_name, s.roll_number 
+            SELECT a.id as attendance_id, a.status, s.id as student_id, s.first_name, s.last_name, s.roll_number 
             FROM students s
             LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
             WHERE s.class_id = ?

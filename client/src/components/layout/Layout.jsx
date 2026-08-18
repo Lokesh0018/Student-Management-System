@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { FaSearch, FaBell } from 'react-icons/fa';
+import api from '../../utils/api';
 import './css/Layout.css';
 
 export const Layout = ({ children }) => {
@@ -21,12 +22,9 @@ export const Layout = ({ children }) => {
 
   const fetchNotifications = async () => {
       try {
-          const res = await fetch('/api/notifications', {
-              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-          });
-          const data = await res.json();
-          if (data.success) {
-              setNotifications(data.data);
+          const res = await api.get('/notifications');
+          if (res.data.success) {
+              setNotifications(res.data.data);
           }
       } catch (error) {
           console.error('Error fetching notifications:', error);
@@ -35,10 +33,7 @@ export const Layout = ({ children }) => {
 
   const handleClearAll = async () => {
       try {
-          await fetch('/api/notifications/clear', {
-              method: 'PUT',
-              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-          });
+          await api.put('/notifications/clear');
           setNotifications([]);
       } catch (error) {
           console.error('Error clearing notifications:', error);
