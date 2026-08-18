@@ -157,3 +157,47 @@ exports.getStudentImage = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error retrieving image' });
     }
 };
+
+exports.previewImage = async (req, res) => {
+    try {
+        const imageUrl = req.query.url;
+        if (!imageUrl) return res.status(400).send('URL required');
+        
+        // Anti-SSRF Check: Only allow Google Drive URLs to be proxied
+        if (!imageUrl.includes('drive.google.com') && !imageUrl.includes('googleusercontent.com')) {
+            return res.status(403).send('Only Google Drive URLs are allowed for preview proxy');
+        }
+
+        let targetUrl = imageUrl;
+        const match = imageUrl.match(/\/d\/([^/]+)/);
+        if (match) {
+            targetUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w500`;
+        } else {
+            const matchOpen = imageUrl.match(/open\?id=([a-zA-Z0-9_-]+)/);
+            if (matchOpen) {
+                targetUrl = `https://drive.google.com/thumbnail?id=${matchOpen[1]}&sz=w500`;
+            }
+        }
+
+        const fetchImage = (url) => {
+            const reqClient = url.startsWith('https') ? https : http;
+            reqClient.get(url, (response) => {
+                if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+                    return fetchImage(response.headers.location);
+                }
+                if (response.statusCode !== 200) {
+                    return res.status(response.statusCode).send('Failed to fetch image from source');
+                }
+                res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
+                res.setHeader('Cache-Control', 'public, max-age=86400');
+                response.pipe(res);
+            }).on('error', (e) => {
+                res.status(500).send('Error proxying image');
+            });
+        };
+
+        fetchImage(targetUrl);
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error retrieving image' });
+    }
+};

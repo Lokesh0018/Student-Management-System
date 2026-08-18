@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
 // Public routes (used by <img> tags which can't send JWT headers)
+router.get('/preview', studentController.previewImage);
 router.get('/:id/image', studentController.getStudentImage);
 
 router.use(authMiddleware);

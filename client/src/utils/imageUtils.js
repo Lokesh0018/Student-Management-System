@@ -1,11 +1,8 @@
 export const getDirectImageUrl = (url) => {
     if (!url) return "";
 
-    const match = url.match(/\/d\/([^/]+)/);
-
-    if (match) {
-        const fileId = match[1];
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w500`;
+    if (url.includes('drive.google.com') || url.includes('googleusercontent.com')) {
+        return `http://localhost:5000/api/students/preview?url=${encodeURIComponent(url)}`;
     }
 
     return url;
