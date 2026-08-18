@@ -59,7 +59,7 @@ const AddStudent = () => {
             navigate('/admin/students');
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.message || 'Failed to save student');
+            setError(err.response?.data?.message || 'Failed to add student. Please try again.');
         } finally {
             setLoading(false);
         }

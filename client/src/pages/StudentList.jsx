@@ -4,6 +4,8 @@ import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
 import api from '../utils/api';
 import './StudentList.css';
 
+const SESSION_CACHE_BUSTER = Date.now();
+
 const StudentList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterClass, setFilterClass] = useState('');
@@ -118,7 +120,7 @@ const StudentList = () => {
                                 <td>
                                     <div className="student-name-cell">
                                         {student.photo ? (
-                                            <img src={`http://localhost:5000/api/students/${student.id}/photo`} alt={`${student.first_name}`} className="table-avatar" />
+                                            <img src={`http://localhost:5000/api/students/${student.id}/photo?t=${SESSION_CACHE_BUSTER}`} alt={`${student.first_name}`} className="table-avatar" />
                                         ) : (
                                             <div className="table-avatar-placeholder" style={{ backgroundColor: '#818cf8' }}>
                                                 {student.first_name.charAt(0)}{student.last_name.charAt(0)}

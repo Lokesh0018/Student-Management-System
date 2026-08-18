@@ -47,12 +47,12 @@ const EditStudent = () => {
                         status: s.status || 'ACTIVE'
                     });
                     if (s.photo) {
-                        setPhotoPreview(`http://localhost:5000/api/students/${id}/photo`);
+                        setPhotoPreview(`http://localhost:5000/api/students/${id}/photo?t=${Date.now()}`);
                     }
                 }
             } catch (err) {
+                setError(err.response?.data?.message || 'Failed to update student. Please try again.');
                 console.error(err);
-                setError('Failed to fetch student details');
             }
         };
         fetchStudent();
