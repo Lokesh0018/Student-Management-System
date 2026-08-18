@@ -1,6 +1,6 @@
 .sidebar {
   width: 280px;
-  background-color: var(--primary); /* Deep navy to match brand logo */
+  background-color: var(--brand-dark); /* Deep navy to match brand logo */
   border-right: none;
   height: 100vh;
   position: fixed;

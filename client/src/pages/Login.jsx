@@ -12,8 +12,17 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = React.useState(true);
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    React.useEffect(() => {
+        // Simulate a short loading delay for the splash screen
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -51,6 +60,14 @@ const Login = () => {
             setLoading(false);
         }
     };
+
+    if (pageLoading) {
+        return (
+            <div className="login-splash-screen">
+                <img src="/icon.png" alt="Loading..." className="splash-logo" />
+            </div>
+        );
+    }
 
     return (
         <div className="login-page-bg">

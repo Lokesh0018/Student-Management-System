@@ -14,6 +14,31 @@
     padding: 24px;
 }
 
+.login-splash-screen {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.splash-logo {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    animation: splash-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes splash-pulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
 .login-split-card {
     display: flex;
     width: 100%;
@@ -29,7 +54,7 @@
 /* Left Panel - Branding */
 .login-brand-panel {
     flex: 1;
-    background-color: var(--primary); /* Match new brand logo color */
+    background-color: var(--brand-dark); /* Match new brand logo color */
     padding: 48px;
     display: flex;
     flex-direction: column;
