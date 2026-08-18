@@ -23,6 +23,9 @@ import ParentDetails from './pages/ParentDetails'
 import ExaminationsList from './pages/ExaminationsList'
 import AddExam from './pages/AddExam'
 import EditExam from './pages/EditExam'
+import SubjectsList from './pages/SubjectsList'
+import AddSubject from './pages/AddSubject'
+import EditSubject from './pages/EditSubject'
 import MarkManagement from './pages/MarkManagement'
 import AttendanceManagement from './pages/AttendanceManagement'
 import RemarkManagement from './pages/RemarkManagement'
@@ -168,6 +171,24 @@ function App() {
       <Route path="/admin/exams/:id/edit" element={
         <ProtectedRoute allowedRoles={['ADMIN']}>
           <EditExam />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/subjects" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <SubjectsList />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/subjects/add" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <AddSubject />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin/subjects/:id/edit" element={
+        <ProtectedRoute allowedRoles={['ADMIN']}>
+          <EditSubject />
         </ProtectedRoute>
       } />
 

@@ -2,14 +2,14 @@ const pool = require('../config/db');
 
 exports.getMarksByExamAndClass = async (req, res) => {
     try {
-        const { exam_id, class_id } = req.query;
+        const { exam_id, class_id, subject_id } = req.query;
         let query = `
             SELECT m.*, s.first_name, s.last_name, s.roll_number 
             FROM marks m
             JOIN students s ON m.student_id = s.id
-            WHERE m.exam_id = ? AND s.class_id = ?
+            WHERE m.exam_id = ? AND m.subject_id = ? AND s.class_id = ?
         `;
-        const [marks] = await pool.execute(query, [exam_id, class_id]);
+        const [marks] = await pool.execute(query, [exam_id, subject_id, class_id]);
         res.json({ success: true, data: marks });
     } catch (error) {
         console.error(error);
@@ -25,6 +25,15 @@ exports.saveMarks = async (req, res) => {
         await connection.beginTransaction();
         
         for (const mark of marksData) {
+            if (mark.marks_obtained === '' || mark.marks_obtained === null || mark.marks_obtained === undefined) {
+                // Delete mark if it exists
+                await connection.execute(`
+                    DELETE FROM marks 
+                    WHERE student_id = ? AND exam_id = ? AND subject_id = ?
+                `, [mark.student_id, mark.exam_id, mark.subject_id]);
+                continue;
+            }
+
             // Calculate grade
             const percentage = (mark.marks_obtained / mark.max_marks) * 100;
             let grade = 'F';
@@ -37,14 +46,14 @@ exports.saveMarks = async (req, res) => {
 
             // Upsert
             await connection.execute(`
-                INSERT INTO marks (student_id, exam_id, marks_obtained, max_marks, grade, remarks)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO marks (student_id, exam_id, subject_id, marks_obtained, max_marks, grade, remarks)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE 
                 marks_obtained = VALUES(marks_obtained),
                 max_marks = VALUES(max_marks),
                 grade = VALUES(grade),
                 remarks = VALUES(remarks)
-            `, [mark.student_id, mark.exam_id, mark.marks_obtained, mark.max_marks, grade, mark.remarks]);
+            `, [mark.student_id, mark.exam_id, mark.subject_id, mark.marks_obtained, mark.max_marks, grade, mark.remarks]);
         }
         
         await connection.commit();

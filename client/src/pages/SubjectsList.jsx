@@ -1,24 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaPlus, FaPen, FaTrash } from 'react-icons/fa';
+import api from '../utils/api';
 import './StudentList.css'; 
 
-const MOCK_SUBJECTS = [
-    { id: '1', name: 'Mathematics', code: 'MATH', classes: '6', teachers: '3', status: 'Active' },
-    { id: '2', name: 'Science', code: 'SCI', classes: '6', teachers: '3', status: 'Active' },
-    { id: '3', name: 'English', code: 'ENG', classes: '8', teachers: '2', status: 'Active' },
-    { id: '4', name: 'Social Studies', code: 'SST', classes: '6', teachers: '2', status: 'Active' },
-    { id: '5', name: 'Computer Science', code: 'CS', classes: '6', teachers: '2', status: 'Active' },
-    { id: '6', name: 'Hindi', code: 'HIN', classes: '6', teachers: '2', status: 'Active' },
-    { id: '7', name: 'Physics', code: 'PHY', classes: '4', teachers: '1', status: 'Active' }
-];
-
 const SubjectsList = () => {
+    const [subjects, setSubjects] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [subjectToDelete, setSubjectToDelete] = useState(null);
+    const [notification, setNotification] = useState({ show: false, message: '', type: '' });
     const navigate = useNavigate();
 
-    const filteredSubjects = MOCK_SUBJECTS.filter(sub => 
-        sub.name.toLowerCase().includes(searchTerm.toLowerCase()) || sub.code.toLowerCase().includes(searchTerm.toLowerCase())
+    const fetchSubjects = async () => {
+        try {
+            const res = await api.get('/subjects');
+            if (res.data.success) {
+                setSubjects(res.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSubjects();
+    }, []);
+
+    const showNotification = (message, type) => {
+        setNotification({ show: true, message, type });
+        setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
+    };
+
+    const openDeleteModal = (e, id) => {
+        e.stopPropagation();
+        setSubjectToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!subjectToDelete) return;
+        try {
+            await api.delete(`/subjects/${subjectToDelete}`);
+            fetchSubjects();
+            setIsDeleteModalOpen(false);
+            setSubjectToDelete(null);
+            showNotification('Subject deleted successfully', 'success');
+        } catch (error) {
+            console.error('Error deleting subject:', error);
+            showNotification('Failed to delete subject', 'error');
+        }
+    };
+
+    const filteredSubjects = subjects.filter(sub => 
+        sub.subject_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        sub.subject_code?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -36,6 +72,22 @@ const SubjectsList = () => {
                     <FaPlus /> Add Subject
                 </button>
             </div>
+
+            {notification.show && (
+                <div style={{
+                    padding: '12px 24px', 
+                    marginBottom: '16px', 
+                    borderRadius: '8px',
+                    backgroundColor: notification.type === 'success' ? '#dcfce7' : '#fee2e2',
+                    color: notification.type === 'success' ? '#16a34a' : '#dc2626',
+                    border: `1px solid ${notification.type === 'success' ? '#bbf7d0' : '#fecaca'}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontWeight: '500'
+                }}>
+                    {notification.message}
+                </div>
+            )}
 
             <div className="filter-card">
                 <div className="search-input-wrap">
@@ -55,33 +107,22 @@ const SubjectsList = () => {
                         <tr>
                             <th>SUBJECT</th>
                             <th>CODE</th>
-                            <th>TOTAL CLASSES</th>
-                            <th>TOTAL TEACHERS</th>
-                            <th>STATUS</th>
+                            <th>TEACHER</th>
                             <th className="text-right">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredSubjects.map(sub => (
                             <tr key={sub.id} className="clickable-row">
-                                <td className="fw-500">{sub.name}</td>
-                                <td>{sub.code}</td>
-                                <td>{sub.classes}</td>
-                                <td>{sub.teachers}</td>
-                                <td>
-                                    <span className={`status-badge status-${sub.status.toLowerCase()}`}>
-                                        {sub.status}
-                                    </span>
-                                </td>
+                                <td className="fw-500">{sub.subject_name}</td>
+                                <td>{sub.subject_code}</td>
+                                <td>{sub.teacher_name || '-'}</td>
                                 <td className="text-right">
                                     <div className="action-buttons-group">
-                                        <button className="action-btn-icon text-blue">
-                                            <FaEye />
-                                        </button>
-                                        <button className="action-btn-icon text-gray">
+                                        <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/subjects/${sub.id}/edit`); }}>
                                             <FaPen />
                                         </button>
-                                        <button className="action-btn-icon text-red">
+                                        <button className="action-btn-icon text-red" onClick={(e) => openDeleteModal(e, sub.id)}>
                                             <FaTrash />
                                         </button>
                                     </div>
@@ -92,15 +133,22 @@ const SubjectsList = () => {
                 </table>
                 
                 <div className="pagination-footer">
-                    <span className="pagination-info">Showing 1 to 7 of 12 results</span>
-                    <div className="pagination-controls">
-                        <button className="page-btn disabled">&lt;</button>
-                        <button className="page-btn active">1</button>
-                        <button className="page-btn">2</button>
-                        <button className="page-btn">&gt;</button>
-                    </div>
+                    <span className="pagination-info">Showing {filteredSubjects.length} results</span>
                 </div>
             </div>
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this subject? This action cannot be undone.</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+                            <button className="btn-primary" style={{backgroundColor: '#ef4444', borderColor: '#ef4444'}} onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
