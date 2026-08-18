@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import api from '../utils/api';
-import './Management.css'; // Reusing for general styles
+import './css/Management.css'; // Reusing for general styles
 
 const PerformanceAnalytics = () => {
     const [stats, setStats] = useState(null);

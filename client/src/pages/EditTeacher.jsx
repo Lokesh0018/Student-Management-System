@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import api from '../utils/api';
-import './AddStudent.css'; // Reusing form styles
+import './css/AddStudent.css'; // Reusing form styles
 
 const EditTeacher = () => {
     const { id } = useParams();

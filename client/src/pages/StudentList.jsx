@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
 import api from '../utils/api';
 import StudentImage from '../components/StudentImage';
-import './StudentList.css';
+import './css/StudentList.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import api from '../utils/api';
-import './AdminDashboard.css';
+import './css/AdminDashboard.css';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);

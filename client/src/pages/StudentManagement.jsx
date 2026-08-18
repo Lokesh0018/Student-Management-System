@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
 import api from '../utils/api';
 import StudentImage from '../components/StudentImage';
-import './StudentProfile.css';
+import './css/StudentProfile.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
 

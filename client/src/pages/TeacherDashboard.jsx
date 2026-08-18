@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Card } from '../components/ui/Card';
-import './AdminDashboard.css'; // Reusing dashboard styles
+import './css/AdminDashboard.css'; // Reusing dashboard styles
 
 const TeacherDashboard = () => {
     const [stats, setStats] = useState(null);

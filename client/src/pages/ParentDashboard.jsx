@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import api from '../utils/api';
-import './AdminDashboard.css'; // Reusing dashboard styles
+import './css/AdminDashboard.css'; // Reusing dashboard styles
 
 const ParentDashboard = () => {
     const [stats, setStats] = useState(null);

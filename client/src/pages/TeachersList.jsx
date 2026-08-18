@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaPen, FaTrash } from 'react-icons/fa';
 import api from '../utils/api';
-import './StudentList.css'; // Reusing the same CSS for consistency
+import './css/StudentList.css'; // Reusing the same CSS for consistency
 
 const TeachersList = () => {
     const [teachers, setTeachers] = useState([]);

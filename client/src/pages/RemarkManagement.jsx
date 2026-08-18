@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import './Management.css';
+import './css/Management.css';
 
 const RemarkManagement = () => {
     const { user } = useAuth();

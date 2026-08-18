@@ -3,7 +3,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
-import './AddStudent.css';
+import './css/AddStudent.css';
 
 const EditStudent = () => {
     const { id } = useParams();

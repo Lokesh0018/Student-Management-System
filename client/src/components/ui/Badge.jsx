@@ -1,5 +1,5 @@
 import React from 'react';
-import './Badge.css';
+import './css/Badge.css';
 
 export const Badge = ({ children, variant = 'success', className = '', ...props }) => {
   return (

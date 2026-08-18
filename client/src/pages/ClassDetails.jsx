@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaBookOpen, FaUserTie, FaUsers } from 'react-icons/fa';
 import api from '../utils/api';
-import './StudentProfile.css';
+import './css/StudentProfile.css';
 import { getDirectImageUrl } from '../utils/imageUtils';
 
 const ClassDetails = () => {

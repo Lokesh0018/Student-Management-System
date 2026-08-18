@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
-import './AddStudent.css';
+import './css/AddStudent.css';
 
 const AddStudent = () => {
     const navigate = useNavigate();

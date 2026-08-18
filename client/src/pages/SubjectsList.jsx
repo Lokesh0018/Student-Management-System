@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaPen, FaTrash } from 'react-icons/fa';
 import api from '../utils/api';
-import './StudentList.css'; 
+import './css/StudentList.css'; 
 
 const SubjectsList = () => {
     const [subjects, setSubjects] = useState([]);

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { FaSearch, FaBell } from 'react-icons/fa';
-import './Layout.css';
+import './css/Layout.css';
 
 export const Layout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);

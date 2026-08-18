@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { Button } from '../components/ui/Button';
-import './Login.css';
+import './css/Login.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');

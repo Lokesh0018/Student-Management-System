@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/api';
-import './StudentList.css';
+import './css/StudentList.css';
 
 const AddSubject = () => {
     const navigate = useNavigate();

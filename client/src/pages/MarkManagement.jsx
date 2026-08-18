@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import './StudentList.css';
+import './css/StudentList.css';
 
 const MarkManagement = () => {
     const [exams, setExams] = useState([]);

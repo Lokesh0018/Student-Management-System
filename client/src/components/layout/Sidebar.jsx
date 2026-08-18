@@ -6,7 +6,7 @@ import {
     FaRegFileAlt, FaCog, FaBookOpen
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-import './Sidebar.css';
+import './css/Sidebar.css';
 
 export const Sidebar = ({ isOpen, onClose }) => {
   const { logout, user } = useAuth();
