@@ -7,7 +7,9 @@ require('dotenv').config();
 const app = express();
 
 // Security Middlewares
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes

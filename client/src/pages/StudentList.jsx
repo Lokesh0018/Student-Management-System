@@ -40,16 +40,25 @@ const StudentList = () => {
         return matchesSearch && matchesClass;
     });
 
-    const handleDelete = async (e, id) => {
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [studentToDelete, setStudentToDelete] = useState(null);
+
+    const openDeleteModal = (e, id) => {
         e.stopPropagation();
-        if (window.confirm("Are you sure you want to delete this student?")) {
-            try {
-                await api.delete(`/students/${id}`);
-                fetchStudents();
-            } catch (error) {
-                console.error("Error deleting student:", error);
-                alert("Failed to delete student");
-            }
+        setStudentToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!studentToDelete) return;
+        try {
+            await api.delete(`/students/${studentToDelete}`);
+            fetchStudents();
+            setIsDeleteModalOpen(false);
+            setStudentToDelete(null);
+        } catch (error) {
+            console.error("Error deleting student:", error);
+            alert("Failed to delete student");
         }
     };
 
@@ -145,7 +154,7 @@ const StudentList = () => {
                                         <button className="action-btn-icon text-gray" onClick={(e) => { e.stopPropagation(); navigate(`/admin/students/${student.id}/edit`); }}>
                                             <FaPen />
                                         </button>
-                                        <button className="action-btn-icon text-red" onClick={(e) => handleDelete(e, student.id)}>
+                                        <button className="action-btn-icon text-red" onClick={(e) => openDeleteModal(e, student.id)}>
                                             <FaTrash />
                                         </button>
                                     </div>
@@ -160,6 +169,19 @@ const StudentList = () => {
                     {/* Pagination controls hidden until backend supports it */}
                 </div>
             </div>
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+                            <button className="btn-primary" style={{backgroundColor: '#ef4444', borderColor: '#ef4444'}} onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
