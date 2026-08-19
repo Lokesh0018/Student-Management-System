@@ -7,7 +7,13 @@ import { BreadcrumbProvider } from './context/BreadcrumbContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { Toaster } from 'react-hot-toast'
 import './index.css'
+import './pages/css/AddStudent.css'
+import './pages/css/AdminDashboard.css'
+import './pages/css/Login.css'
+import './pages/css/Management.css'
 import './pages/css/ReportsList.css'
+import './pages/css/StudentList.css'
+import './pages/css/StudentProfile.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -93,8 +93,8 @@ const EditSubject = () => {
                 </div>
             )}
 
-            <div className="form-card">
-                <form onSubmit={handleSubmit} className="standard-form">
+            <div className="form-section" style={{ maxWidth: '600px' }}>
+                <form onSubmit={handleSubmit} className="form-container" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div className="form-grid">
                         <div className="form-group">
                             <label>Subject Name</label>

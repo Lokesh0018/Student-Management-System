@@ -6,16 +6,16 @@
 
 .main-content {
   flex: 1;
-  margin-left: 280px; /* Matched new sidebar width */
+  margin-left: var(--sidebar-expanded-width);
   background-color: var(--bg);
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  transition: margin-left var(--sidebar-transition-duration) var(--sidebar-transition-ease);
   display: flex;
   flex-direction: column;
 }
 
 .layout-collapsed .main-content {
-  margin-left: 80px;
+  margin-left: var(--sidebar-collapsed-width);
 }
 
 .top-header {

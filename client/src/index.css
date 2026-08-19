@@ -12,6 +12,12 @@
   --text-secondary: #6b7280;
   --border: #e5e7eb;
   
+  /* Sidebar Dimensions & Animations */
+  --sidebar-expanded-width: 280px;
+  --sidebar-collapsed-width: 72px;
+  --sidebar-transition-duration: 240ms;
+  --sidebar-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  
   /* Semantic Colors */
   --success: #10b981;
   --success-bg: rgba(16, 185, 129, 0.1);

@@ -12,7 +12,9 @@ import './css/Layout.css';
 
 export const Layout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    return localStorage.getItem('sidebar-state') === 'collapsed';
+  });
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -39,6 +41,10 @@ export const Layout = ({ children }) => {
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem('sidebar-state', isCollapsed ? 'collapsed' : 'expanded');
+  }, [isCollapsed]);
 
   const fetchNotifications = async () => {
       try {
@@ -131,20 +137,30 @@ export const Layout = ({ children }) => {
       <main className="main-content">
         <header className="top-header">
           <div className="header-left">
-            <button className="menu-btn mobile-only" onClick={() => setSidebarOpen(!isSidebarOpen)}>
+            <button 
+              className="menu-btn mobile-only" 
+              onClick={() => setSidebarOpen(!isSidebarOpen)}
+              aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+              aria-expanded={isSidebarOpen}
+            >
               <motion.div
                 initial={false}
                 animate={{ rotate: isSidebarOpen ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
               >
                 {isSidebarOpen ? <FaTimes /> : <FaBars />}
               </motion.div>
             </button>
-            <button className="menu-btn desktop-only" onClick={() => setIsCollapsed(!isCollapsed)}>
+            <button 
+              className="menu-btn desktop-only" 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-expanded={!isCollapsed}
+            >
               <motion.div
                 initial={false}
                 animate={{ rotate: isCollapsed ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
               >
                 {isCollapsed ? <FaBars /> : <FaTimes />}
               </motion.div>

@@ -1,161 +1,252 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import './css/StudentList.css'; // Use the shared layout CSS
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { FaChartBar, FaTrophy, FaArrowUp, FaArrowDown, FaMedal, FaExclamationTriangle } from 'react-icons/fa';
+import api from '../utils/api';
+import './css/StudentList.css'; 
 
 const PerformanceAnalytics = () => {
     
-    // Mock data for charts as per the implementation plan (using realistic data matching the design)
-    const subjectAverages = [
-        { name: 'Computer', avg: 85 },
-        { name: 'Social Studies', avg: 70 },
-        { name: 'English', avg: 72 },
-        { name: 'Science', avg: 75 },
-        { name: 'Maths', avg: 78 }
-    ];
+    const [data, setData] = useState({
+        overview: { average: 0, highest: 0, lowest: 0, passPercentage: 0 },
+        subjectAverages: [],
+        distribution: [],
+        topStudents: [],
+        bottomStudents: []
+    });
+    const [isLoading, setIsLoading] = useState(true);
 
-    const distributionData = [
-        { name: '90% and above', value: 25, color: '#10b981' },
-        { name: '75% - 89%', value: 45, color: '#3b82f6' },
-        { name: '50% - 74%', value: 25, color: '#f59e0b' },
-        { name: 'Below 50%', value: 5, color: '#ef4444' }
-    ];
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await api.get('/performance/stats');
+                if (res.data.success && res.data.data) {
+                    setData(res.data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching performance stats:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
 
-    const topPerformers = [
-        { rank: 1, name: 'Meera Nair', score: '95%' },
-        { rank: 2, name: 'Aditya Gupta', score: '92%' },
-        { rank: 3, name: 'Aryan Verma', score: '90%' }
-    ];
+    const { overview, subjectAverages, distribution, topStudents, bottomStudents } = data;
 
-    const needsImprovement = [
-        { rank: 1, name: 'Rohan Mehta', score: '62%' },
-        { rank: 2, name: 'Ananya Singh', score: '65%' },
-        { rank: 3, name: 'Vivaan Patel', score: '68%' }
-    ];
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+    
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
+    if (isLoading) {
+        return <div className="student-list-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <div className="loader" style={{ width: '40px', height: '40px', border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+        </div>;
+    }
 
     return (
-        <div className="student-list-page">
-            <div className="page-header-row" style={{ marginBottom: '24px' }}>
+        <motion.div className="student-list-page" style={{ paddingBottom: '40px', padding: '0 40px' }} initial="hidden" animate="visible" variants={containerVariants}>
+            <style>{`
+                .perf-grid-stats { display: grid; gap: 24px; grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
+                .perf-grid-charts { display: grid; gap: 24px; grid-template-columns: 1.4fr 1fr; margin-bottom: 24px; }
+                .perf-grid-lists { display: grid; gap: 24px; grid-template-columns: 1fr 1fr; }
+                .sticky-header { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 16px 0 12px 0; margin-top: -16px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+                .perf-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-1, 0 4px 10px rgba(0,0,0,0.02)); padding: 24px; }
+                .legend-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; }
+                @media (max-width: 1280px) {
+                    .perf-grid-stats { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 1024px) {
+                    .perf-grid-charts, .perf-grid-lists { grid-template-columns: 1fr; }
+                }
+                @media (max-width: 640px) {
+                    .perf-grid-stats { grid-template-columns: 1fr; }
+                    .student-list-page { padding: 0 20px !important; }
+                }
+            `}</style>
+            
+            <motion.div className="page-header-row sticky-header" variants={itemVariants}>
                 <div className="page-header-left">
-                    <h1 className="page-title">Class Performance</h1>
+                    <h1 className="page-title" style={{ fontSize: '24px', color: 'var(--text-primary)', fontWeight: '800', letterSpacing: '-0.5px' }}>Performance Overview</h1>
+                    <p style={{ color: 'var(--text-secondary)', margin: '4px 0 0 0', fontSize: '14px' }}>Analytics & insights based on latest marks</p>
                 </div>
-                <button className="btn-outline">This Month <span>&#9662;</span></button>
-            </div>
+            </motion.div>
 
-            {/* Top Stats Cards */}
-            <div className="stats-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: '24px' }}>
-                <div className="stat-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>Average Score</span>
-                    <span style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>78.6%</span>
-                </div>
-                <div className="stat-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>Highest Score</span>
-                    <span style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>95%</span>
-                    <span style={{ fontSize: '12px', fontWeight: '500', color: '#0f172a' }}>Meera Nair</span>
-                </div>
-                <div className="stat-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>Lowest Score</span>
-                    <span style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>62%</span>
-                    <span style={{ fontSize: '12px', fontWeight: '500', color: '#0f172a' }}>Rohan Mehta</span>
-                </div>
-                <div className="stat-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>Pass Percentage</span>
-                    <span style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>100%</span>
-                </div>
-            </div>
+            {/* Top Stats Cards: 2x2 Grid */}
+            <motion.div className="perf-grid-stats" variants={containerVariants}>
+                
+                <motion.div variants={itemVariants} className="perf-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', transition: 'transform 0.2s', cursor: 'pointer', minHeight: '120px' }} whileHover={{ y: -3 }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px', flexShrink: 0 }}>
+                        <FaChartBar />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Average Score</span>
+                        <span style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', lineHeight: '1.2' }}>{overview?.average}%</span>
+                    </div>
+                </motion.div>
 
-            {/* Middle Row: Charts */}
-            <div className="middle-row" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: '24px' }}>
+                <motion.div variants={itemVariants} className="perf-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', transition: 'transform 0.2s', cursor: 'pointer', minHeight: '120px' }} whileHover={{ y: -3 }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px', flexShrink: 0 }}>
+                        <FaTrophy />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pass Percentage</span>
+                        <span style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', lineHeight: '1.2' }}>{overview?.passPercentage}%</span>
+                    </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="perf-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', transition: 'transform 0.2s', cursor: 'pointer', minHeight: '120px' }} whileHover={{ y: -3 }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px', flexShrink: 0 }}>
+                        <FaArrowUp />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Highest Score</span>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                            <span style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', lineHeight: '1.2' }}>{overview?.highest}%</span>
+                        </div>
+                        {overview?.highestStudent && (
+                            <span style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-secondary)' }}>· {overview.highestStudent}</span>
+                        )}
+                    </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="perf-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', transition: 'transform 0.2s', cursor: 'pointer', minHeight: '120px' }} whileHover={{ y: -3 }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px', flexShrink: 0 }}>
+                        <FaArrowDown />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Lowest Score</span>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                            <span style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', lineHeight: '1.2' }}>{overview?.lowest}%</span>
+                        </div>
+                        {overview?.lowestStudent && (
+                            <span style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-secondary)' }}>· {overview.lowestStudent}</span>
+                        )}
+                    </div>
+                </motion.div>
+
+            </motion.div>
+
+            {/* Middle Row: Charts 60/40 */}
+            <motion.div className="perf-grid-charts" variants={containerVariants}>
                 {/* Subject Wise Average */}
-                <div className="table-card" style={{ padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 24px 0', fontSize: '16px', color: '#0f172a' }}>Subject Wise Average</h3>
-                    <div style={{ width: '100%', height: '250px' }}>
+                <motion.div variants={itemVariants} className="perf-card" style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--text-primary)', fontWeight: '700' }}>Subject Averages</h3>
+                    </div>
+                    <div style={{ width: '100%', height: '420px', overflow: 'visible' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart layout="vertical" data={subjectAverages} margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
-                                <XAxis type="number" domain={[0, 100]} tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                                <YAxis dataKey="name" type="category" tick={{fontSize: 12, fill: '#475569'}} axisLine={false} tickLine={false} />
-                                <Tooltip cursor={{fill: '#f8fafc'}} />
-                                <Bar dataKey="avg" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={16} />
+                            <BarChart data={subjectAverages} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                                <XAxis dataKey="name" tick={{fontSize: 12, fill: 'var(--text-secondary)', fontWeight: 500}} axisLine={false} tickLine={false} />
+                                <YAxis type="number" domain={[0, 100]} tick={{fontSize: 12, fill: 'var(--text-secondary)', fontWeight: 500}} axisLine={false} tickLine={false} />
+                                <Tooltip cursor={{fill: 'var(--bg)'}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-1)', fontSize: '12px', background: 'var(--surface)', color: 'var(--text-primary)' }} formatter={(value) => [value, 'Score']} />
+                                <Bar dataKey="avg" radius={[4, 4, 0, 0]} maxBarSize={48}>
+                                    {subjectAverages.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4'][index % 7]} />
+                                    ))}
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Performance Distribution */}
-                <div className="table-card" style={{ padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 24px 0', fontSize: '16px', color: '#0f172a' }}>Performance Distribution</h3>
-                    <div style={{ display: 'flex', height: '250px', alignItems: 'center' }}>
-                        <div style={{ flex: 1, height: '100%' }}>
+                <motion.div variants={itemVariants} className="perf-card" style={{ padding: '24px' }}>
+                    <h3 style={{ margin: '0 0 20px 0', fontSize: '16px', color: 'var(--text-primary)', fontWeight: '700' }}>Grade Distribution</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', gap: '20px' }}>
+                        <div style={{ width: '100%', height: '200px' }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
-                                        data={distributionData}
-                                        innerRadius={60}
-                                        outerRadius={85}
-                                        paddingAngle={2}
+                                        data={distribution}
+                                        innerRadius={65}
+                                        outerRadius={90}
+                                        paddingAngle={4}
                                         dataKey="value"
-                                        stroke="none"
+                                        stroke="var(--surface)"
+                                        strokeWidth={2}
+                                        cornerRadius={4}
                                     >
-                                        {distributionData.map((entry, index) => (
+                                        {distribution.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                     </Pie>
+                                    <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-1)', fontSize: '12px', background: 'var(--surface)', color: 'var(--text-primary)' }} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            {distributionData.map((item, idx) => (
-                                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {distribution.map((item, idx) => (
+                                <div key={idx} className="legend-item" style={{ background: 'var(--bg)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.color }}></div>
-                                        <span style={{ fontSize: '13px', color: '#475569', fontWeight: '500' }}>{item.name}</span>
+                                        <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: '500' }}>{item.name}</span>
                                     </div>
-                                    <span style={{ fontSize: '13px', color: '#0f172a', fontWeight: '600' }}>{item.value}%</span>
+                                    <span style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: '700' }}>{item.value}%</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
-            {/* Bottom Row: Lists */}
-            <div className="middle-row" style={{ gridTemplateColumns: '1fr 1fr' }}>
-                <div className="table-card" style={{ padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 24px 0', fontSize: '16px', color: '#0f172a' }}>Top Performers</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {topPerformers.map((student, idx) => (
-                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '12px', borderBottom: idx !== topPerformers.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#eff6ff', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600' }}>
-                                        {student.rank}
-                                    </div>
-                                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#0f172a' }}>{student.name}</span>
-                                </div>
-                                <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>{student.score}</span>
-                            </div>
-                        ))}
+            {/* Bottom Row: Lists 50/50 */}
+            <motion.div className="perf-grid-lists" variants={containerVariants}>
+                <motion.div variants={itemVariants} className="perf-card" style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>
+                            <FaMedal />
+                        </div>
+                        <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--text-primary)', fontWeight: '700' }}>Top Performers</h3>
                     </div>
-                </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {topStudents.map((student, idx) => (
+                            <motion.div key={idx} whileHover={{ scale: 1.01 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', border: '1px solid var(--border)', borderRadius: '8px', transition: 'all 0.2s', background: 'var(--surface)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: idx === 0 ? 'linear-gradient(135deg, #fbbf24, #d97706)' : idx === 1 ? 'linear-gradient(135deg, #9ca3af, #6b7280)' : idx === 2 ? 'linear-gradient(135deg, #d97706, #92400e)' : '#eff6ff', color: idx < 3 ? 'white' : '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700' }}>
+                                        #{student.rank}
+                                    </div>
+                                    <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>{student.name}</span>
+                                </div>
+                                <span style={{ fontSize: '15px', fontWeight: '800', color: '#10b981', textAlign: 'right' }}>{student.score}</span>
+                            </motion.div>
+                        ))}
+                        {topStudents.length === 0 && <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '16px 0', fontSize: '13px' }}>No top performers data available yet.</div>}
+                    </div>
+                </motion.div>
 
-                <div className="table-card" style={{ padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 24px 0', fontSize: '16px', color: '#0f172a' }}>Needs Improvement</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {needsImprovement.map((student, idx) => (
-                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '12px', borderBottom: idx !== needsImprovement.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#fef2f2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600' }}>
-                                        {student.rank}
-                                    </div>
-                                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#0f172a' }}>{student.name}</span>
-                                </div>
-                                <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>{student.score}</span>
+                <motion.div variants={itemVariants} className="perf-card" style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>
+                                <FaExclamationTriangle />
                             </div>
-                        ))}
+                            <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--text-primary)', fontWeight: '700' }}>Needs Attention</h3>
+                        </div>
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)', padding: '4px 10px', borderRadius: '6px' }}>Below 75%</span>
                     </div>
-                </div>
-            </div>
-        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {bottomStudents.map((student, idx) => (
+                            <motion.div key={idx} whileHover={{ scale: 1.01 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', transition: 'all 0.2s', background: 'var(--surface)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
+                                    <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>{student.name}</span>
+                                </div>
+                                <span style={{ fontSize: '15px', fontWeight: '800', color: '#ef4444', textAlign: 'right' }}>{student.score}</span>
+                            </motion.div>
+                        ))}
+                        {bottomStudents.length === 0 && <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px 0', fontSize: '14px', fontWeight: '500' }}>No additional students need attention 🎉</div>}
+                    </div>
+                </motion.div>
+            </motion.div>
+        </motion.div>
     );
 };
 
