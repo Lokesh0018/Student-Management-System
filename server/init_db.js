@@ -133,6 +133,8 @@ async function initDB() {
                 receiver_id INT,
                 student_id INT,
                 title VARCHAR(255),
+                category VARCHAR(50) DEFAULT 'General',
+                priority VARCHAR(50) DEFAULT 'Normal',
                 message TEXT,
                 is_read BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

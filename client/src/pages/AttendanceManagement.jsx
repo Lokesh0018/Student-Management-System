@@ -43,7 +43,7 @@ const AttendanceManagement = () => {
                 first_name: item.first_name,
                 last_name: item.last_name,
                 roll_number: item.roll_number,
-                status: item.status || 'PRESENT' // Default to present if not marked
+                status: item.status || null // Only show status if marked
             }));
             
             // Clean up the data mapping
@@ -192,7 +192,7 @@ const AttendanceManagement = () => {
                             </thead>
                             <tbody>
                                 {students.map(s => {
-                                    const currentStatus = attendanceData[s.id] || 'PRESENT';
+                                    const currentStatus = attendanceData[s.id] || null;
                                     return (
                                         <tr key={s.id}>
                                             <td>{s.roll_number}</td>

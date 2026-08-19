@@ -221,9 +221,11 @@ const RemarkManagement = () => {
                                             </span>
                                         </td>
                                         <td data-label="Actions" className="text-right">
-                                            <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); setViewingRemark(remark); }}>
-                                                <FaEye />
-                                            </button>
+                                            <div className="action-buttons-group">
+                                                <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); setViewingRemark(remark); }}>
+                                                    <FaEye />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 );
