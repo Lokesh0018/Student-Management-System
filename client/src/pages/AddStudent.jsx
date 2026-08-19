@@ -31,7 +31,8 @@ const AddStudent = () => {
             parent_name: '',
             parent_email: '',
             parent_phone: '',
-            parent_relationship: 'Father'
+            parent_relationship: 'Father',
+            parent_password: ''
         }
     });
 
@@ -177,6 +178,17 @@ const AddStudent = () => {
                                     <option value="Mother">Mother</option>
                                     <option value="Guardian">Guardian</option>
                                 </select>
+                            </div>
+                            <div className="form-group full-width">
+                                <label>Parent Login Password (Optional)</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="Default: parent123" 
+                                    {...register('parent_password')} 
+                                />
+                                <span style={{fontSize: '11px', color: 'var(--text-secondary)'}}>
+                                    If left empty, 'parent123' will be used for the parent account.
+                                </span>
                             </div>
                         </div>
                     </div>

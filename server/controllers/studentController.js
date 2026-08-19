@@ -36,7 +36,7 @@ exports.createStudent = async (req, res, next) => {
         const { 
             admission_number, first_name, last_name, email, class_id, roll_number, 
             photo, dob, gender, phone, address, admission_date, status,
-            parent_name, parent_email, parent_phone, parent_relationship 
+            parent_name, parent_email, parent_phone, parent_relationship, parent_password
         } = req.body;
         
         // Manual validation
@@ -81,7 +81,7 @@ exports.createStudent = async (req, res, next) => {
             // Create user for parent
             const [userResult] = await connection.execute(
                 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-                [parent_name, parent_email, 'parent123', 'PARENT']
+                [parent_name, parent_email, parent_password || 'parent123', 'PARENT']
             );
             parentUserId = userResult.insertId;
         }
@@ -108,7 +108,7 @@ exports.updateStudent = async (req, res, next) => {
         const { 
             admission_number, first_name, last_name, email, class_id, roll_number, 
             photo, dob, gender, phone, address, admission_date, status,
-            parent_name, parent_email, parent_phone, parent_relationship 
+            parent_name, parent_email, parent_phone, parent_relationship, parent_password
         } = req.body;
         
         // Manual validation
@@ -163,10 +163,30 @@ exports.updateStudent = async (req, res, next) => {
         // Try to update the user account associated with the parent (if we can find it)
         const [student] = await connection.execute('SELECT parent_user_id FROM students WHERE id = ?', [req.params.id]);
         if (student.length > 0 && student[0].parent_user_id) {
-            await connection.execute(
-                'UPDATE users SET name = ?, email = ? WHERE id = ?',
-                [parent_name, parent_email, student[0].parent_user_id]
-            );
+            const parentUserId = student[0].parent_user_id;
+            
+            if (parent_password && parent_password.trim() !== '') {
+                await connection.execute(
+                    'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
+                    [parent_name, parent_email, parent_password, parentUserId]
+                );
+            } else {
+                const [existingUser] = await connection.execute('SELECT password FROM users WHERE id = ?', [parentUserId]);
+                if (existingUser.length > 0) {
+                    const dbPassword = existingUser[0].password;
+                    if (!dbPassword || dbPassword.trim() === '') {
+                        await connection.execute(
+                            'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
+                            [parent_name, parent_email, 'parent123', parentUserId]
+                        );
+                    } else {
+                        await connection.execute(
+                            'UPDATE users SET name = ?, email = ? WHERE id = ?',
+                            [parent_name, parent_email, parentUserId]
+                        );
+                    }
+                }
+            }
         }
 
         await connection.commit();

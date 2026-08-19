@@ -29,7 +29,8 @@ const EditStudent = () => {
         parent_name: '',
         parent_email: '',
         parent_phone: '',
-        parent_relationship: 'Father'
+        parent_relationship: 'Father',
+        parent_password: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -73,7 +74,8 @@ const EditStudent = () => {
                         parent_name: s.parent_name || '',
                         parent_email: s.parent_email || '',
                         parent_phone: s.parent_phone || '',
-                        parent_relationship: s.parent_relationship || 'Father'
+                        parent_relationship: s.parent_relationship || 'Father',
+                        parent_password: ''
                     });
                 }
             } catch (err) {
@@ -216,6 +218,16 @@ const EditStudent = () => {
                                     <option value="Mother">Mother</option>
                                     <option value="Guardian">Guardian</option>
                                 </select>
+                            </div>
+                            <div className="form-group full-width">
+                                <label>Update Parent Login Password (Optional)</label>
+                                <input 
+                                    type="text" 
+                                    name="parent_password" 
+                                    value={formData.parent_password} 
+                                    onChange={handleChange} 
+                                    placeholder="Leave blank to keep current password"
+                                />
                             </div>
                         </div>
                     </div>
