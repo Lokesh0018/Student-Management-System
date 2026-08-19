@@ -123,7 +123,7 @@ const ParentDashboard = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', alignItems: 'stretch' }}>
                     {/* Left Column: My Children */}
-                    <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(to bottom right, #ffffff, #f8fafc)' }}>
+                    <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
                         <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem', fontWeight: 600 }}>My Children</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                             {childrenData.map(child => (
@@ -167,8 +167,8 @@ const ParentDashboard = () => {
                         <h2 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', fontWeight: 600 }}>Important Updates</h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
                             {recentUpdates.length > 0 ? recentUpdates.map(update => (
-                                <div key={update.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                                    <div style={{ padding: '0.5rem', background: 'var(--bg)', borderRadius: '8px' }}>
+                                <div key={update.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', padding: '1rem', background: 'var(--bg)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-2)', border: '1px solid var(--border)' }}>
+                                    <div style={{ padding: '0.5rem', background: 'var(--surface)', borderRadius: '8px', boxShadow: 'var(--shadow-1)' }}>
                                         {update.icon}
                                     </div>
                                     <div>
@@ -240,8 +240,8 @@ const ParentDashboard = () => {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {recentRemarks.length > 0 ? recentRemarks.map(remark => (
-                                <div key={remark.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                                    <img src={remark.img} alt="teacher" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                                <div key={remark.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', padding: '1rem', background: 'var(--bg)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-2)', border: '1px solid var(--border)' }}>
+                                    <img src={remark.img} alt="teacher" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', boxShadow: 'var(--shadow-1)' }} />
                                     <div style={{ flex: 1, overflow: 'hidden' }}>
                                         <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{remark.text}</p>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.2rem' }}>
