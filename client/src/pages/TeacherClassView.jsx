@@ -56,7 +56,6 @@ const TeacherClassView = () => {
             <div className="page-header-row" style={{ marginBottom: '24px' }}>
                 <div className="page-header-left">
                     <h1 className="page-title">My Class Students</h1>
-                    <p className="page-subtitle">Dashboard &gt; My Class &gt; Students</p>
                 </div>
             </div>
 
@@ -78,12 +77,6 @@ const TeacherClassView = () => {
                             <option value="needs_attention">Needs Attention</option>
                             <option value="good">Good</option>
                             <option value="excellent">Excellent</option>
-                        </select>
-                        
-                        <select className="filter-select" style={{ minWidth: '120px' }} value={sectionFilter} onChange={(e) => setSectionFilter(e.target.value)}>
-                            <option value="">All Sections</option>
-                            <option value="A">Section A</option>
-                            <option value="B">Section B</option>
                         </select>
                     </div>
                     

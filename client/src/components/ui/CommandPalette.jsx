@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog } from 'react-icons/fa';
+import { FaSearch, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog, FaChartLine, FaClipboardList, FaCommentDots } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 import './css/CommandPalette.css';
 
 export const CommandPalette = ({ isOpen, onClose }) => {
@@ -9,17 +10,37 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef(null);
     const navigate = useNavigate();
+    const { user } = useAuth();
 
-    const commands = [
-        { id: 'dashboard', name: 'Go to Dashboard', path: '/admin/dashboard', icon: <FaSearch /> },
-        { id: 'add-student', name: 'Add New Student', path: '/admin/students/add', icon: <FaUserGraduate /> },
-        { id: 'students', name: 'View All Students', path: '/admin/students', icon: <FaUserGraduate /> },
-        { id: 'add-teacher', name: 'Add New Teacher', path: '/admin/teachers/add', icon: <FaChalkboardTeacher /> },
-        { id: 'teachers', name: 'View All Teachers', path: '/admin/teachers', icon: <FaChalkboardTeacher /> },
-        { id: 'classes', name: 'Manage Classes', path: '/admin/classes', icon: <FaBook /> },
-        { id: 'exams', name: 'Manage Examinations', path: '/admin/exams', icon: <FaBook /> },
-        { id: 'settings', name: 'System Settings', path: '/admin/settings', icon: <FaCog /> },
-    ];
+    let commands = [];
+    
+    if (user?.role === 'ADMIN') {
+        commands = [
+            { id: 'dashboard', name: 'Go to Dashboard', path: '/admin/dashboard', icon: <FaSearch /> },
+            { id: 'add-student', name: 'Add New Student', path: '/admin/students/add', icon: <FaUserGraduate /> },
+            { id: 'students', name: 'View All Students', path: '/admin/students', icon: <FaUserGraduate /> },
+            { id: 'add-teacher', name: 'Add New Teacher', path: '/admin/teachers/add', icon: <FaChalkboardTeacher /> },
+            { id: 'teachers', name: 'View All Teachers', path: '/admin/teachers', icon: <FaChalkboardTeacher /> },
+            { id: 'classes', name: 'Manage Classes', path: '/admin/classes', icon: <FaBook /> },
+            { id: 'exams', name: 'Manage Examinations', path: '/admin/exams', icon: <FaBook /> },
+            { id: 'settings', name: 'System Settings', path: '/admin/settings', icon: <FaCog /> },
+        ];
+    } else if (user?.role === 'CLASS_TEACHER' || user?.role === 'TEACHER') {
+        commands = [
+            { id: 'dashboard', name: 'Go to Dashboard', path: '/teacher/dashboard', icon: <FaSearch /> },
+            { id: 'my-class', name: 'My Class Students', path: '/teacher/my-class', icon: <FaUserGraduate /> },
+            { id: 'attendance', name: 'Mark Attendance', path: '/teacher/attendance', icon: <FaClipboardList /> },
+            { id: 'marks', name: 'Enter Marks', path: '/teacher/marks', icon: <FaBook /> },
+            { id: 'performance', name: 'Class Performance', path: '/teacher/performance', icon: <FaChartLine /> },
+            { id: 'remarks', name: 'Manage Remarks', path: '/teacher/remarks', icon: <FaCommentDots /> },
+            { id: 'settings', name: 'Settings', path: '/teacher/settings', icon: <FaCog /> },
+        ];
+    } else {
+        // Fallback or Parent
+        commands = [
+            { id: 'dashboard', name: 'Go to Dashboard', path: '/dashboard', icon: <FaSearch /> }
+        ];
+    }
 
     const filteredCommands = commands.filter(cmd => 
         cmd.name.toLowerCase().includes(query.toLowerCase())

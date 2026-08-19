@@ -38,7 +38,6 @@ const PerformanceAnalytics = () => {
             <div className="page-header-row" style={{ marginBottom: '24px' }}>
                 <div className="page-header-left">
                     <h1 className="page-title">Class Performance</h1>
-                    <p className="page-subtitle">Dashboard &gt; Performance</p>
                 </div>
                 <button className="btn-outline">This Month <span>&#9662;</span></button>
             </div>

@@ -58,7 +58,6 @@ const RemarkManagement = () => {
             <div className="page-header-row" style={{ marginBottom: '24px' }}>
                 <div className="page-header-left">
                     <h1 className="page-title">Remarks</h1>
-                    <p className="page-subtitle">Dashboard &gt; Remarks</p>
                 </div>
             </div>
 
