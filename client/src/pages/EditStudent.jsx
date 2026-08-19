@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { FaCloudUploadAlt } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaSpinner } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
 import { useBreadcrumb } from '../context/BreadcrumbContext';
@@ -250,7 +250,11 @@ const EditStudent = () => {
                     <div className="form-actions">
                         <button type="button" className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={loading}>
-                            {loading ? 'Updating...' : 'Update Student'}
+                            {loading ? (
+                                <><FaSpinner className="spinner-icon" /> Updating...</>
+                            ) : (
+                                'Update Student'
+                            )}
                         </button>
                     </div>
                 </div>

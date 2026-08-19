@@ -250,3 +250,61 @@ input, select, textarea {
     z-index: 10;
     position: relative;
 }
+
+/* Button Loading Spinner */
+.spinner-icon {
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile Responsive Tables (Card View) */
+@media screen and (max-width: 768px) {
+    .data-table, .data-table thead, .data-table tbody, .data-table th, .data-table td, .data-table tr {
+        display: block;
+    }
+    
+    .data-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .data-table tr {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        background-color: var(--surface);
+        box-shadow: var(--shadow-1);
+    }
+    
+    .data-table td {
+        border: none;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+    
+    .data-table td:before {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-secondary);
+        content: attr(data-label);
+    }
+    
+    .data-table td:last-child {
+        border-bottom: 0;
+    }
+}

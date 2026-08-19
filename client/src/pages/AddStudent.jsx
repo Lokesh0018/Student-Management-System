@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { FaSpinner } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
 import './css/AddStudent.css';
@@ -204,7 +205,11 @@ const AddStudent = () => {
                     <div className="form-actions">
                         <button type="button" className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Saving...' : 'Save Student'}
+                            {isSubmitting ? (
+                                <><FaSpinner className="spinner-icon" /> Adding...</>
+                            ) : (
+                                'Add Student'
+                            )}
                         </button>
                     </div>
                 </div>

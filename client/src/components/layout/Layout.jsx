@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
+import { CommandPalette } from '../ui/CommandPalette';
 import { useAuth } from '../../context/AuthContext';
 import { useBreadcrumb } from '../../context/BreadcrumbContext';
 import { FaSearch, FaBell, FaMoon, FaSun, FaBars, FaChevronRight, FaTimes } from 'react-icons/fa';
@@ -15,6 +16,7 @@ export const Layout = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showPalette, setShowPalette] = useState(false);
   
   const { user } = useAuth();
   const { dynamicCrumbs } = useBreadcrumb();
@@ -26,6 +28,17 @@ export const Layout = ({ children }) => {
       fetchNotifications();
     }
   }, [user]);
+
+  React.useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowPalette(true);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   const fetchNotifications = async () => {
       try {
@@ -134,13 +147,9 @@ export const Layout = ({ children }) => {
                 {isCollapsed ? <FaTimes /> : <FaBars />}
               </motion.div>
             </button>
-            <div className="search-bar">
+            <div className="search-bar" onClick={() => setShowPalette(true)} style={{ cursor: 'pointer' }}>
                 <FaSearch className="search-icon" />
-                <input 
-                  type="text" 
-                  placeholder="Search anything..." 
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
+                <div className="search-trigger">Search or jump to... (Ctrl+K)</div>
             </div>
           </div>
           <div className="header-right">
@@ -204,6 +213,7 @@ export const Layout = ({ children }) => {
           {children}
         </div>
       </main>
+      <CommandPalette isOpen={showPalette} onClose={() => setShowPalette(false)} />
     </div>
   );
 };
