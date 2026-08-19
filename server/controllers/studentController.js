@@ -47,6 +47,17 @@ exports.createStudent = async (req, res, next) => {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
+        if (req.user && req.user.role === 'CLASS_TEACHER') {
+            const [classes] = await connection.execute(
+                'SELECT c.id FROM classes c INNER JOIN teachers t ON c.teacher_id = t.id WHERE t.user_id = ? AND c.id = ?',
+                [req.user.id, class_id]
+            );
+            if (classes.length === 0) {
+                await connection.rollback();
+                return res.status(403).json({ success: false, message: 'You can only add students to your assigned class.' });
+            }
+        }
+
         // Check for duplicates
         const [existingAdmission] = await connection.execute('SELECT id FROM students WHERE admission_number = ?', [admission_number]);
         if (existingAdmission.length > 0) {
@@ -108,6 +119,29 @@ exports.updateStudent = async (req, res, next) => {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
+        if (req.user && req.user.role === 'CLASS_TEACHER') {
+            const [classes] = await connection.execute(
+                'SELECT c.id FROM classes c INNER JOIN teachers t ON c.teacher_id = t.id WHERE t.user_id = ? AND c.id = ?',
+                [req.user.id, class_id]
+            );
+            if (classes.length === 0) {
+                await connection.rollback();
+                return res.status(403).json({ success: false, message: 'You can only assign students to your assigned class.' });
+            }
+            
+            const [originalStudent] = await connection.execute('SELECT class_id FROM students WHERE id = ?', [req.params.id]);
+            if (originalStudent.length > 0) {
+                 const [origClasses] = await connection.execute(
+                     'SELECT c.id FROM classes c INNER JOIN teachers t ON c.teacher_id = t.id WHERE t.user_id = ? AND c.id = ?',
+                     [req.user.id, originalStudent[0].class_id]
+                 );
+                 if (origClasses.length === 0) {
+                     await connection.rollback();
+                     return res.status(403).json({ success: false, message: 'You can only modify students from your own class.' });
+                 }
+            }
+        }
+
         // Check for duplicates
         const [existingAdmission] = await connection.execute('SELECT id FROM students WHERE admission_number = ? AND id != ?', [admission_number, req.params.id]);
         if (existingAdmission.length > 0) {
@@ -146,6 +180,18 @@ exports.updateStudent = async (req, res, next) => {
 };
 
 exports.deleteStudent = async (req, res) => {
+    if (req.user && req.user.role === 'CLASS_TEACHER') {
+        const [student] = await pool.execute('SELECT class_id FROM students WHERE id = ?', [req.params.id]);
+        if (student.length === 0) return res.status(404).json({ success: false, message: 'Student not found' });
+        
+        const [classes] = await pool.execute(
+            'SELECT c.id FROM classes c INNER JOIN teachers t ON c.teacher_id = t.id WHERE t.user_id = ? AND c.id = ?',
+            [req.user.id, student[0].class_id]
+        );
+        if (classes.length === 0) {
+            return res.status(403).json({ success: false, message: 'You can only delete students from your own class.' });
+        }
+    }
     await pool.execute('DELETE FROM students WHERE id = ?', [req.params.id]);
     res.json({ success: true, message: 'Student deleted' });
 };

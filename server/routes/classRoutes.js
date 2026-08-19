@@ -5,12 +5,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
 router.use(authMiddleware);
-router.use(roleMiddleware('ADMIN'));
 
-router.get('/', classController.getAllClasses);
-router.get('/:id', classController.getClassById);
-router.post('/', classController.createClass);
-router.put('/:id', classController.updateClass);
-router.delete('/:id', classController.deleteClass);
+router.get('/', roleMiddleware('ADMIN', 'CLASS_TEACHER'), classController.getAllClasses);
+router.get('/:id', roleMiddleware('ADMIN', 'CLASS_TEACHER'), classController.getClassById);
+router.post('/', roleMiddleware('ADMIN'), classController.createClass);
+router.put('/:id', roleMiddleware('ADMIN'), classController.updateClass);
+router.delete('/:id', roleMiddleware('ADMIN'), classController.deleteClass);
 
 module.exports = router;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaEye, FaPen, FaPlus } from 'react-icons/fa';
+import { FaSearch, FaEye, FaPen, FaPlus, FaTrash } from 'react-icons/fa';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
+import StudentImage from '../components/StudentImage';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import './css/StudentList.css';
@@ -20,9 +21,7 @@ const TeacherClassView = () => {
             setIsLoading(true);
             const res = await api.get('/students');
             if (res.data.success) {
-                // In a real app with backend filtering, we'd only get this teacher's students.
-                // For prototype, we will just use the first few to simulate the screenshot
-                setStudents(res.data.data.slice(0, 10));
+                setStudents(res.data.data);
             }
         } catch (error) {
             console.error("Error fetching students:", error);
@@ -49,6 +48,29 @@ const TeacherClassView = () => {
         if (num < 65) return { att: 72 + (id%10), score: 62 + (id%10), status: 'Needs Attention', color: '#f59e0b', bg: '#fffbeb' };
         if (num < 85) return { att: 90 + (id%5), score: 82 + (id%8), status: 'Good', color: '#16a34a', bg: '#f0fdf4' };
         return { att: 96 + (id%4), score: 90 + (id%10), status: 'Excellent', color: '#3b82f6', bg: '#eff6ff' };
+    };
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [studentToDelete, setStudentToDelete] = useState(null);
+
+    const openDeleteModal = (e, id) => {
+        e.stopPropagation();
+        setStudentToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!studentToDelete) return;
+        try {
+            await api.delete(`/students/${studentToDelete}`);
+            fetchStudents();
+            setIsDeleteModalOpen(false);
+            setStudentToDelete(null);
+            toast.success("Student deleted successfully");
+        } catch (error) {
+            console.error("Error deleting student:", error);
+            toast.error(error.response?.data?.message || "Failed to delete student");
+        }
     };
 
     return (
@@ -80,7 +102,7 @@ const TeacherClassView = () => {
                         </select>
                     </div>
                     
-                    <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/teacher/students/add')}>
                         <FaPlus /> Add Student
                     </button>
                 </div>
@@ -123,7 +145,21 @@ const TeacherClassView = () => {
                                     <tr key={student.id} className="clickable-row">
                                         <td data-label="Roll No." className="fw-500">{1001 + index}</td>
                                         <td data-label="Name">
-                                            <span className="fw-500 text-primary">{student.first_name} {student.last_name}</span>
+                                            <div className="student-name-cell" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                {student.photo ? (
+                                                    <StudentImage 
+                                                        studentId={student.id} 
+                                                        studentName={`${student.first_name}`} 
+                                                        className="table-avatar" 
+                                                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                                                    />
+                                                ) : (
+                                                    <div className="table-avatar-placeholder" style={{ backgroundColor: '#818cf8', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
+                                                        {student.first_name.charAt(0)}{student.last_name.charAt(0)}
+                                                    </div>
+                                                )}
+                                                <span className="fw-500 text-primary">{student.first_name} {student.last_name}</span>
+                                            </div>
                                         </td>
                                         <td data-label="Section">{student.section || 'A'}</td>
                                         <td data-label="Attendance">{mockData.att}%</td>
@@ -141,11 +177,14 @@ const TeacherClassView = () => {
                                         </td>
                                         <td data-label="Actions" className="text-right">
                                             <div className="action-buttons-group">
-                                                <button className="action-btn-icon text-blue" onClick={() => navigate(`/admin/students/${student.id}`)}>
+                                                <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/teacher/students/${student.id}`); }}>
                                                     <FaEye />
                                                 </button>
-                                                <button className="action-btn-icon text-blue" onClick={() => navigate(`/admin/students/${student.id}/edit`)}>
+                                                <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); navigate(`/teacher/students/${student.id}/edit`); }}>
                                                     <FaPen />
+                                                </button>
+                                                <button className="action-btn-icon text-red" onClick={(e) => openDeleteModal(e, student.id)}>
+                                                    <FaTrash />
                                                 </button>
                                             </div>
                                         </td>
@@ -157,18 +196,23 @@ const TeacherClassView = () => {
                 </table>
                 
                 <div className="pagination-footer">
-                    <span className="pagination-info">Showing 1 to {filteredStudents.length} of 42 students</span>
-                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                        <button className="btn-outline" style={{ padding: '4px 8px', border: 'none' }}>&lt;</button>
-                        <button className="btn-primary" style={{ padding: '4px 10px', minWidth: '32px' }}>1</button>
-                        <button className="btn-outline" style={{ padding: '4px 10px', border: 'none', color: '#64748b' }}>2</button>
-                        <button className="btn-outline" style={{ padding: '4px 10px', border: 'none', color: '#64748b' }}>3</button>
-                        <button className="btn-outline" style={{ padding: '4px 10px', border: 'none', color: '#64748b' }}>4</button>
-                        <button className="btn-outline" style={{ padding: '4px 10px', border: 'none', color: '#64748b' }}>5</button>
-                        <button className="btn-outline" style={{ padding: '4px 8px', border: 'none' }}>&gt;</button>
-                    </div>
+                    <span className="pagination-info">Showing {filteredStudents.length} students</span>
+                    {/* Pagination controls hidden until backend supports it */}
                 </div>
             </div>
+
+            {isDeleteModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+                            <button className="btn-primary" style={{backgroundColor: '#ef4444', borderColor: '#ef4444'}} onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

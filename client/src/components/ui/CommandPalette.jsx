@@ -28,7 +28,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     } else if (user?.role === 'CLASS_TEACHER' || user?.role === 'TEACHER') {
         commands = [
             { id: 'dashboard', name: 'Go to Dashboard', path: '/teacher/dashboard', icon: <FaSearch /> },
-            { id: 'my-class', name: 'My Class Students', path: '/teacher/my-class', icon: <FaUserGraduate /> },
+            { id: 'students', name: 'My Class Students', path: '/teacher/students', icon: <FaUserGraduate /> },
             { id: 'attendance', name: 'Mark Attendance', path: '/teacher/attendance', icon: <FaClipboardList /> },
             { id: 'marks', name: 'Enter Marks', path: '/teacher/marks', icon: <FaBook /> },
             { id: 'performance', name: 'Class Performance', path: '/teacher/performance', icon: <FaChartLine /> },

@@ -10,12 +10,11 @@ router.get('/:id/image', studentController.getStudentImage);
 
 router.use(authMiddleware);
 
-// Admin has full access. Teachers and Parents should have limited access, but we'll restrict those in their own routes or modify later.
-// For Phase 7, standard Admin management.
+// Admin has full access. Teachers have access to CRUD but are restricted in controller.
 router.get('/', roleMiddleware('ADMIN', 'CLASS_TEACHER', 'PARENT'), studentController.getAllStudents);
 router.get('/:id', roleMiddleware('ADMIN', 'CLASS_TEACHER', 'PARENT'), studentController.getStudentById);
-router.post('/', roleMiddleware('ADMIN'), studentController.createStudent);
-router.put('/:id', roleMiddleware('ADMIN'), studentController.updateStudent);
-router.delete('/:id', roleMiddleware('ADMIN'), studentController.deleteStudent);
+router.post('/', roleMiddleware('ADMIN', 'CLASS_TEACHER'), studentController.createStudent);
+router.put('/:id', roleMiddleware('ADMIN', 'CLASS_TEACHER'), studentController.updateStudent);
+router.delete('/:id', roleMiddleware('ADMIN', 'CLASS_TEACHER'), studentController.deleteStudent);
 
 module.exports = router;

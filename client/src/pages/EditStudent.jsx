@@ -4,11 +4,13 @@ import { FaCloudUploadAlt, FaSpinner } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
 import { useBreadcrumb } from '../context/BreadcrumbContext';
+import { useAuth } from '../context/AuthContext';
 import './css/AddStudent.css';
 
 const EditStudent = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const { setDynamicCrumb } = useBreadcrumb();
     const [formData, setFormData] = useState({
         first_name: '',
@@ -95,7 +97,7 @@ const EditStudent = () => {
         
         try {
             await api.put(`/students/${id}`, formData);
-            navigate('/admin/students');
+            navigate(user?.role === 'CLASS_TEACHER' ? '/teacher/students' : '/admin/students');
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || 'Failed to update student');
@@ -248,7 +250,7 @@ const EditStudent = () => {
                     </div>
 
                     <div className="form-actions">
-                        <button type="button" className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
+                        <button type="button" className="btn-secondary" onClick={() => navigate(user?.role === 'CLASS_TEACHER' ? '/teacher/students' : '/admin/students')}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={loading}>
                             {loading ? (
                                 <><FaSpinner className="spinner-icon" /> Updating...</>

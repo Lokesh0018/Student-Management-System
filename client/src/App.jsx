@@ -203,9 +203,27 @@ function App() {
           </ProtectedRoute>
         } />
 
-        <Route path="/teacher/my-class" element={
+        <Route path="/teacher/students" element={
           <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
             <TeacherClassView />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/teacher/students/add" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <AddStudent />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/teacher/students/:id/edit" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <EditStudent />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/teacher/students/:id" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <StudentManagement />
           </ProtectedRoute>
         } />
 

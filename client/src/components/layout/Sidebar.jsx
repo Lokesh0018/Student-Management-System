@@ -66,8 +66,8 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
               <NavLink to="/teacher/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaTachometerAlt className="sidebar-icon" /> <span>Dashboard</span>
               </NavLink>
-              <NavLink to="/teacher/my-class" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-                <FaUsers className="sidebar-icon" /> <span>My Class</span>
+              <NavLink to="/teacher/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaUserGraduate className="sidebar-icon" /> <span>Students</span>
               </NavLink>
               <NavLink to="/teacher/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaCalendarCheck className="sidebar-icon" /> <span>Attendance</span>

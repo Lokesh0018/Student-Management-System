@@ -5,12 +5,14 @@ import api from '../utils/api';
 import StudentImage from '../components/StudentImage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBreadcrumb } from '../context/BreadcrumbContext';
+import { useAuth } from '../context/AuthContext';
 import './css/StudentProfile.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
 
 const StudentManagement = () => {
     const { id } = useParams();
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('Overview');
     const [student, setStudent] = useState(null);
     const { setDynamicCrumb } = useBreadcrumb();
@@ -254,7 +256,7 @@ const StudentManagement = () => {
             <div className="page-header-row">
                 <h1 className="page-title">Student Profile</h1>
                 <div className="header-actions">
-                    <Link to={`/admin/students/${student.id}/edit`} className="btn-outline-dark" style={{textDecoration: 'none'}}><FaEdit /> Edit Profile</Link>
+                    <Link to={user?.role === 'CLASS_TEACHER' ? `/teacher/students/${student.id}/edit` : `/admin/students/${student.id}/edit`} className="btn-outline-dark" style={{textDecoration: 'none'}}><FaEdit /> Edit Profile</Link>
                     <button className="btn-primary"><FaDownload /> Export Report</button>
                 </div>
             </div>

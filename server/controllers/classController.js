@@ -1,12 +1,20 @@
 const pool = require('../config/db');
 
 exports.getAllClasses = async (req, res) => {
-    const [classes] = await pool.execute(`
+    let query = `
         SELECT c.*, t.name as teacher_name,
                (SELECT COUNT(*) FROM students s WHERE s.class_id = c.id) as student_count
         FROM classes c
         LEFT JOIN teachers t ON c.teacher_id = t.id
-    `);
+    `;
+    let params = [];
+
+    if (req.user && req.user.role === 'CLASS_TEACHER') {
+        query += ` WHERE t.user_id = ?`;
+        params.push(req.user.id);
+    }
+
+    const [classes] = await pool.execute(query, params);
     res.json({ success: true, data: classes });
 };
 

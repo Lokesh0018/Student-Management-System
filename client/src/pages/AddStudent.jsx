@@ -5,10 +5,12 @@ import toast from 'react-hot-toast';
 import { FaSpinner } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
+import { useAuth } from '../context/AuthContext';
 import './css/AddStudent.css';
 
 const AddStudent = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [classes, setClasses] = useState([]);
     
     const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({
@@ -54,7 +56,7 @@ const AddStudent = () => {
         try {
             await api.post('/students', data);
             toast.success('Student added successfully!');
-            navigate('/admin/students');
+            navigate(user?.role === 'CLASS_TEACHER' ? '/teacher/students' : '/admin/students');
         } catch (err) {
             console.error(err);
             toast.error(err.response?.data?.message || 'Failed to add student.');
@@ -203,7 +205,7 @@ const AddStudent = () => {
                     </div>
 
                     <div className="form-actions">
-                        <button type="button" className="btn-secondary" onClick={() => navigate('/admin/students')}>Cancel</button>
+                        <button type="button" className="btn-secondary" onClick={() => navigate(user?.role === 'CLASS_TEACHER' ? '/teacher/students' : '/admin/students')}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <><FaSpinner className="spinner-icon" /> Adding...</>
