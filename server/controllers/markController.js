@@ -44,16 +44,22 @@ exports.saveMarks = async (req, res) => {
             else if (percentage >= 50) grade = 'C';
             else if (percentage >= 40) grade = 'D';
 
-            // Upsert
-            await connection.execute(`
-                INSERT INTO marks (student_id, exam_id, subject_id, marks_obtained, max_marks, grade, remarks)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                marks_obtained = VALUES(marks_obtained),
-                max_marks = VALUES(max_marks),
-                grade = VALUES(grade),
-                remarks = VALUES(remarks)
-            `, [mark.student_id, mark.exam_id, mark.subject_id, mark.marks_obtained, mark.max_marks, grade, mark.remarks]);
+            const [existing] = await connection.execute(
+                'SELECT id FROM marks WHERE student_id = ? AND exam_id = ? AND subject_id = ? LIMIT 1',
+                [mark.student_id, mark.exam_id, mark.subject_id]
+            );
+
+            if (existing.length > 0) {
+                await connection.execute(
+                    'UPDATE marks SET marks_obtained = ?, max_marks = ?, grade = ?, remarks = ? WHERE id = ?',
+                    [mark.marks_obtained, mark.max_marks, grade, mark.remarks, existing[0].id]
+                );
+            } else {
+                await connection.execute(
+                    'INSERT INTO marks (student_id, exam_id, subject_id, marks_obtained, max_marks, grade, remarks) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [mark.student_id, mark.exam_id, mark.subject_id, mark.marks_obtained, mark.max_marks, grade, mark.remarks]
+                );
+            }
         }
         
         await connection.commit();

@@ -46,24 +46,9 @@
     font-weight: 500;
 }
 
-.btn-primary {
-    background: var(--primary);
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s;
-}
 
-.btn-primary:hover {
-    background-color: #2563eb;
-}
+
+
 
 /* Filter Card */
 .filter-card {
@@ -412,19 +397,7 @@
     gap: 12px;
 }
 
-.btn-secondary {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
 
-.btn-secondary:hover {
-    background-color: #f1f5f9;
-}
+
+
 

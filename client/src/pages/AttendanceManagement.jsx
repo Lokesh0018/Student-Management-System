@@ -44,10 +44,13 @@ const AttendanceManagement = () => {
             // The API returns student details. If attendance exists, it has `status`.
             // We'll standardize this for the UI state.
             
-            setStudents(fetchedStudents);
+            // Deduplicate in case of existing dirty data in the database
+            const uniqueStudents = Array.from(new Map(fetchedStudents.map(item => [item.id, item])).values());
+            
+            setStudents(uniqueStudents);
             
             const existingAttendance = {};
-            fetchedStudents.forEach(s => {
+            uniqueStudents.forEach(s => {
                 existingAttendance[s.id] = s.status;
             });
             setAttendanceData(existingAttendance);

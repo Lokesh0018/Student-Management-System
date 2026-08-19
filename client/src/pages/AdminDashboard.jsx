@@ -10,6 +10,7 @@ import './css/AdminDashboard.css';
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [hoveredAttendance, setHoveredAttendance] = useState({ name: 'Present', value: 94, color: '#3b82f6' });
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -157,7 +158,7 @@ const AdminDashboard = () => {
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color, #cbd5e1)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
@@ -187,16 +188,17 @@ const AdminDashboard = () => {
                                         isAnimationActive={true}
                                         animationDuration={1500}
                                         animationEasing="ease-out"
+                                        onMouseEnter={(_, index) => setHoveredAttendance(attendanceData[index])}
                                     >
                                         {attendanceData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                     </Pie>
-                                    <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
                                 </PieChart>
                             </ResponsiveContainer>
                             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b' }}>94%</span>
+                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: hoveredAttendance.color }}>{hoveredAttendance.value}%</span>
+                                <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{hoveredAttendance.name}</div>
                             </div>
                         </div>
                         <div className="donut-legend">
@@ -303,7 +305,7 @@ const AdminDashboard = () => {
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={classData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color, #cbd5e1)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} cursor={{ fill: '#f8fafc' }} />

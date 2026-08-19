@@ -9,7 +9,7 @@
     width: 100vw;
     align-items: center;
     justify-content: center;
-    background-color: #f4f4f5; /* Light gray background */
+    background-color: var(--bg);
     z-index: 1000;
     padding: 24px;
 }
@@ -39,15 +39,27 @@
     100% { transform: scale(0.9); opacity: 0.7; }
 }
 
+.dark-mode-img {
+    display: none !important;
+}
+
+.dark-mode .dark-mode-img {
+    display: block !important;
+}
+
+.dark-mode .light-mode-img {
+    display: none !important;
+}
+
 .login-split-card {
     display: flex;
     width: 100%;
     max-width: 1100px;
     height: 100%;
     max-height: 800px;
-    background: #ffffff;
+    background: var(--surface);
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-2);
     overflow: hidden;
 }
 
@@ -134,13 +146,13 @@
 .form-header h2 {
     font-size: 32px;
     font-weight: 800;
-    color: #111827;
+    color: var(--text-primary);
     margin: 0 0 8px 0;
 }
 
 .form-header p {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -153,7 +165,7 @@
 .input-group label {
     font-size: 12px;
     font-weight: 700;
-    color: #4b5563;
+    color: var(--text-secondary);
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -161,11 +173,11 @@
 
 .input-group input {
     padding: 14px 16px;
-    border: 1px solid transparent;
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    background-color: #f3f4f6; /* Soft gray */
-    color: #111827;
+    background-color: var(--bg);
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 
@@ -173,7 +185,7 @@
     outline: none;
     border-color: var(--primary);
     background-color: var(--surface);
-    box-shadow: 0 0 0 3px rgba(0, 30, 84, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.1);
 }
 
 .password-input-wrapper {
@@ -193,7 +205,7 @@
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: #9ca3af;
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 0;
     display: flex;
@@ -201,7 +213,7 @@
 }
 
 .toggle-password:hover {
-    color: #4b5563;
+    color: var(--text-primary);
 }
 
 .form-options {
@@ -216,7 +228,7 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #4b5563;
+    color: var(--text-secondary);
     cursor: pointer;
 }
 
@@ -267,7 +279,7 @@
     justify-content: center;
     gap: 8px;
     margin-top: 48px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 12px;
 }
 
@@ -276,13 +288,14 @@
 }
 
 .error-message {
-    background-color: #fef2f2;
-    color: #ef4444;
+    background-color: var(--danger-bg);
+    color: var(--danger);
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 24px;
     font-size: 14px;
     text-align: center;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .loader {

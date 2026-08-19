@@ -64,7 +64,8 @@ const Login = () => {
     if (pageLoading) {
         return (
             <div className="login-splash-screen">
-                <img src="/icon.png" alt="Loading..." className="splash-logo" />
+                <img src="/icon.png" alt="Loading..." className="splash-logo light-mode-img" />
+                <img src="/logo.png" alt="Loading..." className="splash-logo dark-mode-img" />
             </div>
         );
     }
@@ -76,7 +77,8 @@ const Login = () => {
                 <div className="login-brand-panel">
                     <div className="brand-header">
                         <div className="brand-icon">
-                            <img src="/icon.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src="/icon.png" alt="Logo" className="light-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src="/logo.png" alt="Logo" className="dark-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                         </div>
                     </div>
                     

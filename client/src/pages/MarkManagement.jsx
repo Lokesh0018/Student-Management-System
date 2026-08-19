@@ -44,7 +44,8 @@ const MarkManagement = () => {
                 api.get(`/marks?exam_id=${filters.exam_id}&class_id=${filters.class_id}&subject_id=${filters.subject_id}`)
             ]);
             
-            const classStudents = studentsRes.data.data.filter(s => s.class_id == filters.class_id);
+            const rawClassStudents = studentsRes.data.data.filter(s => s.class_id == filters.class_id);
+            const classStudents = Array.from(new Map(rawClassStudents.map(item => [item.id, item])).values());
             setStudents(classStudents);
             
             const existingMarks = {};

@@ -25,13 +25,22 @@ exports.saveAttendance = async (req, res) => {
         await connection.beginTransaction();
         
         for (const record of attendanceData) {
-            // Upsert attendance
-            await connection.execute(`
-                INSERT INTO attendance (student_id, date, class_id, status)
-                VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                status = VALUES(status)
-            `, [record.student_id, date, class_id, record.status]);
+            const [existing] = await connection.execute(
+                'SELECT id FROM attendance WHERE student_id = ? AND date = ? LIMIT 1', 
+                [record.student_id, date]
+            );
+            
+            if (existing.length > 0) {
+                await connection.execute(
+                    'UPDATE attendance SET status = ? WHERE id = ?',
+                    [record.status, existing[0].id]
+                );
+            } else {
+                await connection.execute(
+                    'INSERT INTO attendance (student_id, date, class_id, status) VALUES (?, ?, ?, ?)',
+                    [record.student_id, date, class_id, record.status]
+                );
+            }
         }
         
         await connection.commit();

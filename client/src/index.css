@@ -308,3 +308,104 @@ input, select, textarea {
         border-bottom: 0;
     }
 }
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 168, 232, 0.2);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: rgba(0, 30, 84, 0.9);
+    box-shadow: 0 6px 12px rgba(0, 30, 84, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, opacity 0.2s;
+    justify-content: center;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--border);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-danger {
+    background: var(--danger);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, opacity 0.2s;
+    justify-content: center;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #dc2626;
+}
+
+.btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Dark Mode Button Overrides */
+.dark-mode .btn-primary, .dark-mode .login-btn {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 12px rgba(0, 168, 232, 0.3);
+    border: none;
+}
+
+.dark-mode .btn-primary:hover:not(:disabled), .dark-mode .login-btn:hover {
+    background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+    box-shadow: 0 6px 16px rgba(0, 168, 232, 0.4);
+    transform: translateY(-1px);
+}
+
+.dark-mode .btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.dark-mode .btn-secondary:hover:not(:disabled) {
+    background: rgba(255,255,255,0.05);
+}

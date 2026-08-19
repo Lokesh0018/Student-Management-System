@@ -216,7 +216,7 @@
 .user-name {
   font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .user-role {

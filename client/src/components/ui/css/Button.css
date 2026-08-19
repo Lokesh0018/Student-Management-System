@@ -13,24 +13,13 @@
   outline: none;
 }
 
-.btn-primary {
-  background: var(--primary-gradient);
-  color: var(--surface);
-}
 
-.btn-primary:hover {
-  filter: brightness(1.1);
-}
 
-.btn-secondary {
-  background-color: var(--surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
 
-.btn-secondary:hover {
-  background-color: var(--bg);
-}
+
+
+
+
 
 .btn-ghost {
   background-color: transparent;
