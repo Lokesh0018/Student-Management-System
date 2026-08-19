@@ -15,6 +15,7 @@ const StudentList = React.lazy(() => import('./pages/StudentList'));
 const StudentManagement = React.lazy(() => import('./pages/StudentManagement'));
 const AddStudent = React.lazy(() => import('./pages/AddStudent'));
 const EditStudent = React.lazy(() => import('./pages/EditStudent'));
+const TeacherClassView = React.lazy(() => import('./pages/TeacherClassView'));
 const AddTeacher = React.lazy(() => import('./pages/AddTeacher'));
 const EditTeacher = React.lazy(() => import('./pages/EditTeacher'));
 const TeachersList = React.lazy(() => import('./pages/TeachersList'));
@@ -196,10 +197,15 @@ function App() {
             <ReportsList />
           </ProtectedRoute>
         } />
-        
         <Route path="/teacher/dashboard" element={
           <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
             <TeacherDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/teacher/my-class" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <TeacherClassView />
           </ProtectedRoute>
         } />
 

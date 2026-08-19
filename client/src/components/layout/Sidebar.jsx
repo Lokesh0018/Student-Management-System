@@ -26,38 +26,63 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
         </div>
         
         <nav className="sidebar-nav">
-          <NavLink to="/admin/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaTachometerAlt className="sidebar-icon" /> <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/admin/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaUserGraduate className="sidebar-icon" /> <span>Students</span>
-          </NavLink>
-          <NavLink to="/admin/teachers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaChalkboardTeacher className="sidebar-icon" /> <span>Teachers</span>
-          </NavLink>
-          <NavLink to="/admin/classes" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaBook className="sidebar-icon" /> <span>Classes</span>
-          </NavLink>
+          {user?.role === 'ADMIN' && (
+            <>
+              <NavLink to="/admin/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaTachometerAlt className="sidebar-icon" /> <span>Dashboard</span>
+              </NavLink>
+              <NavLink to="/admin/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaUserGraduate className="sidebar-icon" /> <span>Students</span>
+              </NavLink>
+              <NavLink to="/admin/teachers" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaChalkboardTeacher className="sidebar-icon" /> <span>Teachers</span>
+              </NavLink>
+              <NavLink to="/admin/classes" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaBook className="sidebar-icon" /> <span>Classes</span>
+              </NavLink>
+              <NavLink to="/admin/exams" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaClipboardList className="sidebar-icon" /> <span>Examinations</span>
+              </NavLink>
+              <NavLink to="/admin/subjects" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaBookOpen className="sidebar-icon" /> <span>Subjects</span>
+              </NavLink>
+              <NavLink to="/admin/marks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaRegFileAlt className="sidebar-icon" /> <span>Marks</span>
+              </NavLink>
+              <NavLink to="/admin/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaCalendarCheck className="sidebar-icon" /> <span>Attendance</span>
+              </NavLink>
+              <NavLink to="/admin/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
+              </NavLink>
+              <NavLink to="/admin/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaChartLine className="sidebar-icon" /> <span>Reports</span>
+              </NavLink>
+            </>
+          )}
 
-          <NavLink to="/admin/exams" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaClipboardList className="sidebar-icon" /> <span>Examinations</span>
-          </NavLink>
-          <NavLink to="/admin/subjects" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaBookOpen className="sidebar-icon" /> <span>Subjects</span>
-          </NavLink>
-          <NavLink to="/admin/marks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaRegFileAlt className="sidebar-icon" /> <span>Marks</span>
-          </NavLink>
-          <NavLink to="/admin/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaCalendarCheck className="sidebar-icon" /> <span>Attendance</span>
-          </NavLink>
-          <NavLink to="/admin/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
-          </NavLink>
-
-          <NavLink to="/admin/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <FaChartLine className="sidebar-icon" /> <span>Reports</span>
-          </NavLink>
+          {user?.role === 'CLASS_TEACHER' && (
+            <>
+              <NavLink to="/teacher/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaTachometerAlt className="sidebar-icon" /> <span>Dashboard</span>
+              </NavLink>
+              <NavLink to="/teacher/my-class" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaUsers className="sidebar-icon" /> <span>My Class</span>
+              </NavLink>
+              <NavLink to="/teacher/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaCalendarCheck className="sidebar-icon" /> <span>Attendance</span>
+              </NavLink>
+              <NavLink to="/teacher/marks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaRegFileAlt className="sidebar-icon" /> <span>Marks</span>
+              </NavLink>
+              <NavLink to="/teacher/performance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaChartLine className="sidebar-icon" /> <span>Performance</span>
+              </NavLink>
+              <NavLink to="/teacher/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
+              </NavLink>
+            </>
+          )}
         </nav>
 
         <div className="sidebar-footer">
