@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import Skeleton from 'react-loading-skeleton';
@@ -73,7 +74,11 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="dashboard-container">
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="dashboard-container"
+        >
             <div className="dashboard-header-main">
                 <h1 className="dash-title">Good Morning, Admin! 👋</h1>
                 <p className="dash-subtitle">Here's what's happening in your school today.</p>
@@ -81,7 +86,7 @@ const AdminDashboard = () => {
             
             {/* Top Stat Cards */}
             <div className="stats-row">
-                <div className="stat-card">
+                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
                     <div className="stat-icon-square" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
                         <FaUserGraduate />
                     </div>
@@ -92,9 +97,9 @@ const AdminDashboard = () => {
                         </div>
                         <span className="stat-trend trend-up">+4.2% this month</span>
                     </div>
-                </div>
+                </motion.div>
                 
-                <div className="stat-card">
+                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
                     <div className="stat-icon-square" style={{ backgroundColor: '#fef2f2', color: '#ef4444' }}>
                         <FaChalkboardTeacher />
                     </div>
@@ -105,9 +110,9 @@ const AdminDashboard = () => {
                         </div>
                         <span className="stat-trend trend-up">+2 this month</span>
                     </div>
-                </div>
+                </motion.div>
                 
-                <div className="stat-card">
+                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
                     <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#3b82f6' }}>
                         <FaUsers />
                     </div>
@@ -118,9 +123,9 @@ const AdminDashboard = () => {
                         </div>
                         <span className="stat-trend trend-up">+5.1% this month</span>
                     </div>
-                </div>
+                </motion.div>
                 
-                <div className="stat-card">
+                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
                     <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}>
                         <FaBook />
                     </div>
@@ -131,13 +136,13 @@ const AdminDashboard = () => {
                         </div>
                         <span className="stat-trend trend-up">+1 this month</span>
                     </div>
-                </div>
+                </motion.div>
             </div>
 
             {/* Middle Row */}
             <div className="middle-row">
                 {/* Line Chart */}
-                <div className="dash-panel panel-chart">
+                <motion.div className="dash-panel panel-chart" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Student Performance Overview</h3>
                         <button className="btn-outline">This Month <span>&#9662;</span></button>
@@ -153,10 +158,10 @@ const AdminDashboard = () => {
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Donut Chart */}
-                <div className="dash-panel panel-donut">
+                <motion.div className="dash-panel panel-donut" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Attendance Overview</h3>
                         <button className="btn-outline">This Month <span>&#9662;</span></button>
@@ -202,10 +207,10 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Remarks List */}
-                <div className="dash-panel panel-remarks">
+                <motion.div className="dash-panel panel-remarks" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Recent Remarks</h3>
                         <a href="#" className="link-view-all">View All</a>
@@ -242,12 +247,12 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
 
             {/* Bottom Row */}
             <div className="bottom-row">
-                <div className="dash-panel panel-exams">
+                <motion.div className="dash-panel panel-exams" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Upcoming Examinations</h3>
                         <a href="#" className="link-view-all">View All</a>
@@ -278,9 +283,9 @@ const AdminDashboard = () => {
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </motion.div>
 
-                <div className="dash-panel panel-students-class">
+                <motion.div className="dash-panel panel-students-class" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Students by Class</h3>
                         <button className="btn-outline">This Month <span>&#9662;</span></button>
@@ -296,9 +301,9 @@ const AdminDashboard = () => {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </motion.div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

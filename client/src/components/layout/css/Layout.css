@@ -14,6 +14,10 @@
   flex-direction: column;
 }
 
+.layout-collapsed .main-content {
+  margin-left: 80px;
+}
+
 .top-header {
   display: flex;
   align-items: center;
@@ -239,7 +243,29 @@
     flex: 1;
 }
 
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.breadcrumb-separator {
+  font-size: 10px;
+  color: #cbd5e1;
+}
+
+.breadcrumb-item.active {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
 @media (max-width: 1024px) {
+  .desktop-only {
+    display: none;
+  }
   .main-content {
     margin-left: 0;
   }

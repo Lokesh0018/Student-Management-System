@@ -3,9 +3,11 @@
 :root {
   /* Brand Colors */
   --primary: #00a8e8;
+  --primary-gradient: linear-gradient(135deg, #00a8e8 0%, #0077b6 100%);
   --brand-dark: #0b2545;
   --bg: #f8fafc;
   --surface: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.7);
   --text-primary: #0f172a;
   --text-secondary: #6b7280;
   --border: #e5e7eb;
@@ -34,23 +36,23 @@
   --radius-md: 10px;
   --radius-lg: 16px;
   
-  /* Elevations / Shadows */
-  /* Elevations / Shadows */
-  --shadow-1: 0 4px 10px rgba(0, 0, 0, 0.05); /* Cards/Sidebar */
-  --shadow-2: 0 12px 24px rgba(0, 0, 0, 0.08); /* Dropdowns/Popovers */
-  --shadow-3: 0 24px 48px rgba(0, 0, 0, 0.15); /* Modals */
+  /* Elevations / Shadows - Updated to be softer */
+  --shadow-1: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-2: 0 10px 24px rgba(15, 23, 42, 0.06);
+  --shadow-3: 0 20px 40px rgba(15, 23, 42, 0.1);
 }
 
 /* Dark Mode Theme */
 .dark-mode {
   --bg: #0f172a;
   --surface: #1e293b;
+  --surface-glass: rgba(30, 41, 59, 0.7);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --border: #334155;
-  --shadow-1: 0 4px 10px rgba(0, 0, 0, 0.3);
-  --shadow-2: 0 12px 24px rgba(0, 0, 0, 0.4);
-  --shadow-3: 0 24px 48px rgba(0, 0, 0, 0.5);
+  --shadow-1: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 24px 48px rgba(0, 0, 0, 0.6);
 }
 
 /* Global Reset & Base Styles */
@@ -189,4 +191,34 @@ body {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background-color: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
-import { FaSearch, FaBell, FaMoon } from 'react-icons/fa';
+import { FaSearch, FaBell, FaMoon, FaBars, FaChevronRight, FaTimes } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import debounce from 'lodash.debounce';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ import './css/Layout.css';
 
 export const Layout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -85,14 +87,41 @@ export const Layout = ({ children }) => {
     []
   );
 
+  const getBreadcrumbs = () => {
+    const paths = location.pathname.split('/').filter(p => p);
+    return paths.map((path, index) => (
+      <React.Fragment key={path}>
+        {index > 0 && <FaChevronRight className="breadcrumb-separator" />}
+        <span className={`breadcrumb-item ${index === paths.length - 1 ? 'active' : ''}`}>
+          {path.charAt(0).toUpperCase() + path.slice(1)}
+        </span>
+      </React.Fragment>
+    ));
+  };
+
   return (
-    <div className="app-layout">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className={`app-layout ${isCollapsed ? 'layout-collapsed' : ''}`}>
+      <Sidebar isOpen={isSidebarOpen} isCollapsed={isCollapsed} onClose={() => setSidebarOpen(false)} />
       <main className="main-content">
         <header className="top-header">
           <div className="header-left">
-            <button className="menu-btn mobile-only" onClick={() => setSidebarOpen(true)}>
-              ☰
+            <button className="menu-btn mobile-only" onClick={() => setSidebarOpen(!isSidebarOpen)}>
+              <motion.div
+                initial={false}
+                animate={{ rotate: isSidebarOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isSidebarOpen ? <FaTimes /> : <FaBars />}
+              </motion.div>
+            </button>
+            <button className="menu-btn desktop-only" onClick={() => setIsCollapsed(!isCollapsed)}>
+              <motion.div
+                initial={false}
+                animate={{ rotate: isCollapsed ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isCollapsed ? <FaTimes /> : <FaBars />}
+              </motion.div>
             </button>
             <div className="search-bar">
                 <FaSearch className="search-icon" />
@@ -158,6 +187,9 @@ export const Layout = ({ children }) => {
           </div>
         </header>
         <div className="container fade-in">
+          <div className="breadcrumbs">
+            {getBreadcrumbs()}
+          </div>
           {children}
         </div>
       </main>
