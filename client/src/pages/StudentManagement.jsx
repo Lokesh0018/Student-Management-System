@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, FaArrowUp, FaAngleRight, FaChartBar } from 'react-icons/fa';
 import api from '../utils/api';
 import StudentImage from '../components/StudentImage';
+import { motion, AnimatePresence } from 'framer-motion';
 import './css/StudentProfile.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
@@ -25,6 +26,13 @@ const StudentManagement = () => {
         };
         fetchStudent();
     }, [id]);
+
+    const getAvatarColor = (name) => {
+        const colors = ['#f43f5e', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#6366f1'];
+        if (!name) return colors[0];
+        const charCode = name.charCodeAt(0);
+        return colors[charCode % colors.length];
+    };
 
     const tabs = ['Overview', 'Performance', 'Attendance', 'Remarks'];
 
@@ -239,14 +247,6 @@ const StudentManagement = () => {
 
     return (
         <div className="student-profile-page">
-            <div className="breadcrumbs">
-                <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                <span className="crumb-separator"> &gt; </span>
-                <Link to="/admin/students" className="crumb-link">Students</Link>
-                <span className="crumb-separator"> &gt; </span>
-                <span className="current-crumb">{student.first_name} {student.last_name}</span>
-            </div>
-
             <div className="page-header-row">
                 <h1 className="page-title">Student Profile</h1>
                 <div className="header-actions">
@@ -265,7 +265,7 @@ const StudentManagement = () => {
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                         ) : (
-                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#818cf8', color: 'white', fontSize: '32px', fontWeight: 'bold' }}>
+                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: getAvatarColor(student.first_name), color: 'white', fontSize: '32px', fontWeight: 'bold' }}>
                                 {student.first_name.charAt(0)}{student.last_name.charAt(0)}
                             </div>
                         )}
@@ -312,16 +312,26 @@ const StudentManagement = () => {
                 ))}
             </div>
 
-            <div className="tab-content">
-                {activeTab === 'Overview' && renderOverviewTab()}
-                {activeTab === 'Performance' && renderPerformanceTab()}
-                {activeTab === 'Attendance' && renderAttendanceTab()}
-                {activeTab === 'Remarks' && renderRemarksTab()}
-                {activeTab !== 'Overview' && activeTab !== 'Performance' && activeTab !== 'Attendance' && activeTab !== 'Remarks' && (
-                    <div className="placeholder-tab">
-                        <h3>{activeTab} content coming soon</h3>
-                    </div>
-                )}
+            <div className="tab-content" style={{ position: 'relative' }}>
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {activeTab === 'Overview' && renderOverviewTab()}
+                        {activeTab === 'Performance' && renderPerformanceTab()}
+                        {activeTab === 'Attendance' && renderAttendanceTab()}
+                        {activeTab === 'Remarks' && renderRemarksTab()}
+                        {activeTab !== 'Overview' && activeTab !== 'Performance' && activeTab !== 'Attendance' && activeTab !== 'Remarks' && (
+                            <div className="placeholder-tab">
+                                <h3>{activeTab} content coming soon</h3>
+                            </div>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );

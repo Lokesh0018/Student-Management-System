@@ -222,3 +222,13 @@ body {
 .dark-mode ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+input, select, textarea {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.dark-mode input, .dark-mode select, .dark-mode textarea {
+  color-scheme: dark;
+}

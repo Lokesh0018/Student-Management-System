@@ -62,12 +62,7 @@ const SubjectsList = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Subjects</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Subjects</span>
                     </div>
-                </div>
                 <button className="btn-primary" onClick={() => navigate('/admin/subjects/add')}>
                     <FaPlus /> Add Subject
                 </button>

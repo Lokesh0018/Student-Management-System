@@ -83,14 +83,7 @@ const AddExam = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Add Examination</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <Link to="/admin/exams" className="crumb-link">Examinations</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Add Exam</span>
                     </div>
-                </div>
             </div>
 
             <form className="form-container" onSubmit={handleSubmit}>

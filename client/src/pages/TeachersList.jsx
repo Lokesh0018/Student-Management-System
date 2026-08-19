@@ -70,12 +70,7 @@ const TeachersList = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Teachers</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Teachers</span>
                     </div>
-                </div>
                 <button className="btn-primary" onClick={() => navigate('/admin/teachers/add')}>
                     <FaPlus /> Add Teacher
                 </button>

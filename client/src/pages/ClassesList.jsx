@@ -54,12 +54,7 @@ const ClassesList = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Classes</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Classes</span>
                     </div>
-                </div>
                 <button className="btn-primary" onClick={() => navigate('/admin/classes/add')}>
                     <FaPlus /> Add Class
                 </button>

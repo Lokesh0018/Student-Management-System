@@ -165,7 +165,7 @@
 
 .logout-button {
     padding: 0.5rem 1rem;
-    background-color: white;
+    background-color: var(--surface);
     color: var(--danger);
     border: 1px solid var(--danger);
     border-radius: 6px;

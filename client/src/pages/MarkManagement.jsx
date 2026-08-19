@@ -113,12 +113,7 @@ const MarkManagement = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Marks Management</h1>
-                    <div className="breadcrumbs">
-                        <span className="crumb-link">Dashboard</span>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Marks Management</span>
                     </div>
-                </div>
             </div>
             
             <div className="filter-card" style={{ gap: '16px', display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap' }}>

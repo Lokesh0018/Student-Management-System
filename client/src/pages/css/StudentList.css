@@ -14,7 +14,7 @@
 .page-title {
     font-size: 24px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text-primary);
     margin: 0 0 4px 0;
 }
 
@@ -28,12 +28,12 @@
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-top: 4px;
 }
 
 .crumb-link {
-    color: #64748b;
+    color: var(--text-secondary);
     text-decoration: none;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .current-crumb {
-    color: #0f172a;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -67,14 +67,14 @@
 
 /* Filter Card */
 .filter-card {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     margin-bottom: 24px;
 }
 
@@ -95,10 +95,10 @@
 .search-input-wrap input {
     width: 100%;
     padding: 10px 12px 10px 36px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 14px;
-    color: #0f172a;
+    color: var(--text-primary);
     outline: none;
 }
 
@@ -114,11 +114,11 @@
 
 .filter-select {
     padding: 10px 32px 10px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 14px;
-    color: #334155;
-    background-color: white;
+    color: var(--text-primary);
+    background-color: var(--surface);
     outline: none;
     cursor: pointer;
     appearance: none;
@@ -139,11 +139,13 @@
 
 /* Table Card */
 .table-card {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 .data-table {
@@ -158,15 +160,18 @@
     font-weight: 700;
     color: #475569;
     letter-spacing: 0.05em;
-    background-color: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .data-table td {
     padding: 16px;
     border-bottom: 1px solid #f1f5f9;
     font-size: 14px;
-    color: #334155;
+    color: var(--text-primary);
     vertical-align: middle;
 }
 
@@ -176,11 +181,11 @@
 }
 
 .clickable-row:hover {
-    background-color: #f8fafc;
+    background-color: var(--bg);
 }
 
 .text-secondary {
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .text-right {
@@ -189,7 +194,7 @@
 
 .fw-500 {
     font-weight: 500;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .student-name-cell {
@@ -254,7 +259,7 @@
 }
 
 .text-blue { color: var(--primary); }
-.text-gray { color: #64748b; }
+.text-gray { color: var(--text-secondary); }
 .text-red { color: #ef4444; }
 
 /* Pagination */
@@ -263,12 +268,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border);
 }
 
 .pagination-info {
     font-size: 14px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .pagination-controls {
@@ -326,6 +331,49 @@
     }
 }
 
+@media (max-width: 768px) {
+    /* Responsive Data Table: transform to cards */
+    .data-table, .data-table tbody, .data-table tr, .data-table td {
+        display: block;
+        width: 100%;
+    }
+    .data-table thead {
+        display: none;
+    }
+    .data-table tr {
+        margin-bottom: 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .data-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .data-table td:last-child {
+        border-bottom: none;
+    }
+    .data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 12px;
+        text-transform: uppercase;
+        margin-right: 12px;
+        text-align: left;
+    }
+    .student-name-cell {
+        justify-content: flex-end;
+        flex: 1;
+    }
+}
+
 /* Modal */
 .modal-overlay {
     position: fixed;
@@ -338,7 +386,7 @@
 }
 
 .modal-content {
-    background: white;
+    background: var(--surface);
     padding: 24px;
     border-radius: 12px;
     width: 100%;
@@ -349,7 +397,7 @@
 .modal-content h3 {
     margin: 0 0 12px 0;
     font-size: 18px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .modal-content p {
@@ -365,13 +413,13 @@
 }
 
 .btn-secondary {
-    background: white;
-    border: 1px solid #cbd5e1;
+    background: var(--surface);
+    border: 1px solid var(--border);
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-primary);
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -379,3 +427,4 @@
 .btn-secondary:hover {
     background-color: #f1f5f9;
 }
+

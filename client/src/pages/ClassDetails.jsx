@@ -49,14 +49,7 @@ const ClassDetails = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Class Details</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <Link to="/admin/classes" className="crumb-link">Classes</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">{classData.class_name} - {classData.section}</span>
                     </div>
-                </div>
                 <div className="action-buttons-group">
                     <button className="btn-primary" onClick={() => navigate(`/admin/classes/${id}/edit`)}>Edit Class</button>
                 </div>

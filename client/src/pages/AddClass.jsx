@@ -51,14 +51,7 @@ const AddClass = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Add Class</h1>
-                    <div className="breadcrumbs">
-                        <Link to="/admin/dashboard" className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <Link to="/admin/classes" className="crumb-link">Classes</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Add Class</span>
                     </div>
-                </div>
             </div>
 
             <form className="form-container" onSubmit={handleSubmit}>

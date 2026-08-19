@@ -92,12 +92,7 @@ const RemarkManagement = () => {
             <div className="page-header-row">
                 <div className="page-header-left">
                     <h1 className="page-title">Remarks & Communications</h1>
-                    <div className="breadcrumbs">
-                        <Link to={`/${user?.role?.toLowerCase() || 'admin'}/dashboard`} className="crumb-link">Dashboard</Link>
-                        <span className="crumb-separator">&gt;</span>
-                        <span className="current-crumb">Remarks</span>
                     </div>
-                </div>
                 <button 
                     className={isComposing ? "btn-secondary" : "btn-primary"} 
                     onClick={() => {

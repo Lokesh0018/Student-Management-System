@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
-import { FaSearch, FaBell, FaMoon, FaBars, FaChevronRight, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaBell, FaMoon, FaSun, FaBars, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import debounce from 'lodash.debounce';
-import toast from 'react-hot-toast';
 import './css/Layout.css';
 
 export const Layout = ({ children }) => {
@@ -23,11 +22,6 @@ export const Layout = ({ children }) => {
   React.useEffect(() => {
     if (user) {
       fetchNotifications();
-    }
-    // Check initial dark mode preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setIsDarkMode(true);
-      document.body.classList.add('dark-mode');
     }
   }, [user]);
 
@@ -76,7 +70,6 @@ export const Layout = ({ children }) => {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.body.classList.toggle('dark-mode');
-    toast.success(`Dark mode ${!isDarkMode ? 'enabled' : 'disabled'}!`);
   };
 
   const handleSearch = React.useCallback(
@@ -89,14 +82,30 @@ export const Layout = ({ children }) => {
 
   const getBreadcrumbs = () => {
     const paths = location.pathname.split('/').filter(p => p);
-    return paths.map((path, index) => (
-      <React.Fragment key={path}>
-        {index > 0 && <FaChevronRight className="breadcrumb-separator" />}
-        <span className={`breadcrumb-item ${index === paths.length - 1 ? 'active' : ''}`}>
-          {path.charAt(0).toUpperCase() + path.slice(1)}
-        </span>
-      </React.Fragment>
-    ));
+    let currentPath = '';
+    return paths.map((path, index) => {
+      currentPath += `/${path}`;
+      const isLast = index === paths.length - 1;
+      const formattedPath = path.charAt(0).toUpperCase() + path.slice(1);
+      
+      let linkTarget = currentPath;
+      if (currentPath === '/admin') linkTarget = '/admin/dashboard';
+      if (currentPath === '/teacher') linkTarget = '/teacher/dashboard';
+      if (currentPath === '/parent') linkTarget = '/parent/dashboard';
+      
+      return (
+        <React.Fragment key={path}>
+          {index > 0 && <FaChevronRight className="breadcrumb-separator" />}
+          {isLast ? (
+            <span className="breadcrumb-item active">{formattedPath}</span>
+          ) : (
+            <Link to={linkTarget} className="breadcrumb-item breadcrumb-link" style={{ textDecoration: 'none' }}>
+              {formattedPath}
+            </Link>
+          )}
+        </React.Fragment>
+      );
+    });
   };
 
   return (
@@ -138,7 +147,7 @@ export const Layout = ({ children }) => {
               onClick={toggleDarkMode}
               title="Toggle Dark Mode"
             >
-              <FaMoon />
+              {isDarkMode ? <FaSun /> : <FaMoon />}
             </button>
             <div className="notification-wrapper" style={{ position: 'relative' }}>
               <button 

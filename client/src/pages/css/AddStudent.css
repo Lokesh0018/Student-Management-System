@@ -12,18 +12,18 @@
 }
 
 .form-section {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     margin-bottom: 24px;
 }
 
 .form-section-title {
     font-size: 16px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-primary);
     margin: 0 0 20px 0;
     padding-bottom: 12px;
     border-bottom: 1px solid #f1f5f9;
@@ -48,7 +48,7 @@
 .form-group label {
     font-size: 13px;
     font-weight: 500;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .req {
@@ -59,10 +59,10 @@
 .form-group select,
 .form-group textarea {
     padding: 10px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 14px;
-    color: #0f172a;
+    color: var(--text-primary);
     outline: none;
     transition: border-color 0.2s;
     font-family: inherit;
@@ -83,7 +83,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: #f8fafc;
+    background-color: var(--bg);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -102,7 +102,7 @@
 .upload-box p {
     font-size: 14px;
     font-weight: 500;
-    color: #0f172a;
+    color: var(--text-primary);
     margin: 0 0 4px 0;
 }
 
@@ -130,12 +130,12 @@
 .edit-avatar-preview h4 {
     margin: 0 0 4px 0;
     font-size: 16px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .edit-avatar-sub {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .form-actions {
@@ -145,8 +145,8 @@
 }
 
 .btn-secondary {
-    background: white;
-    border: 1px solid #cbd5e1;
+    background: var(--surface);
+    border: 1px solid var(--border);
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
@@ -186,4 +186,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+
+.form-group input, .form-group select, .form-group textarea {
+  background-color: var(--surface);
 }
