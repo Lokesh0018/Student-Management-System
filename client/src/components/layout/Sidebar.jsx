@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { 
     FaSignOutAlt, FaTachometerAlt, FaUserGraduate, FaChalkboardTeacher, 
     FaUsers, FaBook, FaCalendarCheck, FaClipboardList, FaChartLine, 
-    FaRegFileAlt, FaCog, FaBookOpen
+    FaRegFileAlt, FaCog, FaBookOpen, FaUserCircle, FaBell
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import './css/Sidebar.css';
@@ -79,6 +79,29 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
                 <FaChartLine className="sidebar-icon" /> <span>Performance</span>
               </NavLink>
               <NavLink to="/teacher/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
+              </NavLink>
+            </>
+          )}
+
+          {user?.role === 'PARENT' && (
+            <>
+              <NavLink to="/parent/dashboard" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaTachometerAlt className="sidebar-icon" /> <span>Dashboard</span>
+              </NavLink>
+              <NavLink to="/parent/children" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaUsers className="sidebar-icon" /> <span>My Children</span>
+              </NavLink>
+              <NavLink to="/parent/scorecards" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaClipboardList className="sidebar-icon" /> <span>Scorecards</span>
+              </NavLink>
+              <NavLink to="/parent/performance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaChartLine className="sidebar-icon" /> <span>Performance</span>
+              </NavLink>
+              <NavLink to="/parent/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaCalendarCheck className="sidebar-icon" /> <span>Attendance</span>
+              </NavLink>
+              <NavLink to="/parent/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
               </NavLink>
             </>

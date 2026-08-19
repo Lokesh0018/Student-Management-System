@@ -31,6 +31,14 @@ const AttendanceManagement = React.lazy(() => import('./pages/AttendanceManageme
 const RemarkManagement = React.lazy(() => import('./pages/RemarkManagement'));
 const PerformanceAnalytics = React.lazy(() => import('./pages/PerformanceAnalytics'));
 const ReportsList = React.lazy(() => import('./pages/ReportsList'));
+
+// Parent Pages
+const ParentChildren = React.lazy(() => import('./pages/ParentChildren'));
+const ParentScorecards = React.lazy(() => import('./pages/ParentScorecards'));
+const ParentAttendance = React.lazy(() => import('./pages/ParentAttendance'));
+const ParentPerformance = React.lazy(() => import('./pages/ParentPerformance'));
+const ParentRemarks = React.lazy(() => import('./pages/ParentRemarks'));
+const PlaceholderPage = React.lazy(() => import('./pages/PlaceholderPage'));
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
     
@@ -257,9 +265,33 @@ function App() {
           </ProtectedRoute>
         } />
 
+        <Route path="/parent/children" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentChildren />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/parent/scorecards" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentScorecards />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/parent/performance" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentPerformance />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/parent/attendance" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentAttendance />
+          </ProtectedRoute>
+        } />
+
         <Route path="/parent/remarks" element={
           <ProtectedRoute allowedRoles={['PARENT']}>
-            <RemarkManagement />
+            <ParentRemarks />
           </ProtectedRoute>
         } />
       </Routes>
