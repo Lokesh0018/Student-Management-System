@@ -14,6 +14,7 @@ import './pages/css/Management.css'
 import './pages/css/ReportsList.css'
 import './pages/css/StudentList.css'
 import './pages/css/StudentProfile.css'
+import './components/layout/css/SidebarToggle.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

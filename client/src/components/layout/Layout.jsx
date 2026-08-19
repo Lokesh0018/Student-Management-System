@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
+import { SidebarToggle } from './SidebarToggle';
 import { CommandPalette } from '../ui/CommandPalette';
 import { useAuth } from '../../context/AuthContext';
 import { useBreadcrumb } from '../../context/BreadcrumbContext';
@@ -133,6 +134,10 @@ export const Layout = ({ children }) => {
 
   return (
     <div className={`app-layout ${isCollapsed ? 'layout-collapsed' : ''}`}>
+      <SidebarToggle 
+        isCollapsed={isCollapsed} 
+        onToggle={() => setIsCollapsed(!isCollapsed)} 
+      />
       <Sidebar isOpen={isSidebarOpen} isCollapsed={isCollapsed} onClose={() => setSidebarOpen(false)} />
       <main className="main-content">
         <header className="top-header">
@@ -151,21 +156,7 @@ export const Layout = ({ children }) => {
                 {isSidebarOpen ? <FaTimes /> : <FaBars />}
               </motion.div>
             </button>
-            <button 
-              className="menu-btn desktop-only" 
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-expanded={!isCollapsed}
-            >
-              <motion.div
-                initial={false}
-                animate={{ rotate: isCollapsed ? 180 : 0 }}
-                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-              >
-                {isCollapsed ? <FaBars /> : <FaTimes />}
-              </motion.div>
-            </button>
-            <div className="search-bar" onClick={() => setShowPalette(true)} style={{ cursor: 'pointer' }}>
+            <div className="search-bar" onClick={() => setShowPalette(true)} style={{ cursor: 'pointer', marginLeft: isCollapsed ? '72px' : '0', transition: 'margin-left var(--sidebar-transition-duration) var(--sidebar-transition-ease)' }}>
                 <FaSearch className="search-icon" />
                 <div className="search-trigger">Search or jump to... (Ctrl+K)</div>
             </div>

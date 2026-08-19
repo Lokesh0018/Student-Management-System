@@ -15,7 +15,7 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
     <>
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
       <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''} ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
-        <div className="sidebar-header">
+        <div className="sidebar-header" style={{ paddingLeft: '18px', paddingRight: '60px' }}>
           <div className="brand-icon-small">
             <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>

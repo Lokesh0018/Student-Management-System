@@ -29,6 +29,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: opacity 150ms ease;
 }
 
 .brand-text {
@@ -59,7 +60,8 @@
   width: var(--sidebar-collapsed-width);
 }
 
-.sidebar-collapsed .brand-text {
+.sidebar-collapsed .brand-text,
+.sidebar-collapsed .brand-icon-small {
   opacity: 0;
 }
 

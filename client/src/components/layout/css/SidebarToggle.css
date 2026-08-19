@@ -1,0 +1,119 @@
+.sidebar-toggle-wrapper {
+  position: fixed;
+  top: 18px; /* Match sidebar-header vertical padding */
+  left: 18px; /* Match sidebar-header horizontal padding */
+  width: 40px;
+  height: 40px;
+  z-index: 50;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: transform var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+              background-color 0.2s ease;
+}
+
+.toggle-content-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-logo,
+.toggle-expand-icon,
+.toggle-collapse-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms ease;
+}
+
+.toggle-logo img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.toggle-expand-icon,
+.toggle-collapse-icon {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+/* =======================================
+   COLLAPSED STATE
+   ======================================= */
+.sidebar-toggle-wrapper.collapsed {
+  transform: translateX(0);
+}
+
+.sidebar-toggle-wrapper.collapsed .toggle-collapse-icon {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle-wrapper.collapsed .toggle-expand-icon {
+  opacity: 0;
+}
+
+.sidebar-toggle-wrapper.collapsed .toggle-logo {
+  opacity: 1;
+}
+
+/* Hover effect when collapsed: Logo -> Expand Icon */
+.sidebar-toggle-wrapper.collapsed:hover .toggle-logo {
+  opacity: 0;
+}
+
+.sidebar-toggle-wrapper.collapsed:hover .toggle-expand-icon {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.sidebar-toggle-wrapper.collapsed:hover {
+  background-color: #e2e8f0;
+}
+
+/* =======================================
+   EXPANDED STATE
+   ======================================= */
+.sidebar-toggle-wrapper.expanded {
+  /* Move it to the right side of the 280px sidebar. 
+     Sidebar = 280px. Right padding = 18px.
+     280 - 18 - 40(width) = 222px from left.
+     Since initial left is 18px, we translate by 222 - 18 = 204px */
+  transform: translateX(calc(var(--sidebar-expanded-width) - 40px - 36px));
+}
+
+.sidebar-toggle-wrapper.expanded .toggle-logo,
+.sidebar-toggle-wrapper.expanded .toggle-expand-icon {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle-wrapper.expanded .toggle-collapse-icon {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.7); /* Match sidebar dark text */
+}
+
+/* Hover effect when expanded: Resize Cursor */
+.sidebar-toggle-wrapper.expanded:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: ew-resize;
+}
+
+.sidebar-toggle-wrapper.expanded:hover .toggle-collapse-icon {
+  color: white;
+}
