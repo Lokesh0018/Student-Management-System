@@ -63,7 +63,8 @@ export const Layout = ({ children }) => {
   const getAvatarLetter = (role) => {
     switch (role?.toLowerCase()) {
       case 'admin': return 'A';
-      case 'teacher': return 'T';
+      case 'teacher': 
+      case 'class_teacher': return 'T';
       case 'parent': return 'P';
       default: return 'U';
     }
@@ -72,7 +73,8 @@ export const Layout = ({ children }) => {
   const getRoleClass = (role) => {
     switch (role?.toLowerCase()) {
       case 'admin': return 'admin';
-      case 'teacher': return 'teacher';
+      case 'teacher': 
+      case 'class_teacher': return 'teacher';
       case 'parent': return 'parent';
       default: return '';
     }
@@ -144,7 +146,7 @@ export const Layout = ({ children }) => {
                 animate={{ rotate: isCollapsed ? 180 : 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {isCollapsed ? <FaTimes /> : <FaBars />}
+                {isCollapsed ? <FaBars /> : <FaTimes />}
               </motion.div>
             </button>
             <div className="search-bar" onClick={() => setShowPalette(true)} style={{ cursor: 'pointer' }}>

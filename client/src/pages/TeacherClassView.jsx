@@ -35,20 +35,24 @@ const TeacherClassView = () => {
         fetchStudents();
     }, []);
 
-    const filteredStudents = students.filter(student => {
+    const getMockScore = (id) => {
+        // Generating some mock stats based on ID to simulate the design
+        const num = ((id || 1) * 17) % 100;
+        if (num < 65) return { att: 72 + ((id || 1)%10), score: 62 + ((id || 1)%10), status: 'Needs Attention', color: '#f59e0b', bg: '#fffbeb', filterVal: 'needs_attention' };
+        if (num < 85) return { att: 90 + ((id || 1)%5), score: 82 + ((id || 1)%8), status: 'Good', color: '#16a34a', bg: '#f0fdf4', filterVal: 'good' };
+        return { att: 96 + ((id || 1)%4), score: 90 + ((id || 1)%10), status: 'Excellent', color: '#3b82f6', bg: '#eff6ff', filterVal: 'excellent' };
+    };
+
+    const filteredStudents = students.filter((student, index) => {
         const name = `${student.first_name} ${student.last_name}`;
         const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               String(student.roll_number).toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesSearch;
-    });
+                              
+        const mockData = getMockScore(student.id || index);
+        const matchesStatus = statusFilter === '' || mockData.filterVal === statusFilter;
 
-    const getMockScore = (id) => {
-        // Generating some mock stats based on ID to simulate the design
-        const num = (id * 17) % 100;
-        if (num < 65) return { att: 72 + (id%10), score: 62 + (id%10), status: 'Needs Attention', color: '#f59e0b', bg: '#fffbeb' };
-        if (num < 85) return { att: 90 + (id%5), score: 82 + (id%8), status: 'Good', color: '#16a34a', bg: '#f0fdf4' };
-        return { att: 96 + (id%4), score: 90 + (id%10), status: 'Excellent', color: '#3b82f6', bg: '#eff6ff' };
-    };
+        return matchesSearch && matchesStatus;
+    });
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [studentToDelete, setStudentToDelete] = useState(null);
@@ -142,7 +146,7 @@ const TeacherClassView = () => {
                             filteredStudents.map((student, index) => {
                                 const mockData = getMockScore(student.id || index);
                                 return (
-                                    <tr key={student.id} className="clickable-row">
+                                    <tr key={student.id} className="clickable-row" onClick={() => navigate(`/teacher/students/${student.id}`)}>
                                         <td data-label="Roll No." className="fw-500">{1001 + index}</td>
                                         <td data-label="Name">
                                             <div className="student-name-cell" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

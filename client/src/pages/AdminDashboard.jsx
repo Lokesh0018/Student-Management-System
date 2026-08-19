@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import api from '../utils/api';
@@ -10,13 +10,18 @@ import './css/AdminDashboard.css';
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [hoveredAttendance, setHoveredAttendance] = useState({ name: 'Present', value: 94, color: '#3b82f6' });
+    const [hoveredAttendance, setHoveredAttendance] = useState({ name: 'Present', value: 94, color: '#10b981' });
 
     const getGreeting = () => {
         const hour = new Date().getHours();
         if (hour < 12) return 'Good Morning';
         if (hour < 18) return 'Good Afternoon';
         return 'Good Evening';
+    };
+
+    const getCurrentDate = () => {
+        const options = { day: 'numeric', month: 'short', year: 'numeric', weekday: 'long' };
+        return new Date().toLocaleDateString('en-US', options);
     };
 
     useEffect(() => {
@@ -58,91 +63,104 @@ const AdminDashboard = () => {
     );
 
     const performanceData = [
-      { name: '1 May', score: 75 },
-      { name: '8 May', score: 82 },
-      { name: '15 May', score: 85 },
-      { name: '22 May', score: 80 },
-      { name: '29 May', score: 90 },
+        { name: '1 May', score: 75 },
+        { name: '8 May', score: 82 },
+        { name: '15 May', score: 85 },
+        { name: '22 May', score: 80 },
+        { name: '29 May', score: 90 },
     ];
 
     const attendanceData = [
-      { name: 'Present', value: 94, color: '#3b82f6' },
-      { name: 'Absent', value: 4, color: '#ef4444' },
-      { name: 'Leave', value: 2, color: '#cbd5e1' },
+        { name: 'Present', value: 94, color: '#10b981' },
+        { name: 'Absent', value: 4, color: '#f43f5e' },
+        { name: 'Leave', value: 2, color: '#6366f1' },
     ];
 
     const classData = [
-      { name: '6th', students: 120 },
-      { name: '7th', students: 140 },
-      { name: '8th', students: 160 },
-      { name: '9th', students: 150 },
-      { name: '10th', students: 180 },
-      { name: '11th', students: 170 },
-      { name: '12th', students: 140 },
+        { name: '6th', students: 120 },
+        { name: '7th', students: 140 },
+        { name: '8th', students: 160 },
+        { name: '9th', students: 150 },
+        { name: '10th', students: 180 },
+        { name: '11th', students: 170 },
+        { name: '12th', students: 140 },
     ];
-
+    
     return (
-        <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             className="dashboard-container"
         >
-            <div className="dashboard-header-main">
-                <h1 className="dash-title">{getGreeting()}, Admin! 👋</h1>
-                <p className="dash-subtitle">Here's what's happening in your school today.</p>
+            <div className="dashboard-header-main" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <h1 className="dash-title">{getGreeting()}, Admin! 👋</h1>
+                    <p className="dash-subtitle">Here's what's happening in your school today.</p>
+                </div>
+                <div style={{ padding: '8px 16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#475569', fontSize: '13px', fontWeight: '500' }}>
+                    {getCurrentDate()}
+                </div>
             </div>
-            
+
             {/* Top Stat Cards */}
-            <div className="stats-row">
-                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
-                    <div className="stat-icon-square" style={{ backgroundColor: '#eff6ff', color: '#3b82f6' }}>
-                        <FaUserGraduate />
-                    </div>
-                    <div className="stat-data">
-                        <span className="stat-label">Students</span>
-                        <div className="stat-value-row">
-                            <span className="stat-num">{stats?.totalStudents?.toLocaleString() || '1,245'}</span>
+            <div className="stats-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}>
+                                <FaUserGraduate />
+                            </div>
+                            <span style={{ padding: '4px 10px', backgroundColor: '#eff6ff', color: '#2563eb', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+4.2%</span>
                         </div>
-                        <span className="stat-trend trend-up">+4.2% this month</span>
+                        <div>
+                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Total Students</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.totalStudents?.toLocaleString() || '1,245'}</h3>
+                        </div>
                     </div>
                 </motion.div>
-                
-                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
-                    <div className="stat-icon-square" style={{ backgroundColor: '#fef2f2', color: '#ef4444' }}>
-                        <FaChalkboardTeacher />
-                    </div>
-                    <div className="stat-data">
-                        <span className="stat-label">Teachers</span>
-                        <div className="stat-value-row">
-                            <span className="stat-num">{stats?.totalTeachers?.toLocaleString() || '68'}</span>
+
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)' }}>
+                                <FaChalkboardTeacher />
+                            </div>
+                            <span style={{ padding: '4px 10px', backgroundColor: '#ecfdf5', color: '#059669', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+2</span>
                         </div>
-                        <span className="stat-trend trend-up">+2 this month</span>
+                        <div>
+                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Total Teachers</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.totalTeachers?.toLocaleString() || '68'}</h3>
+                        </div>
                     </div>
                 </motion.div>
-                
-                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
-                    <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#3b82f6' }}>
-                        <FaUsers />
-                    </div>
-                    <div className="stat-data">
-                        <span className="stat-label">Parents</span>
-                        <div className="stat-value-row">
-                            <span className="stat-num">{stats?.totalParents?.toLocaleString() || '1,080'}</span>
+
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.3)' }}>
+                                <FaUsers />
+                            </div>
+                            <span style={{ padding: '4px 10px', backgroundColor: '#fffbeb', color: '#d97706', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+5.1%</span>
                         </div>
-                        <span className="stat-trend trend-up">+5.1% this month</span>
+                        <div>
+                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Total Parents</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.totalParents?.toLocaleString() || '1,080'}</h3>
+                        </div>
                     </div>
                 </motion.div>
-                
-                <motion.div className="stat-card" whileHover={{ y: -4, boxShadow: 'var(--shadow-2)' }}>
-                    <div className="stat-icon-square" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}>
-                        <FaBook />
-                    </div>
-                    <div className="stat-data">
-                        <span className="stat-label">Classes</span>
-                        <div className="stat-value-row">
-                            <span className="stat-num">{stats?.totalClasses?.toLocaleString() || '32'}</span>
+
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(168, 85, 247, 0.3)' }}>
+                                <FaBook />
+                            </div>
+                            <span style={{ padding: '4px 10px', backgroundColor: '#faf5ff', color: '#7e22ce', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+1</span>
                         </div>
-                        <span className="stat-trend trend-up">+1 this month</span>
+                        <div>
+                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Total Classes</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.totalClasses?.toLocaleString() || '32'}</h3>
+                        </div>
                     </div>
                 </motion.div>
             </div>
@@ -157,13 +175,19 @@ const AdminDashboard = () => {
                     </div>
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <AreaChart data={performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="colorScoreAdmin" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color, #cbd5e1)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
-                            </LineChart>
+                                <Area type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorScoreAdmin)" activeDot={{ r: 6 }} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
+                            </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>
@@ -203,17 +227,17 @@ const AdminDashboard = () => {
                         </div>
                         <div className="donut-legend">
                             <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#3b82f6'}}></span>
+                                <span className="legend-dot" style={{ backgroundColor: '#10b981' }}></span>
                                 <span className="legend-label">Present</span>
                                 <span className="legend-val">94%</span>
                             </div>
                             <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#ef4444'}}></span>
+                                <span className="legend-dot" style={{ backgroundColor: '#f43f5e' }}></span>
                                 <span className="legend-label">Absent</span>
                                 <span className="legend-val">4%</span>
                             </div>
                             <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#cbd5e1'}}></span>
+                                <span className="legend-dot" style={{ backgroundColor: '#6366f1' }}></span>
                                 <span className="legend-label">Leave</span>
                                 <span className="legend-val">2%</span>
                             </div>
@@ -305,11 +329,17 @@ const AdminDashboard = () => {
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={classData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="colorBarAdmin" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={1} />
+                                        <stop offset="100%" stopColor="#2563eb" stopOpacity={0.7} />
+                                    </linearGradient>
+                                </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color, #cbd5e1)" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} cursor={{ fill: '#f8fafc' }} />
-                                <Bar dataKey="students" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
+                                <Bar dataKey="students" fill="url(#colorBarAdmin)" radius={[4, 4, 0, 0]} maxBarSize={40} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
