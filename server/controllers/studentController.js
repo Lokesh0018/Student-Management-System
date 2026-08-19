@@ -1,47 +1,32 @@
 const pool = require('../config/db');
 const https = require('https');
 const http = require('http');
+const StudentService = require('../services/studentService');
+const ApiResponse = require('../utils/ApiResponse');
+const logger = require('../utils/logger');
 
 exports.getAllStudents = async (req, res) => {
-    const { role, id } = req.user;
-    let query = `
-        SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, c.class_name, c.section, s.parent_name
-        FROM students s
-        LEFT JOIN classes c ON s.class_id = c.id
-    `;
-    let params = [];
-    
-    if (role === 'CLASS_TEACHER') {
-        query += `
-            INNER JOIN teachers t ON c.teacher_id = t.id
-            WHERE t.user_id = ?
-        `;
-        params.push(id);
-    } else if (role === 'PARENT') {
-        query += `
-            WHERE s.parent_user_id = ?
-        `;
-        params.push(id);
+    try {
+        const { role, id } = req.user;
+        const students = await StudentService.getAllStudents(role, id);
+        return ApiResponse.success(res, 'Students fetched successfully', students);
+    } catch (err) {
+        logger.error('Error fetching students: %O', err);
+        return ApiResponse.error(res, 'Failed to fetch students', 500);
     }
-
-    const [students] = await pool.execute(query, params);
-    res.json({ success: true, data: students });
 };
 
 exports.getStudentById = async (req, res) => {
-    const [rows] = await pool.execute(`
-        SELECT s.id, s.admission_number, s.first_name, s.last_name, s.email, s.class_id, s.roll_number, 
-               s.photo, s.dob, s.gender, s.phone, s.address, s.admission_date, s.status, s.created_at, 
-               c.class_name, c.section,
-               s.parent_name, s.parent_email, s.parent_phone, s.parent_relationship
-        FROM students s
-        LEFT JOIN classes c ON s.class_id = c.id
-        WHERE s.id = ?
-    `, [req.params.id]);
-    if (rows.length > 0) {
-        res.json({ success: true, data: rows[0] });
-    } else {
-        res.status(404).json({ success: false, message: 'Student not found' });
+    try {
+        const student = await StudentService.getStudentById(req.params.id);
+        if (student) {
+            return ApiResponse.success(res, 'Student fetched successfully', student);
+        } else {
+            return ApiResponse.error(res, 'Student not found', 404);
+        }
+    } catch (err) {
+        logger.error('Error fetching student by ID: %O', err);
+        return ApiResponse.error(res, 'Failed to fetch student', 500);
     }
 };
 

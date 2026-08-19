@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
-import { FaSearch, FaBell } from 'react-icons/fa';
+import { FaSearch, FaBell, FaMoon } from 'react-icons/fa';
 import api from '../../utils/api';
+import debounce from 'lodash.debounce';
+import toast from 'react-hot-toast';
 import './css/Layout.css';
 
 export const Layout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     if (user) {
       fetchNotifications();
+    }
+    // Check initial dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDarkMode(true);
+      document.body.classList.add('dark-mode');
     }
   }, [user]);
 
@@ -62,6 +71,20 @@ export const Layout = ({ children }) => {
     navigate(`/${user?.role?.toLowerCase() || 'admin'}/settings`);
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    document.body.classList.toggle('dark-mode');
+    toast.success(`Dark mode ${!isDarkMode ? 'enabled' : 'disabled'}!`);
+  };
+
+  const handleSearch = React.useCallback(
+    debounce((query) => {
+      // Future API call for global search
+      console.log('Debounced search query:', query);
+    }, 500),
+    []
+  );
+
   return (
     <div className="app-layout">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -73,10 +96,21 @@ export const Layout = ({ children }) => {
             </button>
             <div className="search-bar">
                 <FaSearch className="search-icon" />
-                <input type="text" placeholder="Search anything..." />
+                <input 
+                  type="text" 
+                  placeholder="Search anything..." 
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
             </div>
           </div>
           <div className="header-right">
+            <button 
+              className="icon-btn" 
+              onClick={toggleDarkMode}
+              title="Toggle Dark Mode"
+            >
+              <FaMoon />
+            </button>
             <div className="notification-wrapper" style={{ position: 'relative' }}>
               <button 
                 className="icon-btn header-bell" 
@@ -123,7 +157,7 @@ export const Layout = ({ children }) => {
             </div>
           </div>
         </header>
-        <div className="container">
+        <div className="container fade-in">
           {children}
         </div>
       </main>

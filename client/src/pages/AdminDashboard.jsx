@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import api from '../utils/api';
 import './css/AdminDashboard.css';
 
@@ -28,9 +30,21 @@ const AdminDashboard = () => {
     }, []);
 
     if (loading) return (
-        <div className="loading-state">
-            <div className="spinner"></div>
-            <span>Loading dashboard...</span>
+        <div className="dashboard-container">
+            <div className="dashboard-header-main">
+                <Skeleton width={300} height={40} />
+                <Skeleton width={400} height={20} style={{ marginTop: '10px' }} />
+            </div>
+            <div className="stats-grid">
+                <Skeleton height={120} borderRadius={16} />
+                <Skeleton height={120} borderRadius={16} />
+                <Skeleton height={120} borderRadius={16} />
+                <Skeleton height={120} borderRadius={16} />
+            </div>
+            <div className="dashboard-grid">
+                <Skeleton height={350} borderRadius={16} />
+                <Skeleton height={350} borderRadius={16} />
+            </div>
         </div>
     );
 
@@ -59,7 +73,7 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="dashboard-container fade-in">
+        <div className="dashboard-container">
             <div className="dashboard-header-main">
                 <h1 className="dash-title">Good Morning, Admin! 👋</h1>
                 <p className="dash-subtitle">Here's what's happening in your school today.</p>

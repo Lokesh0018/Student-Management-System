@@ -1,11 +1,20 @@
 const pool = require('../config/db');
+const logger = require('../utils/logger');
+const ApiResponse = require('../utils/ApiResponse');
 
 exports.getDashboardStats = async (req, res) => {
     try {
-        const [studentCount] = await pool.execute('SELECT COUNT(*) as count FROM students');
-        const [teacherCount] = await pool.execute('SELECT COUNT(*) as count FROM teachers');
-        const [parentCount] = await pool.execute('SELECT COUNT(DISTINCT parent_user_id) as count FROM students WHERE parent_user_id IS NOT NULL');
-        const [classCount] = await pool.execute('SELECT COUNT(*) as count FROM classes');
+        const [
+            [studentCount],
+            [teacherCount],
+            [parentCount],
+            [classCount]
+        ] = await Promise.all([
+            pool.execute('SELECT COUNT(*) as count FROM students'),
+            pool.execute('SELECT COUNT(*) as count FROM teachers'),
+            pool.execute('SELECT COUNT(DISTINCT parent_user_id) as count FROM students WHERE parent_user_id IS NOT NULL'),
+            pool.execute('SELECT COUNT(*) as count FROM classes')
+        ]);
         
         // Mocking some other stats for the dashboard
         const averagePerformance = 78.5; // Mock
@@ -16,20 +25,17 @@ exports.getDashboardStats = async (req, res) => {
             { id: 2, title: 'Attendance Alert', message: 'Please ensure timely arrival.', date: '2026-08-16' }
         ];
 
-        res.json({
-            success: true,
-            data: {
-                totalStudents: studentCount[0].count,
-                totalTeachers: teacherCount[0].count,
-                totalParents: parentCount[0].count,
-                totalClasses: classCount[0].count,
-                averagePerformance,
-                attendanceRate,
-                recentRemarks
-            }
+        return ApiResponse.success(res, 'Dashboard stats retrieved successfully', {
+            totalStudents: studentCount[0].count,
+            totalTeachers: teacherCount[0].count,
+            totalParents: parentCount[0].count,
+            totalClasses: classCount[0].count,
+            averagePerformance,
+            attendanceRate,
+            recentRemarks
         });
     } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-        res.status(500).json({ success: false, message: 'Server error' });
+        logger.error('Error fetching dashboard stats: %O', error);
+        return ApiResponse.error(res, 'Server error', 500);
     }
 };

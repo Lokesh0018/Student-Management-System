@@ -1,36 +1,35 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import Login from './pages/Login'
-import AdminDashboard from './pages/AdminDashboard'
-import TeacherDashboard from './pages/TeacherDashboard'
-import ParentDashboard from './pages/ParentDashboard'
-import ClassDetails from './pages/ClassDetails'
-import AddClass from './pages/AddClass'
-import EditClass from './pages/EditClass'
-import ClassesList from './pages/ClassesList'
-import StudentList from './pages/StudentList'
-import StudentManagement from './pages/StudentManagement'
-import AddStudent from './pages/AddStudent'
-import EditStudent from './pages/EditStudent'
-import AddTeacher from './pages/AddTeacher'
-import EditTeacher from './pages/EditTeacher'
-import TeachersList from './pages/TeachersList'
-import TeacherDetails from './pages/TeacherDetails'
-
-import ExaminationsList from './pages/ExaminationsList'
-import AddExam from './pages/AddExam'
-import EditExam from './pages/EditExam'
-import SubjectsList from './pages/SubjectsList'
-import AddSubject from './pages/AddSubject'
-import EditSubject from './pages/EditSubject'
-import MarkManagement from './pages/MarkManagement'
-import AttendanceManagement from './pages/AttendanceManagement'
-import RemarkManagement from './pages/RemarkManagement'
-import PerformanceAnalytics from './pages/PerformanceAnalytics'
-import ReportsList from './pages/ReportsList'
 import { useAuth } from './context/AuthContext'
 import { Layout } from './components/layout/Layout'
 
+const Login = React.lazy(() => import('./pages/Login'));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const TeacherDashboard = React.lazy(() => import('./pages/TeacherDashboard'));
+const ParentDashboard = React.lazy(() => import('./pages/ParentDashboard'));
+const ClassDetails = React.lazy(() => import('./pages/ClassDetails'));
+const AddClass = React.lazy(() => import('./pages/AddClass'));
+const EditClass = React.lazy(() => import('./pages/EditClass'));
+const ClassesList = React.lazy(() => import('./pages/ClassesList'));
+const StudentList = React.lazy(() => import('./pages/StudentList'));
+const StudentManagement = React.lazy(() => import('./pages/StudentManagement'));
+const AddStudent = React.lazy(() => import('./pages/AddStudent'));
+const EditStudent = React.lazy(() => import('./pages/EditStudent'));
+const AddTeacher = React.lazy(() => import('./pages/AddTeacher'));
+const EditTeacher = React.lazy(() => import('./pages/EditTeacher'));
+const TeachersList = React.lazy(() => import('./pages/TeachersList'));
+const TeacherDetails = React.lazy(() => import('./pages/TeacherDetails'));
+const ExaminationsList = React.lazy(() => import('./pages/ExaminationsList'));
+const AddExam = React.lazy(() => import('./pages/AddExam'));
+const EditExam = React.lazy(() => import('./pages/EditExam'));
+const SubjectsList = React.lazy(() => import('./pages/SubjectsList'));
+const AddSubject = React.lazy(() => import('./pages/AddSubject'));
+const EditSubject = React.lazy(() => import('./pages/EditSubject'));
+const MarkManagement = React.lazy(() => import('./pages/MarkManagement'));
+const AttendanceManagement = React.lazy(() => import('./pages/AttendanceManagement'));
+const RemarkManagement = React.lazy(() => import('./pages/RemarkManagement'));
+const PerformanceAnalytics = React.lazy(() => import('./pages/PerformanceAnalytics'));
+const ReportsList = React.lazy(() => import('./pages/ReportsList'));
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
     
@@ -47,198 +46,200 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
-      
-      <Route path="/admin/dashboard" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AdminDashboard />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/admin/classes" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ClassesList />
-        </ProtectedRoute>
-      } />
+    <Suspense fallback={null}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        
+        <Route path="/admin/dashboard" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/classes" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ClassesList />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/classes/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddClass />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/classes/add" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AddClass />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/classes/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditClass />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/classes/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <EditClass />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/classes/:id" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ClassDetails />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/classes/:id" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ClassDetails />
+          </ProtectedRoute>
+        } />
 
-      
-      <Route path="/admin/students" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <StudentList />
-        </ProtectedRoute>
-      } />
+        
+        <Route path="/admin/students" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <StudentList />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/students/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddStudent />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/students/add" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AddStudent />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/students/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditStudent />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/students/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <EditStudent />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/students/:id" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <StudentManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/students/:id" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <StudentManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/teachers" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <TeachersList />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/teachers" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <TeachersList />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/teachers/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddTeacher />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/teachers/add" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AddTeacher />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/teachers/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditTeacher />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/teachers/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <EditTeacher />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/teachers/:id" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <TeacherDetails />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/teachers/:id" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <TeacherDetails />
+          </ProtectedRoute>
+        } />
 
 
-      <Route path="/admin/exams" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ExaminationsList />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/exams" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ExaminationsList />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/exams/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddExam />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/exams/add" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AddExam />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/exams/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditExam />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/exams/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <EditExam />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/subjects" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <SubjectsList />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/subjects" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <SubjectsList />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/subjects/add" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <AddSubject />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/subjects/add" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AddSubject />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/subjects/:id/edit" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <EditSubject />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/subjects/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <EditSubject />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/marks" element={
-        <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
-          <MarkManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/marks" element={
+          <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
+            <MarkManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/attendance" element={
-        <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
-          <AttendanceManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/attendance" element={
+          <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
+            <AttendanceManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/remarks" element={
-        <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
-          <RemarkManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/remarks" element={
+          <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
+            <RemarkManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/performance" element={
-        <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
-          <PerformanceAnalytics />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/performance" element={
+          <ProtectedRoute allowedRoles={['ADMIN', 'CLASS_TEACHER']}>
+            <PerformanceAnalytics />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/admin/reports" element={
-        <ProtectedRoute allowedRoles={['ADMIN']}>
-          <ReportsList />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/teacher/dashboard" element={
-        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
-          <TeacherDashboard />
-        </ProtectedRoute>
-      } />
+        <Route path="/admin/reports" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ReportsList />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/teacher/dashboard" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <TeacherDashboard />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/teacher/marks" element={
-        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
-          <MarkManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/teacher/marks" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <MarkManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/teacher/attendance" element={
-        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
-          <AttendanceManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/teacher/attendance" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <AttendanceManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/teacher/remarks" element={
-        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
-          <RemarkManagement />
-        </ProtectedRoute>
-      } />
+        <Route path="/teacher/remarks" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <RemarkManagement />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/teacher/performance" element={
-        <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
-          <PerformanceAnalytics />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/parent/dashboard" element={
-        <ProtectedRoute allowedRoles={['PARENT']}>
-          <ParentDashboard />
-        </ProtectedRoute>
-      } />
+        <Route path="/teacher/performance" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <PerformanceAnalytics />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/parent/dashboard" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentDashboard />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/parent/remarks" element={
-        <ProtectedRoute allowedRoles={['PARENT']}>
-          <RemarkManagement />
-        </ProtectedRoute>
-      } />
-    </Routes>
+        <Route path="/parent/remarks" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <RemarkManagement />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Suspense>
   )
 }
 
