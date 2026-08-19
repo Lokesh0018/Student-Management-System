@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import './css/StudentList.css';
 
 const AttendanceManagement = () => {
+    const { user } = useAuth();
+    const isTeacher = user?.role === 'CLASS_TEACHER';
     const [classes, setClasses] = useState([]);
     const [students, setStudents] = useState([]);
     const [notification, setNotification] = useState({ show: false, message: '', type: '' });
@@ -15,19 +18,22 @@ const AttendanceManagement = () => {
     const [attendanceData, setAttendanceData] = useState({}); // { student_id: status }
     
     useEffect(() => {
-        const fetchClasses = async () => {
-            try {
-                const res = await api.get('/classes');
-                setClasses(res.data.data);
-            } catch (error) {
-                console.error('Error fetching classes', error);
-            }
-        };
-        fetchClasses();
-    }, []);
+        if (!isTeacher) {
+            const fetchClasses = async () => {
+                try {
+                    const res = await api.get('/classes');
+                    setClasses(res.data.data);
+                } catch (error) {
+                    console.error('Error fetching classes', error);
+                }
+            };
+            fetchClasses();
+        }
+    }, [isTeacher]);
 
     const fetchStudentsAndAttendance = async () => {
-        if (!filters.class_id || !filters.date) return;
+        if (!isTeacher && !filters.class_id) return;
+        if (!filters.date) return;
         
         try {
             const res = await api.get(`/attendance?class_id=${filters.class_id}&date=${filters.date}`);
@@ -59,6 +65,12 @@ const AttendanceManagement = () => {
             console.error('Error fetching attendance', error);
         }
     };
+
+    useEffect(() => {
+        if (isTeacher) {
+            fetchStudentsAndAttendance();
+        }
+    }, [filters.date, isTeacher]);
 
     const showNotification = (message, type) => {
         setNotification({ show: true, message, type });
@@ -130,6 +142,7 @@ const AttendanceManagement = () => {
             )}
 
             <div className="filter-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                {!isTeacher && (
                 <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Class</label>
                     <select 
@@ -141,6 +154,7 @@ const AttendanceManagement = () => {
                         {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
                     </select>
                 </div>
+                )}
                 <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Date</label>
                     <input 
@@ -150,9 +164,11 @@ const AttendanceManagement = () => {
                         style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     />
                 </div>
+                {!isTeacher && (
                 <button className="btn-primary" onClick={fetchStudentsAndAttendance} style={{ padding: '0.5rem 1rem', height: '38px' }}>
                     Load Students
                 </button>
+                )}
             </div>
             
             {students.length > 0 && (

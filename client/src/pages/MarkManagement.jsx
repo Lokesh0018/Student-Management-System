@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import './css/StudentList.css';
 import './css/StudentList.css';
 
 const MarkManagement = () => {
+    const { user } = useAuth();
+    const isTeacher = user?.role === 'CLASS_TEACHER';
     const [exams, setExams] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const [classes, setClasses] = useState([]);
     const [students, setStudents] = useState([]);
-    const [filters, setFilters] = useState({ exam_id: '', subject_id: '' });
+    const [filters, setFilters] = useState({ exam_id: '', subject_id: '', class_id: '' });
     const [marksData, setMarksData] = useState({}); // { student_id: marks_obtained }
     const [maxMarks, setMaxMarks] = useState(100);
     
@@ -15,12 +20,17 @@ const MarkManagement = () => {
     
     const fetchDropdowns = async () => {
         try {
-            const [e, s] = await Promise.all([
-                api.get('/exams'),
-                api.get('/subjects')
-            ]);
+            const promises = [api.get('/exams'), api.get('/subjects')];
+            if (!isTeacher) {
+                promises.push(api.get('/classes'));
+            }
+            
+            const [e, s, c] = await Promise.all(promises);
             setExams(e.data.data);
             setSubjects(s.data.data);
+            if (!isTeacher && c) {
+                setClasses(c.data.data);
+            }
         } catch (error) {
             console.error('Error fetching dropdowns', error);
         }
@@ -30,31 +40,44 @@ const MarkManagement = () => {
         fetchDropdowns();
     }, []);
 
-    // Load mock students to match the UI state when Exam and Subject are selected
     useEffect(() => {
-        if (filters.exam_id && filters.subject_id) {
-            // In a real app we'd fetch this based on the logged-in teacher's class
-            const mockStudents = [
-                { id: 1, roll_number: 1001, first_name: 'Rohan', last_name: 'Mehta' },
-                { id: 2, roll_number: 1002, first_name: 'Ananya', last_name: 'Singh' },
-                { id: 3, roll_number: 1003, first_name: 'Vivaan', last_name: 'Patel' },
-                { id: 4, roll_number: 1004, first_name: 'Kavya', last_name: 'Joshi' },
-                { id: 5, roll_number: 1005, first_name: 'Aryan', last_name: 'Verma' },
-                { id: 6, roll_number: 1006, first_name: 'Ishita', last_name: 'Sharma' },
-                { id: 7, roll_number: 1007, first_name: 'Aditya', last_name: 'Gupta' },
-                { id: 8, roll_number: 1008, first_name: 'Meera', last_name: 'Nair' }
-            ];
-            setStudents(mockStudents);
+        const fetchStudentsAndMarks = async () => {
+            if (!filters.exam_id || !filters.subject_id) {
+                setStudents([]);
+                return;
+            }
+            if (!isTeacher && !filters.class_id) {
+                setStudents([]);
+                return;
+            }
             
-            // Mock previously saved data for the UI
-            const mockMarks = {
-                1: '65', 2: '68', 3: '72', 4: '88', 5: '90', 6: '85', 7: '92', 8: '95'
-            };
-            setMarksData(mockMarks);
-        } else {
-            setStudents([]);
-        }
-    }, [filters.exam_id, filters.subject_id]);
+            try {
+                const res = await api.get(`/marks?exam_id=${filters.exam_id}&subject_id=${filters.subject_id}&class_id=${filters.class_id}`);
+                
+                const fetchedStudents = res.data.data.map(item => ({
+                    id: item.student_id,
+                    first_name: item.first_name,
+                    last_name: item.last_name,
+                    roll_number: item.roll_number
+                }));
+                
+                setStudents(fetchedStudents);
+                
+                const existingMarks = {};
+                res.data.data.forEach(s => {
+                    if (s.marks_obtained !== null && s.marks_obtained !== undefined && s.marks_obtained !== '') {
+                        existingMarks[s.student_id] = s.marks_obtained;
+                    }
+                });
+                setMarksData(existingMarks);
+            } catch (error) {
+                console.error('Error fetching marks', error);
+                showNotification('Failed to load students and marks.', 'error');
+            }
+        };
+
+        fetchStudentsAndMarks();
+    }, [filters.exam_id, filters.subject_id, filters.class_id, isTeacher]);
 
     const handleMarkChange = (studentId, value) => {
         setMarksData(prev => ({
@@ -81,9 +104,23 @@ const MarkManagement = () => {
         setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
     };
 
-    const handleSaveMarks = () => {
-        // Just show success to match the prototype
-        showNotification('Marks saved successfully!', 'success');
+    const handleSaveMarks = async () => {
+        const payload = students.map(s => ({
+            student_id: s.id,
+            exam_id: filters.exam_id,
+            subject_id: filters.subject_id,
+            marks_obtained: marksData[s.id] || '',
+            max_marks: maxMarks,
+            remarks: ''
+        }));
+        
+        try {
+            await api.post('/marks', { marksData: payload });
+            showNotification('Marks saved successfully!', 'success');
+        } catch (error) {
+            console.error('Error saving marks', error);
+            showNotification('Failed to save marks.', 'error');
+        }
     };
 
     return (
@@ -113,12 +150,19 @@ const MarkManagement = () => {
             <div className="table-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 24px', alignItems: 'flex-end', borderBottom: '1px solid #f1f5f9' }}>
                     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                        {!isTeacher && (
+                            <div className="form-group" style={{ marginBottom: 0, width: '200px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', marginBottom: '8px', display: 'block' }}>Select Class</label>
+                                <select className="filter-select" style={{ width: '100%' }} value={filters.class_id} onChange={e => setFilters({...filters, class_id: e.target.value})}>
+                                    <option value="">Select Class</option>
+                                    {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
+                                </select>
+                            </div>
+                        )}
                         <div className="form-group" style={{ marginBottom: 0, width: '200px' }}>
                             <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', marginBottom: '8px', display: 'block' }}>Select Exam</label>
                             <select className="filter-select" style={{ width: '100%' }} value={filters.exam_id} onChange={e => setFilters({...filters, exam_id: e.target.value})}>
                                 <option value="">Select Exam</option>
-                                <option value="1">Unit Test - 1</option>
-                                <option value="2">Mid Term</option>
                                 {exams.map(e => <option key={e.id} value={e.id}>{e.exam_name}</option>)}
                             </select>
                         </div>
@@ -126,8 +170,6 @@ const MarkManagement = () => {
                             <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', marginBottom: '8px', display: 'block' }}>Select Subject</label>
                             <select className="filter-select" style={{ width: '100%' }} value={filters.subject_id} onChange={e => setFilters({...filters, subject_id: e.target.value})}>
                                 <option value="">Select Subject</option>
-                                <option value="1">Mathematics</option>
-                                <option value="2">Science</option>
                                 {subjects.map(s => <option key={s.id} value={s.id}>{s.subject_name}</option>)}
                             </select>
                         </div>

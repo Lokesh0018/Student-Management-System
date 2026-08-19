@@ -3,13 +3,28 @@ const pool = require('../config/db');
 exports.getMarksByExamAndClass = async (req, res) => {
     try {
         const { exam_id, class_id, subject_id } = req.query;
+        let classIdToUse = class_id;
+
+        if (req.user && req.user.role === 'CLASS_TEACHER') {
+            const [teacherClass] = await pool.execute(
+                'SELECT c.id FROM classes c JOIN teachers t ON c.teacher_id = t.id WHERE t.user_id = ?',
+                [req.user.id]
+            );
+            if (teacherClass.length > 0) {
+                classIdToUse = teacherClass[0].id;
+            } else {
+                return res.json({ success: true, data: [] });
+            }
+        }
+
         let query = `
-            SELECT m.*, s.first_name, s.last_name, s.roll_number 
-            FROM marks m
-            JOIN students s ON m.student_id = s.id
-            WHERE m.exam_id = ? AND m.subject_id = ? AND s.class_id = ?
+            SELECT m.marks_obtained, m.max_marks, m.grade, m.remarks, s.id as student_id, s.first_name, s.last_name, s.roll_number 
+            FROM students s
+            LEFT JOIN marks m ON s.id = m.student_id AND m.exam_id = ? AND m.subject_id = ?
+            WHERE s.class_id = ?
+            ORDER BY s.roll_number ASC
         `;
-        const [marks] = await pool.execute(query, [exam_id, subject_id, class_id]);
+        const [marks] = await pool.execute(query, [exam_id, subject_id, classIdToUse]);
         res.json({ success: true, data: marks });
     } catch (error) {
         console.error(error);
