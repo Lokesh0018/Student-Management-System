@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import api from '../utils/api';
+import { useBreadcrumb } from '../context/BreadcrumbContext';
 import './css/AddStudent.css'; // Reusing form styles
 
 const EditTeacher = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { setDynamicCrumb } = useBreadcrumb();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -26,6 +28,7 @@ const EditTeacher = () => {
                 const res = await api.get(`/teachers/${id}`);
                 if (res.data.success) {
                     const t = res.data.data;
+                    setDynamicCrumb(id, t.name);
                     setFormData({
                         name: t.name || '',
                         email: t.email || '',

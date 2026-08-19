@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext'
+import { BreadcrumbProvider } from './context/BreadcrumbContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { Toaster } from 'react-hot-toast'
 import './index.css'
@@ -12,8 +13,21 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ErrorBoundary>
         <AuthProvider>
-          <Toaster position="top-right" />
-          <App />
+          <BreadcrumbProvider>
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: 'var(--surface)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border)',
+                  fontFamily: 'var(--font-sans)',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                }
+              }}
+            />
+            <App />
+          </BreadcrumbProvider>
         </AuthProvider>
       </ErrorBoundary>
     </BrowserRouter>

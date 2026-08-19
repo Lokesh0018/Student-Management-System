@@ -4,6 +4,7 @@ import { FaEdit, FaDownload, FaEnvelope, FaPhone, FaUserTie, FaTint, FaPrint, Fa
 import api from '../utils/api';
 import StudentImage from '../components/StudentImage';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useBreadcrumb } from '../context/BreadcrumbContext';
 import './css/StudentProfile.css';
 
 const SESSION_CACHE_BUSTER = Date.now();
@@ -12,13 +13,16 @@ const StudentManagement = () => {
     const { id } = useParams();
     const [activeTab, setActiveTab] = useState('Overview');
     const [student, setStudent] = useState(null);
+    const { setDynamicCrumb } = useBreadcrumb();
 
     useEffect(() => {
         const fetchStudent = async () => {
             try {
                 const res = await api.get(`/students/${id}`);
                 if (res.data.success) {
-                    setStudent(res.data.data);
+                    const studentData = res.data.data;
+                    setStudent(studentData);
+                    setDynamicCrumb(id, `${studentData.first_name} ${studentData.last_name}`);
                 }
             } catch (err) {
                 console.error("Error fetching student:", err);

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEnvelope, FaPhone, FaBook, FaCalendarAlt } from 'react-icons/fa';
 import api from '../utils/api';
+import { useBreadcrumb } from '../context/BreadcrumbContext';
 import './css/StudentProfile.css';
 
 const TeacherDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { setDynamicCrumb } = useBreadcrumb();
     const [teacher, setTeacher] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -14,7 +16,9 @@ const TeacherDetails = () => {
         const fetchTeacher = async () => {
             try {
                 const res = await api.get(`/teachers/${id}`);
-                setTeacher(res.data.data);
+                const t = res.data.data;
+                setTeacher(t);
+                setDynamicCrumb(id, t.name);
             } catch (error) {
                 console.error("Error fetching teacher details", error);
             } finally {

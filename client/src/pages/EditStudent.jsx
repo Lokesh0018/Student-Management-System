@@ -3,11 +3,13 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
+import { useBreadcrumb } from '../context/BreadcrumbContext';
 import './css/AddStudent.css';
 
 const EditStudent = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { setDynamicCrumb } = useBreadcrumb();
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -51,6 +53,7 @@ const EditStudent = () => {
                 const res = await api.get(`/students/${id}`);
                 if (res.data.success) {
                     const s = res.data.data;
+                    setDynamicCrumb(id, `${s.first_name} ${s.last_name}`);
                     setFormData({
                         first_name: s.first_name || '',
                         last_name: s.last_name || '',

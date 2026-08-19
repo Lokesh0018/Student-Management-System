@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
+import { useBreadcrumb } from '../../context/BreadcrumbContext';
 import { FaSearch, FaBell, FaMoon, FaSun, FaBars, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
@@ -16,6 +17,7 @@ export const Layout = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   
   const { user } = useAuth();
+  const { dynamicCrumbs } = useBreadcrumb();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,7 +88,7 @@ export const Layout = ({ children }) => {
     return paths.map((path, index) => {
       currentPath += `/${path}`;
       const isLast = index === paths.length - 1;
-      const formattedPath = path.charAt(0).toUpperCase() + path.slice(1);
+      const formattedPath = dynamicCrumbs[path] || (path.charAt(0).toUpperCase() + path.slice(1));
       
       let linkTarget = currentPath;
       if (currentPath === '/admin') linkTarget = '/admin/dashboard';

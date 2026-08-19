@@ -11,6 +11,13 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Good Morning';
+        if (hour < 18) return 'Good Afternoon';
+        return 'Good Evening';
+    };
+
     useEffect(() => {
         const fetchStats = async () => {
             try {
@@ -80,7 +87,7 @@ const AdminDashboard = () => {
             className="dashboard-container"
         >
             <div className="dashboard-header-main">
-                <h1 className="dash-title">Good Morning, Admin! 👋</h1>
+                <h1 className="dash-title">{getGreeting()}, Admin! 👋</h1>
                 <p className="dash-subtitle">Here's what's happening in your school today.</p>
             </div>
             
@@ -154,7 +161,7 @@ const AdminDashboard = () => {
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
@@ -177,6 +184,9 @@ const AdminDashboard = () => {
                                         paddingAngle={2}
                                         dataKey="value"
                                         stroke="none"
+                                        isAnimationActive={true}
+                                        animationDuration={1500}
+                                        animationEasing="ease-out"
                                     >
                                         {attendanceData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -297,7 +307,7 @@ const AdminDashboard = () => {
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                                 <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} cursor={{ fill: '#f8fafc' }} />
-                                <Bar dataKey="students" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                <Bar dataKey="students" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} isAnimationActive={true} animationDuration={1500} animationEasing="ease-out" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
