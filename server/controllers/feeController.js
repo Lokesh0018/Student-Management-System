@@ -68,14 +68,14 @@ exports.getFeeTerms = async (req, res) => {
 
 exports.createFeeTerm = async (req, res) => {
     try {
-        const { name, academic_year_id, amount, due_date, description, status } = req.body;
+        const { name, amount, due_date, description, status } = req.body;
         if (!name || !amount || !due_date) {
             return res.status(400).json({ success: false, message: 'Name, amount, and due date are required' });
         }
 
         const [result] = await db.execute(
-            'INSERT INTO fee_terms (name, academic_year_id, amount, due_date, description, status) VALUES (?, ?, ?, ?, ?, ?)',
-            [name, academic_year_id || null, amount, due_date, description || '', status || 'ACTIVE']
+            'INSERT INTO fee_terms (name, amount, due_date, description, status) VALUES (?, ?, ?, ?, ?)',
+            [name, amount, due_date, description || '', status || 'ACTIVE']
         );
         res.status(201).json({ success: true, message: 'Fee term created successfully', id: result.insertId });
     } catch (error) {
@@ -87,11 +87,11 @@ exports.createFeeTerm = async (req, res) => {
 exports.updateFeeTerm = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, academic_year_id, amount, due_date, description, status } = req.body;
+        const { name, amount, due_date, description, status } = req.body;
         
         await db.execute(
-            'UPDATE fee_terms SET name=?, academic_year_id=?, amount=?, due_date=?, description=?, status=? WHERE id=?',
-            [name, academic_year_id || null, amount, due_date, description || '', status || 'ACTIVE', id]
+            'UPDATE fee_terms SET name=?, amount=?, due_date=?, description=?, status=? WHERE id=?',
+            [name, amount, due_date, description || '', status || 'ACTIVE', id]
         );
         
         // Also update linked student_fees with new amount and due_date
@@ -228,11 +228,22 @@ exports.submitPayment = async (req, res) => {
             return res.status(400).json({ success: false, message: 'This fee is already paid' });
         }
 
-        // Create payment record
-        await db.execute(
-            'INSERT INTO payments (student_fee_id, parent_id, amount, utr_number, payment_date, status) VALUES (?, ?, ?, ?, CURDATE(), ?)',
-            [studentFeeId, parentId, amount, utr_number, 'SUBMITTED']
-        );
+        // Check if there is already a payment record (e.g. previously rejected)
+        const [existingPayment] = await db.execute('SELECT id FROM payments WHERE student_fee_id = ?', [studentFeeId]);
+
+        if (existingPayment.length > 0) {
+            // Update existing payment record to avoid duplicate rows
+            await db.execute(
+                'UPDATE payments SET amount = ?, utr_number = ?, payment_date = CURDATE(), status = ?, rejection_reason = NULL, verified_by = NULL, verified_at = NULL WHERE id = ?',
+                [amount, utr_number, 'SUBMITTED', existingPayment[0].id]
+            );
+        } else {
+            // Create new payment record
+            await db.execute(
+                'INSERT INTO payments (student_fee_id, parent_id, amount, utr_number, payment_date, status) VALUES (?, ?, ?, ?, CURDATE(), ?)',
+                [studentFeeId, parentId, amount, utr_number, 'SUBMITTED']
+            );
+        }
 
         // Update fee status
         await db.execute(

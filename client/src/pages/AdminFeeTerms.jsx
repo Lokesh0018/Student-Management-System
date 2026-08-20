@@ -87,6 +87,7 @@ const AdminFeeTerms = () => {
       if (res.data.success) {
         toast.success(res.data.message);
         setIsAssignModalOpen(false);
+        fetchTerms();
       } else {
         toast.error(res.data.message || 'Failed to assign');
       }

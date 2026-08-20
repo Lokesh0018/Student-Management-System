@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa';
 import api from '../utils/api';
 
 const AdminPayments = () => {
@@ -70,30 +71,30 @@ const AdminPayments = () => {
         <h1>Payment Verification</h1>
       </div>
 
-      <div className="card">
-        <table className="table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+      <div className="table-card">
+        <table className="data-table">
           <thead>
-            <tr style={{ borderBottom: '1px solid #ddd' }}>
-              <th style={{ padding: '10px' }}>Date</th>
-              <th style={{ padding: '10px' }}>Student</th>
-              <th style={{ padding: '10px' }}>Class</th>
-              <th style={{ padding: '10px' }}>Term</th>
-              <th style={{ padding: '10px' }}>Amount</th>
-              <th style={{ padding: '10px' }}>UTR</th>
-              <th style={{ padding: '10px' }}>Status</th>
-              <th style={{ padding: '10px' }}>Action</th>
+            <tr>
+              <th>DATE</th>
+              <th>STUDENT</th>
+              <th>CLASS</th>
+              <th>TERM</th>
+              <th>AMOUNT</th>
+              <th>UTR</th>
+              <th>STATUS</th>
+              <th>ACTION</th>
             </tr>
           </thead>
           <tbody>
             {payments.map(payment => (
-              <tr key={payment.id} style={{ borderBottom: '1px solid #ddd' }}>
-                <td style={{ padding: '10px' }}>{new Date(payment.payment_date).toLocaleDateString()}</td>
-                <td style={{ padding: '10px' }}>{payment.first_name} {payment.last_name}</td>
-                <td style={{ padding: '10px' }}>{payment.class_name} {payment.section}</td>
-                <td style={{ padding: '10px' }}>{payment.term_name}</td>
-                <td style={{ padding: '10px' }}>₹{payment.amount}</td>
-                <td style={{ padding: '10px' }}>{payment.utr_number}</td>
-                <td style={{ padding: '10px' }}>
+              <tr key={payment.id}>
+                <td>{new Date(payment.payment_date).toLocaleDateString()}</td>
+                <td><span className="font-semibold">{payment.first_name} {payment.last_name}</span></td>
+                <td>{payment.class_name} {payment.section}</td>
+                <td>{payment.term_name}</td>
+                <td><span className="font-semibold text-gray">₹{payment.amount}</span></td>
+                <td style={{ fontFamily: 'monospace' }}>{payment.utr_number}</td>
+                <td>
                   <span className={`badge ${
                     payment.status === 'VERIFIED' ? 'badge-success' : 
                     payment.status === 'REJECTED' ? 'badge-danger' : 
@@ -102,19 +103,37 @@ const AdminPayments = () => {
                     {payment.status}
                   </span>
                 </td>
-                <td style={{ padding: '10px' }}>
-                  {payment.status === 'SUBMITTED' && (
-                    <>
-                        <button className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '4px 8px', marginRight: '5px' }} onClick={() => setVerifying(payment.id)}>Verify</button>
-                        <button className="btn btn-danger" style={{ fontSize: '0.8rem', padding: '4px 8px' }} onClick={() => setRejecting(payment)}>Reject</button>
-                    </>
-                  )}
-                  {payment.status === 'REJECTED' && <small className="text-danger d-block">{payment.rejection_reason}</small>}
+                <td>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {payment.status === 'SUBMITTED' && (
+                      <>
+                          <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', padding: '6px 10px', borderRadius: '6px' }} onClick={() => setVerifying(payment.id)}>
+                            <FaCheckCircle /> Verify
+                          </button>
+                          <button className="btn btn-danger" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', padding: '6px 10px', borderRadius: '6px' }} onClick={() => setRejecting(payment)}>
+                            <FaTimesCircle /> Reject
+                          </button>
+                      </>
+                    )}
+                    {payment.status === 'VERIFIED' && (
+                      <button className="btn btn-warning" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', padding: '6px 10px', borderRadius: '6px', background: '#f59e0b', color: '#fff', border: 'none' }} onClick={() => setRejecting(payment)}>
+                        <FaUndo /> Revoke & Reject
+                      </button>
+                    )}
+                    {payment.status === 'REJECTED' && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <small className="text-danger d-block" style={{ fontWeight: '500' }}>Reason: {payment.rejection_reason}</small>
+                        <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', fontSize: '0.8rem', padding: '6px 10px', borderRadius: '6px' }} onClick={() => setVerifying(payment.id)}>
+                          <FaCheckCircle /> Override & Verify
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
             {payments.length === 0 && (
-              <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>No payments found.</td></tr>
+              <tr><td colSpan="8" className="text-center" style={{ padding: '2rem' }}>No payments found.</td></tr>
             )}
           </tbody>
         </table>

@@ -80,8 +80,8 @@
 }
 
 .settings-nav li.active {
-    background-color: #eff6ff;
-    color: var(--primary);
+    background-color: var(--primary);
+    color: #ffffff;
 }
 
 .settings-content {

@@ -190,7 +190,6 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS fee_terms (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
-                academic_year_id VARCHAR(50) DEFAULT NULL,
                 amount DECIMAL(10, 2) NOT NULL,
                 due_date DATE NOT NULL,
                 description TEXT,
