@@ -29,8 +29,8 @@ const ParentAttendance = () => {
     }, []);
 
     let availableMonths = [];
-    if (stats && selectedChild) {
-        const childAttendance = stats.attendance.filter(a => a.student_id == selectedChild);
+    if (stats && selectedChild && stats.detailed_attendance) {
+        const childAttendance = stats.detailed_attendance.filter(a => a.student_id == selectedChild);
         const monthSet = new Set();
         childAttendance.forEach(a => {
             const date = new Date(a.date);
@@ -55,8 +55,8 @@ const ParentAttendance = () => {
     let overallPercentage = 0;
     let totalDays = 0;
 
-    if (stats && selectedChild && selectedMonth) {
-        const childAttendance = stats.attendance.filter(a => a.student_id == selectedChild);
+    if (stats && selectedChild && selectedMonth && stats.detailed_attendance) {
+        const childAttendance = stats.detailed_attendance.filter(a => a.student_id == selectedChild);
         
         const monthAttendance = childAttendance.filter(a => {
             const date = new Date(a.date);

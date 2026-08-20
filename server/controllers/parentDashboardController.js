@@ -40,6 +40,14 @@ exports.getParentDashboardStats = async (req, res) => {
             GROUP BY student_id
         `, studentIds);
 
+        // Fetch detailed attendance for graphs and trends
+        const [detailed_attendance] = await pool.query(`
+            SELECT student_id, date, status 
+            FROM attendance
+            WHERE student_id IN (${placeholders})
+            ORDER BY date DESC
+        `, studentIds);
+
         // --- Rank Calculation ---
         const classIds = [...new Set(children.map(c => c.class_id))].filter(id => id !== null);
         if (classIds.length > 0) {
@@ -103,6 +111,7 @@ exports.getParentDashboardStats = async (req, res) => {
                 children,
                 marks,
                 attendance,
+                detailed_attendance,
                 remarks
             }
         });
