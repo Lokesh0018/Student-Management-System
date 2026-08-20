@@ -59,6 +59,12 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
               <NavLink to="/admin/reports" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaChartLine className="sidebar-icon" /> <span>Reports</span>
               </NavLink>
+              <NavLink to="/admin/fees" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaBookOpen className="sidebar-icon" /> <span>Fees</span>
+              </NavLink>
+              <NavLink to="/admin/payments" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaClipboardList className="sidebar-icon" /> <span>Payments</span>
+              </NavLink>
             </>
           )}
 
@@ -82,6 +88,9 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
               <NavLink to="/teacher/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
               </NavLink>
+              <NavLink to="/teacher/assignments" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaClipboardList className="sidebar-icon" /> <span>Assignments</span>
+              </NavLink>
             </>
           )}
 
@@ -104,6 +113,12 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
               </NavLink>
               <NavLink to="/parent/remarks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                 <FaRegFileAlt className="sidebar-icon" /> <span>Remarks</span>
+              </NavLink>
+              <NavLink to="/parent/fees" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaBookOpen className="sidebar-icon" /> <span>Fees</span>
+              </NavLink>
+              <NavLink to="/parent/assignments" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <FaClipboardList className="sidebar-icon" /> <span>Assignments</span>
               </NavLink>
             </>
           )}

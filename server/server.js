@@ -69,8 +69,14 @@ app.use('/api/parent/dashboard', parentDashboardRoutes);
 const notificationRoutes = require('./routes/notificationRoutes');
 app.use('/api/notifications', notificationRoutes);
 
-const reportRoutes = require('./routes/reportRoutes');
-app.use('/api/reports', reportRoutes);
+const feeRoutes = require('./routes/feeRoutes');
+app.use('/api/fees', feeRoutes);
+
+const assignmentRoutes = require('./routes/assignmentRoutes');
+app.use('/api/assignments', assignmentRoutes);
+
+const homeworkRoutes = require('./routes/homeworkRoutes');
+app.use('/api/homework', homeworkRoutes);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });

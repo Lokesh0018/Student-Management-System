@@ -183,6 +183,112 @@ async function initDB() {
             );
         `);
 
+        // =======================
+        // FEE MANAGEMENT TABLES
+        // =======================
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS fee_terms (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                academic_year_id VARCHAR(50) DEFAULT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                due_date DATE NOT NULL,
+                description TEXT,
+                status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            );
+        `);
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS student_fees (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                student_id INT NOT NULL,
+                fee_term_id INT NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                status ENUM('PENDING', 'PAYMENT_SUBMITTED', 'PAID', 'OVERDUE', 'REJECTED') DEFAULT 'PENDING',
+                due_date DATE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+                FOREIGN KEY (fee_term_id) REFERENCES fee_terms(id) ON DELETE CASCADE
+            );
+        `);
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS payment_settings (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                admin_id INT NOT NULL,
+                upi_id VARCHAR(100) NOT NULL,
+                payee_name VARCHAR(100),
+                instructions TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+        `);
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS payments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                student_fee_id INT NOT NULL,
+                parent_id INT NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                upi_id VARCHAR(100),
+                utr_number VARCHAR(100) NOT NULL,
+                payment_date DATE NOT NULL,
+                status ENUM('SUBMITTED', 'VERIFIED', 'REJECTED') DEFAULT 'SUBMITTED',
+                rejection_reason TEXT,
+                verified_by INT DEFAULT NULL,
+                verified_at TIMESTAMP NULL DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (student_fee_id) REFERENCES student_fees(id) ON DELETE CASCADE,
+                FOREIGN KEY (parent_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL
+            );
+        `);
+
+        // =======================
+        // ASSIGNMENT MANAGEMENT TABLES
+        // =======================
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS assignments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                teacher_id INT NOT NULL,
+                class_id INT NOT NULL,
+                subject_id INT NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                assigned_date DATE NOT NULL,
+                due_date DATE NOT NULL,
+                priority ENUM('Low', 'Normal', 'High') DEFAULT 'Normal',
+                attachment_url VARCHAR(500),
+                status ENUM('Active', 'Draft', 'Closed') DEFAULT 'Active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+                FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE,
+                FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+            );
+        `);
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS homework (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                assignment_id INT NOT NULL,
+                student_id INT NOT NULL,
+                parent_id INT NOT NULL,
+                status ENUM('TO_DO', 'IN_PROGRESS', 'COMPLETED') DEFAULT 'TO_DO',
+                marked_at TIMESTAMP NULL DEFAULT NULL,
+                completed_at TIMESTAMP NULL DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
+                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+                FOREIGN KEY (parent_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+        `);
+
         console.log("Inserting default admin user and classes...");
         const bcrypt = require('bcrypt');
         const salt = await bcrypt.genSalt(10);

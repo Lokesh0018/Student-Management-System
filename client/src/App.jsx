@@ -8,8 +8,14 @@ const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
 const VerifyOTP = React.lazy(() => import('./pages/VerifyOTP'));
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const AdminFeeSettings = React.lazy(() => import('./pages/AdminFeeSettings'));
+const AdminFeeTerms = React.lazy(() => import('./pages/AdminFeeTerms'));
+const AdminPayments = React.lazy(() => import('./pages/AdminPayments'));
 const TeacherDashboard = React.lazy(() => import('./pages/TeacherDashboard'));
+const TeacherAssignments = React.lazy(() => import('./pages/TeacherAssignments'));
 const ParentDashboard = React.lazy(() => import('./pages/ParentDashboard'));
+const ParentFeeDashboard = React.lazy(() => import('./pages/ParentFeeDashboard'));
+const ParentAssignments = React.lazy(() => import('./pages/ParentAssignments'));
 const ClassDetails = React.lazy(() => import('./pages/ClassDetails'));
 const AddClass = React.lazy(() => import('./pages/AddClass'));
 const EditClass = React.lazy(() => import('./pages/EditClass'));
@@ -212,6 +218,25 @@ function App() {
             <ReportsList />
           </ProtectedRoute>
         } />
+        
+        <Route path="/admin/fee-settings" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminFeeSettings />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/fees" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminFeeTerms />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/payments" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminPayments />
+          </ProtectedRoute>
+        } />
+        
         <Route path="/teacher/dashboard" element={
           <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
             <TeacherDashboard />
@@ -266,6 +291,12 @@ function App() {
           </ProtectedRoute>
         } />
         
+        <Route path="/teacher/assignments" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <TeacherAssignments />
+          </ProtectedRoute>
+        } />
+        
         <Route path="/parent/dashboard" element={
           <ProtectedRoute allowedRoles={['PARENT']}>
             <ParentDashboard />
@@ -299,6 +330,18 @@ function App() {
         <Route path="/parent/remarks" element={
           <ProtectedRoute allowedRoles={['PARENT']}>
             <ParentRemarks />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/parent/fees" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentFeeDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/parent/assignments" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <ParentAssignments />
           </ProtectedRoute>
         } />
 
