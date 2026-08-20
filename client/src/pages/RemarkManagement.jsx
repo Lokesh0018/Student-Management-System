@@ -222,7 +222,7 @@ const RemarkManagement = () => {
                                         </td>
                                         <td data-label="Actions" className="text-right">
                                             <div className="action-buttons-group">
-                                                <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); setViewingRemark(remark); }}>
+                                                <button className="action-btn-icon text-blue" onClick={(e) => { e.stopPropagation(); setViewingRemark(remark); }} title="View Details">
                                                     <FaEye />
                                                 </button>
                                             </div>
@@ -345,8 +345,32 @@ const RemarkManagement = () => {
                                 {viewingRemark.message}
                             </div>
                         </div>
-                        <div className="modal-actions" style={{ marginTop: '24px' }}>
-                            <button className="btn-primary" style={{ width: '100%' }} onClick={() => setViewingRemark(null)}>Close</button>
+                        <div className="modal-actions" style={{ marginTop: '24px', display: 'flex', gap: '16px', justifyContent: 'space-between' }}>
+                            {viewingRemark.sender_id !== user?.id ? (
+                                <button 
+                                    className={viewingRemark.status === 'Unread' ? "btn-primary" : "btn-secondary"}
+                                    style={{ flex: 1, backgroundColor: viewingRemark.status === 'Unread' ? '#10b981' : undefined }}
+                                    onClick={async () => {
+                                        try {
+                                            if (viewingRemark.status === 'Unread') {
+                                                await api.put(`/remarks/${viewingRemark.id}/read`);
+                                                toast.success('Marked as read');
+                                                setViewingRemark({...viewingRemark, status: 'Read'});
+                                            } else {
+                                                await api.put(`/remarks/${viewingRemark.id}/unread`);
+                                                toast.success('Marked as unread');
+                                                setViewingRemark({...viewingRemark, status: 'Unread'});
+                                            }
+                                            fetchData();
+                                        } catch (error) {
+                                            toast.error('Failed to update status');
+                                        }
+                                    }}
+                                >
+                                    {viewingRemark.status === 'Unread' ? 'Mark as Read' : 'Mark as Unread'}
+                                </button>
+                            ) : null}
+                            <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setViewingRemark(null)}>Close</button>
                         </div>
                     </div>
                 </div>

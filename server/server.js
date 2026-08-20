@@ -11,15 +11,16 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
 
+// Apply CORS before rate limiting so 429 responses have CORS headers
+app.use(cors());
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 2000, // Increased limit to prevent issues during React development
     message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
 });
 // Apply to all API routes
 app.use('/api/', limiter);
-
-app.use(cors());
 app.use(express.json());
 
 const authRoutes = require('./routes/authRoutes');

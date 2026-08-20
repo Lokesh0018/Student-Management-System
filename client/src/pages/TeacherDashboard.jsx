@@ -269,50 +269,6 @@ const TeacherDashboard = () => {
                 </motion.div>
             </div>
 
-            {/* Bottom Row */}
-            <div className="bottom-row" style={{ gridTemplateColumns: '1fr', marginTop: '24px' }}>
-                <motion.div className="dash-panel panel-exams" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
-                    <div className="panel-header-split">
-                        <h3 className="panel-title">Students Needing Attention</h3>
-                        <a href="#" className="link-view-all">View All</a>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 0', borderBottom: '1px solid #f1f5f9' }}>
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rohan" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                            <div style={{ flex: 1 }}>
-                                <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#0f172a' }}>Rohan Mehta</h4>
-                                <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#64748b' }}>
-                                    <span>Attendance: 72%</span>
-                                    <span>Average: 62%</span>
-                                </div>
-                            </div>
-                            <button className="btn-outline" style={{ color: '#3b82f6', borderColor: '#bfdbfe', backgroundColor: '#eff6ff' }}>View</button>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 0', borderBottom: '1px solid #f1f5f9' }}>
-                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Ananya" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                            <div style={{ flex: 1 }}>
-                                <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#0f172a' }}>Ananya Singh</h4>
-                                <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#64748b' }}>
-                                    <span>Attendance: 75%</span>
-                                    <span>Average: 65%</span>
-                                </div>
-                            </div>
-                            <button className="btn-outline" style={{ color: '#3b82f6', borderColor: '#bfdbfe', backgroundColor: '#eff6ff' }}>View</button>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 0' }}>
-                            <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Vivaan" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                            <div style={{ flex: 1 }}>
-                                <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#0f172a' }}>Vivaan Patel</h4>
-                                <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#64748b' }}>
-                                    <span>Attendance: 78%</span>
-                                    <span>Average: 68%</span>
-                                </div>
-                            </div>
-                            <button className="btn-outline" style={{ color: '#3b82f6', borderColor: '#bfdbfe', backgroundColor: '#eff6ff' }}>View</button>
-                        </div>
-                    </div>
-                </motion.div>
-            </div>
         </motion.div>
     );
 };
