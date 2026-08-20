@@ -85,6 +85,28 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+process.on('exit', (code) => {
+    console.log('Process exiting with code:', code);
+});
+process.on('SIGINT', () => {
+    console.log('SIGINT received');
+    process.exit(0);
+});
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received');
+    process.exit(0);
+});
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+setInterval(() => {
+    console.log('Keep alive tick');
+}, 5000);

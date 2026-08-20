@@ -81,6 +81,7 @@ async function initDB() {
                 photo VARCHAR(500),
                 dob DATE,
                 gender VARCHAR(20),
+                blood_group VARCHAR(10) DEFAULT NULL,
                 phone VARCHAR(20),
                 address TEXT,
                 admission_date DATE,
@@ -103,7 +104,9 @@ async function initDB() {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 subject_name VARCHAR(100),
                 subject_code VARCHAR(50),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                teacher_id INT DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
             );
         `);
 
@@ -111,6 +114,7 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS exams (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 exam_name VARCHAR(100),
+                exam_type VARCHAR(50),
                 academic_year_id INT,
                 class_id INT,
                 start_date DATE,
@@ -170,7 +174,10 @@ async function initDB() {
         `);
 
         console.log("Inserting default admin user and classes...");
-        await connection.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@school.com', 'admin123', 'ADMIN']);
+        const bcrypt = require('bcrypt');
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('admin123', salt);
+        await connection.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@school.com', hashedPassword, 'ADMIN']);
 
         await connection.query('INSERT IGNORE INTO classes (id, class_name, section) VALUES (?, ?, ?)', [1, 'Class 10', 'A']);
         await connection.query('INSERT IGNORE INTO classes (id, class_name, section) VALUES (?, ?, ?)', [2, 'Class 9', 'A']);

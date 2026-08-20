@@ -114,12 +114,6 @@ const ClassesList = () => {
                     </tbody>
                 </table>
 
-                {classes.length === 0 && (
-                    <div className="empty-state">
-                        <p>No classes found.</p>
-                    </div>
-                )}
-
                 <div className="pagination-footer">
                     <span className="pagination-info">Showing {classes.length} results</span>
                     {/* Pagination controls hidden until backend supports it */}

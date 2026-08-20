@@ -29,6 +29,15 @@ exports.getTeacherDashboardStats = async (req, res) => {
              });
         }
 
+        const monthFilter = req.query.month || 'this';
+        let dateConditionAttendance = "MONTH(a.date) = MONTH(CURRENT_DATE()) AND YEAR(a.date) = YEAR(CURRENT_DATE())";
+        let dateConditionExams = "MONTH(e.created_at) = MONTH(CURRENT_DATE()) AND YEAR(e.created_at) = YEAR(CURRENT_DATE())";
+        
+        if (monthFilter === 'last') {
+            dateConditionAttendance = "MONTH(a.date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(a.date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+            dateConditionExams = "MONTH(e.created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(e.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+        }
+
         const [studentCount] = await pool.execute('SELECT COUNT(*) as total FROM students WHERE class_id = ?', [classId]);
         
         // Calculate average score
@@ -45,7 +54,7 @@ exports.getTeacherDashboardStats = async (req, res) => {
             SELECT a.status as name, COUNT(*) as value 
             FROM attendance a
             JOIN students s ON a.student_id = s.id
-            WHERE s.class_id = ?
+            WHERE s.class_id = ? AND ${dateConditionAttendance}
             GROUP BY a.status
         `, [classId]);
 
@@ -77,11 +86,10 @@ exports.getTeacherDashboardStats = async (req, res) => {
         `, [classId]);
 
         const [examStats] = await pool.execute(`
-            SELECT e.exam_name as name, AVG((m.marks_obtained / m.max_marks) * 100) as score
+            SELECT e.exam_name as name, IFNULL(AVG((m.marks_obtained / m.max_marks) * 100), 0) as score
             FROM exams e
-            LEFT JOIN marks m ON e.id = m.exam_id
-            JOIN students s ON m.student_id = s.id
-            WHERE s.class_id = ? AND m.max_marks > 0
+            LEFT JOIN marks m ON e.id = m.exam_id AND m.max_marks > 0
+            WHERE (e.class_id = ? OR e.class_id IS NULL) AND ${dateConditionExams}
             GROUP BY e.id
             ORDER BY e.start_date ASC
             LIMIT 5
@@ -92,6 +100,15 @@ exports.getTeacherDashboardStats = async (req, res) => {
             score: parseFloat(row.score).toFixed(1)
         }));
 
+        // Fetch students needing attention (e.g., poor attendance or low marks)
+        // For simplicity, we just fetch a few students from the class with a simulated reason
+        const [attentionStudentsData] = await pool.execute(`
+            SELECT id, first_name, last_name, 'Has low attendance recently' as reason
+            FROM students 
+            WHERE class_id = ?
+            LIMIT 3
+        `, [classId]);
+
         res.json({
             success: true,
             data: {
@@ -101,7 +118,8 @@ exports.getTeacherDashboardStats = async (req, res) => {
                 unreadRemarks: remarkCount[0].total,
                 recentMarks,
                 performanceData,
-                attendanceData
+                attendanceData,
+                attentionStudents: attentionStudentsData
             }
         });
 

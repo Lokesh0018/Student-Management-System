@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBook, FaUserPlus, FaCalendarCheck, FaRegClipboard, FaChartPie, FaPlus, FaRegEnvelope, FaRegChartBar } from 'react-icons/fa';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
@@ -10,7 +11,8 @@ import './css/AdminDashboard.css';
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [hoveredAttendance, setHoveredAttendance] = useState({ name: 'Present', value: 94, color: '#10b981' });
+    const [monthFilter, setMonthFilter] = useState('this');
+    const [hoveredAttendance, setHoveredAttendance] = useState(null);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -27,7 +29,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await api.get('/admin/dashboard/stats');
+                const response = await api.get(`/admin/dashboard/stats?month=${monthFilter}`);
                 setStats(response.data.data);
             } catch (err) {
                 setStats({
@@ -46,7 +48,7 @@ const AdminDashboard = () => {
             }
         };
         fetchStats();
-    }, []);
+    }, [monthFilter]);
 
     if (loading) return (
         <div className="dashboard-container">
@@ -152,7 +154,10 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-chart" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Student Performance Overview</h3>
-                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                            <option value="this">This Month</option>
+                            <option value="last">Last Month</option>
+                        </select>
                     </div>
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
@@ -177,7 +182,10 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-donut" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Attendance Overview</h3>
-                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                            <option value="this">This Month</option>
+                            <option value="last">Last Month</option>
+                        </select>
                     </div>
                     <div className="donut-content-row">
                         <div className="donut-chart-wrap" style={{ position: 'relative', width: '150px', height: '150px' }}>
@@ -202,26 +210,30 @@ const AdminDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: hoveredAttendance.color }}>{hoveredAttendance.value}%</span>
-                                <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{hoveredAttendance.name}</div>
+                                {hoveredAttendance ? (
+                                    <>
+                                        <span style={{ fontSize: '24px', fontWeight: 'bold', color: hoveredAttendance.color }}>
+                                            {Math.round((hoveredAttendance.value / (attendanceData.reduce((a, b) => a + b.value, 0) || 1)) * 100)}%
+                                        </span>
+                                        <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{hoveredAttendance.name}</div>
+                                    </>
+                                ) : (
+                                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#64748b' }}>No Data</span>
+                                )}
                             </div>
                         </div>
                         <div className="donut-legend">
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#10b981' }}></span>
-                                <span className="legend-label">Present</span>
-                                <span className="legend-val">94%</span>
-                            </div>
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#f43f5e' }}></span>
-                                <span className="legend-label">Absent</span>
-                                <span className="legend-val">4%</span>
-                            </div>
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#6366f1' }}></span>
-                                <span className="legend-label">Leave</span>
-                                <span className="legend-val">2%</span>
-                            </div>
+                            {attendanceData.length > 0 ? attendanceData.map((item, idx) => (
+                                <div className="legend-item" key={idx}>
+                                    <span className="legend-dot" style={{ backgroundColor: item.color }}></span>
+                                    <span className="legend-label">{item.name}</span>
+                                    <span className="legend-val">
+                                        {Math.round((item.value / attendanceData.reduce((a, b) => a + b.value, 0)) * 100)}%
+                                    </span>
+                                </div>
+                            )) : (
+                                <div className="legend-item" style={{ color: '#64748b' }}>No attendance data available.</div>
+                            )}
                         </div>
                     </div>
                 </motion.div>
@@ -229,7 +241,7 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-remarks" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Recent Remarks</h3>
-                        <a href="#" className="link-view-all">View All</a>
+                        <Link to="/admin/remarks" className="link-view-all">View All</Link>
                     </div>
                     <div className="remark-list">
                         {stats?.recentRemarks?.length > 0 ? (
@@ -259,7 +271,7 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-exams" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Upcoming Examinations</h3>
-                        <a href="#" className="link-view-all">View All</a>
+                        <Link to="/admin/exams" className="link-view-all">View All</Link>
                     </div>
                     <table className="mini-table">
                         <thead>
@@ -290,7 +302,10 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-students-class" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Students by Class</h3>
-                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                            <option value="this">This Month</option>
+                            <option value="last">Last Month</option>
+                        </select>
                     </div>
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">

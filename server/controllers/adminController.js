@@ -4,6 +4,17 @@ const ApiResponse = require('../utils/ApiResponse');
 
 exports.getDashboardStats = async (req, res) => {
     try {
+        const monthFilter = req.query.month || 'this';
+        let dateCondition = "MONTH(s.created_at) = MONTH(CURRENT_DATE()) AND YEAR(s.created_at) = YEAR(CURRENT_DATE())";
+        let dateConditionAttendance = "MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())";
+        let dateConditionExams = "MONTH(e.created_at) = MONTH(CURRENT_DATE()) AND YEAR(e.created_at) = YEAR(CURRENT_DATE())";
+        
+        if (monthFilter === 'last') {
+            dateCondition = "MONTH(s.created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(s.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+            dateConditionAttendance = "MONTH(date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+            dateConditionExams = "MONTH(e.created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(e.created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)";
+        }
+
         const [
             [studentCount],
             [teacherCount],
@@ -21,13 +32,13 @@ exports.getDashboardStats = async (req, res) => {
             pool.execute('SELECT COUNT(DISTINCT parent_user_id) as count FROM students WHERE parent_user_id IS NOT NULL'),
             pool.execute('SELECT COUNT(*) as count FROM classes'),
             pool.execute('SELECT AVG((marks_obtained / max_marks) * 100) as avg_score FROM marks WHERE max_marks > 0'),
-            pool.execute('SELECT c.class_name, c.section, COUNT(s.id) as students FROM classes c LEFT JOIN students s ON c.id = s.class_id GROUP BY c.id'),
-            pool.execute('SELECT status as name, COUNT(*) as value FROM attendance GROUP BY status'),
+            pool.execute(`SELECT c.class_name, c.section, COUNT(s.id) as students FROM classes c LEFT JOIN students s ON c.id = s.class_id AND ${dateCondition} GROUP BY c.id`),
+            pool.execute(`SELECT status as name, COUNT(*) as value FROM attendance WHERE ${dateConditionAttendance} GROUP BY status`),
             pool.execute(`
-                SELECT e.exam_name as name, AVG((m.marks_obtained / m.max_marks) * 100) as score
+                SELECT e.exam_name as name, IFNULL(AVG((m.marks_obtained / m.max_marks) * 100), 0) as score
                 FROM exams e
-                LEFT JOIN marks m ON e.id = m.exam_id
-                WHERE m.max_marks > 0
+                LEFT JOIN marks m ON e.id = m.exam_id AND m.max_marks > 0
+                WHERE ${dateConditionExams}
                 GROUP BY e.id
                 ORDER BY e.start_date ASC
                 LIMIT 5

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUserGraduate, FaCalendarCheck, FaRegClipboard, FaCheckCircle, FaUserCircle } from 'react-icons/fa';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
@@ -10,7 +11,8 @@ import './css/AdminDashboard.css';
 const TeacherDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [hoveredAttendance, setHoveredAttendance] = useState({ name: 'Present', value: 94, color: '#10b981' });
+    const [monthFilter, setMonthFilter] = useState('this');
+    const [hoveredAttendance, setHoveredAttendance] = useState(null);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -27,7 +29,7 @@ const TeacherDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await api.get('/teacher/dashboard/stats');
+                const res = await api.get(`/teacher/dashboard/stats?month=${monthFilter}`);
                 setStats(res.data.data);
             } catch (error) {
                 console.error("Error fetching teacher dashboard stats", error);
@@ -38,14 +40,15 @@ const TeacherDashboard = () => {
                     unreadRemarks: 0,
                     recentMarks: [],
                     performanceData: [],
-                    attendanceData: []
+                    attendanceData: [],
+                    attentionStudents: []
                 });
             } finally {
                 setLoading(false);
             }
         };
         fetchStats();
-    }, []);
+    }, [monthFilter]);
 
     if (loading) return (
         <div className="dashboard-container">
@@ -154,7 +157,10 @@ const TeacherDashboard = () => {
                 <motion.div className="dash-panel panel-chart" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Class Performance Overview</h3>
-                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                            <option value="this">This Month</option>
+                            <option value="last">Last Month</option>
+                        </select>
                     </div>
                     <div className="chart-container" style={{ width: '100%', height: 250, marginTop: '20px' }}>
                         <ResponsiveContainer width="100%" height="100%">
@@ -179,7 +185,10 @@ const TeacherDashboard = () => {
                 <motion.div className="dash-panel panel-donut" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Attendance Overview</h3>
-                        <button className="btn-outline">This Month <span>&#9662;</span></button>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                            <option value="this">This Month</option>
+                            <option value="last">Last Month</option>
+                        </select>
                     </div>
                     <div className="donut-content-row">
                         <div className="donut-chart-wrap" style={{ position: 'relative', width: '150px', height: '150px' }}>
@@ -204,25 +213,30 @@ const TeacherDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: hoveredAttendance.color }}>{hoveredAttendance.value}%</span>
+                                {hoveredAttendance ? (
+                                    <>
+                                        <span style={{ fontSize: '24px', fontWeight: 'bold', color: hoveredAttendance.color }}>
+                                            {Math.round((hoveredAttendance.value / (attendanceData.reduce((a, b) => a + b.value, 0) || 1)) * 100)}%
+                                        </span>
+                                        <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{hoveredAttendance.name}</div>
+                                    </>
+                                ) : (
+                                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#64748b' }}>No Data</span>
+                                )}
                             </div>
                         </div>
                         <div className="donut-legend">
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#10b981'}}></span>
-                                <span className="legend-label">Present</span>
-                                <span className="legend-val">94%</span>
-                            </div>
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#f43f5e'}}></span>
-                                <span className="legend-label">Absent</span>
-                                <span className="legend-val">4%</span>
-                            </div>
-                            <div className="legend-item">
-                                <span className="legend-dot" style={{ backgroundColor: '#6366f1'}}></span>
-                                <span className="legend-label">Leave</span>
-                                <span className="legend-val">2%</span>
-                            </div>
+                            {attendanceData.length > 0 ? attendanceData.map((item, idx) => (
+                                <div className="legend-item" key={idx}>
+                                    <span className="legend-dot" style={{ backgroundColor: item.color }}></span>
+                                    <span className="legend-label">{item.name}</span>
+                                    <span className="legend-val">
+                                        {Math.round((item.value / attendanceData.reduce((a, b) => a + b.value, 0)) * 100)}%
+                                    </span>
+                                </div>
+                            )) : (
+                                <div className="legend-item" style={{ color: '#64748b' }}>No attendance data available.</div>
+                            )}
                         </div>
                     </div>
                 </motion.div>
@@ -230,40 +244,27 @@ const TeacherDashboard = () => {
                 {/* Remarks List */}
                 <motion.div className="dash-panel panel-remarks" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
-                        <h3 className="panel-title">Recent Remarks</h3>
-                        <a href="#" className="link-view-all">View All</a>
+                        <h3 className="panel-title">Students Needing Attention</h3>
+                        <Link to="/teacher/students" className="link-view-all">View All</Link>
                     </div>
                     <div className="remark-list">
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <div style={{width: 36, height: 36, borderRadius: '50%', backgroundColor: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16a34a', fontSize: '14px'}}>RK</div>
-                            </div>
-                            <div className="remark-content">
-                                <h4>Rahul Kumar</h4>
-                                <p>Excellent improvement in Mathematics</p>
-                                <span className="remark-meta">2 hours ago</span>
-                            </div>
-                        </div>
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <div style={{width: 36, height: 36, borderRadius: '50%', backgroundColor: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', fontSize: '14px'}}>PS</div>
-                            </div>
-                            <div className="remark-content">
-                                <h4>Priya Sharma</h4>
-                                <p>Good participation in Science activity</p>
-                                <span className="remark-meta">1 day ago</span>
-                            </div>
-                        </div>
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <div style={{width: 36, height: 36, borderRadius: '50%', backgroundColor: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9333ea', fontSize: '14px'}}>AD</div>
-                            </div>
-                            <div className="remark-content">
-                                <h4>Admin</h4>
-                                <p>Meeting on Parent-Teacher Interaction</p>
-                                <span className="remark-meta">2 days ago</span>
-                            </div>
-                        </div>
+                        {stats?.attentionStudents?.length > 0 ? (
+                            stats.attentionStudents.map((student, index) => (
+                                <div className="remark-item" key={index}>
+                                    <div className="remark-avatar">
+                                        <div style={{width: 36, height: 36, borderRadius: '50%', backgroundColor: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', fontSize: '14px'}}>
+                                            {student.first_name.charAt(0)}{student.last_name.charAt(0)}
+                                        </div>
+                                    </div>
+                                    <div className="remark-content">
+                                        <h4>{student.first_name} {student.last_name}</h4>
+                                        <p>{student.reason}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="empty-state" style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No students needing attention.</div>
+                        )}
                     </div>
                 </motion.div>
             </div>

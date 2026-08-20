@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { SidebarToggle } from './SidebarToggle';
@@ -25,14 +25,29 @@ export const Layout = ({ children }) => {
   const { dynamicCrumbs } = useBreadcrumb();
   const navigate = useNavigate();
   const location = useLocation();
+  const notificationRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       fetchNotifications();
     }
   }, [user]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const unreadNotifications = notifications.filter(n => !n.is_read);
+
+  useEffect(() => {
     const handleGlobalKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -43,7 +58,7 @@ export const Layout = ({ children }) => {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('sidebar-state', isCollapsed ? 'collapsed' : 'expanded');
   }, [isCollapsed]);
 
@@ -170,27 +185,27 @@ export const Layout = ({ children }) => {
             >
               {isDarkMode ? <FaSun /> : <FaMoon />}
             </button>
-            <div className="notification-wrapper" style={{ position: 'relative' }}>
+            <div className="notification-wrapper" style={{ position: 'relative' }} ref={notificationRef}>
               <button 
                 className="icon-btn header-bell" 
                 onClick={() => setShowNotifications(!showNotifications)}
               >
                 <FaBell />
-                {notifications.length > 0 && <span className="bell-dot"></span>}
+                {unreadNotifications.length > 0 && <span className="bell-dot"></span>}
               </button>
               
               {showNotifications && (
                 <div className="notification-dropdown">
                   <div className="notif-header">
                     <h4>Notifications</h4>
-                    {notifications.length > 0 && (
+                    {unreadNotifications.length > 0 && (
                       <button className="clear-btn" onClick={handleClearAll}>Clear All</button>
                     )}
                   </div>
                   <div className="notif-body">
-                    {notifications.length > 0 ? (
-                      notifications.map(n => (
-                        <div key={n.id} className={`notif-item ${!n.is_read ? 'unread' : ''}`}>
+                    {unreadNotifications.length > 0 ? (
+                      unreadNotifications.map(n => (
+                        <div key={n.id} className={`notif-item unread`}>
                           <strong>{n.title}</strong>
                           <p>{n.message}</p>
                           <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>
