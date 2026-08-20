@@ -100,62 +100,62 @@ const TeacherDashboard = () => {
             
             {/* Top Stat Cards */}
             <div className="stats-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
-                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}>
                                 <FaUserGraduate />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: '#eff6ff', color: '#2563eb', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Active</span>
+                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Active</span>
                         </div>
                         <div>
-                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Total Students</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.totalStudents || '42'}</h3>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Students</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.totalStudents || '42'}</h3>
                         </div>
                     </div>
                 </motion.div>
                 
-                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)' }}>
                                 <FaCalendarCheck />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: '#ecfdf5', color: '#059669', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+2.1%</span>
+                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+2.1%</span>
                         </div>
                         <div>
-                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Average Attendance</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.attendance || '94'}%</h3>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Average Attendance</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.attendance || '94'}%</h3>
                         </div>
                     </div>
                 </motion.div>
                 
-                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.3)' }}>
                                 <FaCheckCircle />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: '#ecfdf5', color: '#059669', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+1.4%</span>
+                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+1.4%</span>
                         </div>
                         <div>
-                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Class Average</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.averageScore || '78.6'}%</h3>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Class Average</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.averageScore || '78.6'}%</h3>
                         </div>
                     </div>
                 </motion.div>
 
-                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                <motion.div style={{ display: 'flex', flexDirection: 'column', padding: '24px', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }} whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(244, 63, 94, 0.3)' }}>
                                 <FaRegClipboard />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: '#fff1f2', color: '#e11d48', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Action Needed</span>
+                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#e11d48', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Action Needed</span>
                         </div>
                         <div>
-                            <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Unread Remarks</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{stats?.unreadRemarks || '8'}</h3>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Unread Remarks</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.unreadRemarks || '8'}</h3>
                         </div>
                     </div>
                 </motion.div>

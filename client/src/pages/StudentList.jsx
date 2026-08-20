@@ -83,6 +83,16 @@ const StudentList = () => {
         navigate(`/admin/students/${studentId}`);
     };
 
+    const uniqueClasses = [];
+    const classMap = new Map();
+    students.forEach(s => {
+        if (s.class_id && !classMap.has(s.class_id)) {
+            classMap.set(s.class_id, true);
+            uniqueClasses.push({ id: s.class_id, name: s.class_name });
+        }
+    });
+    uniqueClasses.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+
     return (
         <div className="student-list-page">
             <div className="page-header-row">
@@ -107,8 +117,9 @@ const StudentList = () => {
                 <div className="filter-dropdowns">
                     <select className="filter-select" value={filterClass} onChange={(e) => setFilterClass(e.target.value)}>
                         <option value="">Class</option>
-                        <option value="1">Class 10</option>
-                        <option value="2">Class 9</option>
+                        {uniqueClasses.map(c => (
+                            <option key={c.id} value={c.id}>Class {c.name}</option>
+                        ))}
                     </select>
                     <button className="btn-clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
