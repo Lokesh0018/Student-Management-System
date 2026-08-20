@@ -218,12 +218,7 @@ function App() {
             <ReportsList />
           </ProtectedRoute>
         } />
-        
-        <Route path="/admin/fee-settings" element={
-          <ProtectedRoute allowedRoles={['ADMIN']}>
-            <AdminFeeSettings />
-          </ProtectedRoute>
-        } />
+
         
         <Route path="/admin/fees" element={
           <ProtectedRoute allowedRoles={['ADMIN']}>

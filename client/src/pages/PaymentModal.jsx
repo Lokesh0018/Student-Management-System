@@ -55,38 +55,38 @@ const PaymentModal = ({ fee, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="modal-content" style={{ background: '#fff', padding: '30px', borderRadius: '12px', width: '450px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', paddingBottom: '15px', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0 }}>{fee.term_name} Payment</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}>&times;</button>
+    <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+      <div className="modal-content" style={{ background: '#fff', padding: '20px', borderRadius: '12px', width: '400px', maxWidth: '100%', maxHeight: '95vh', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', paddingBottom: '10px', marginBottom: '15px' }}>
+          <h2 style={{ margin: 0, fontSize: '1.25rem' }}>{fee.term_name} Payment</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '0 5px' }}>&times;</button>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <p><strong>Student:</strong> {fee.student.name}</p>
-          <p><strong>Amount:</strong> ₹{fee.amount}</p>
+        <div style={{ marginBottom: '15px', background: '#f8f9fa', padding: '10px', borderRadius: '6px' }}>
+          <p style={{ margin: '0 0 5px 0', fontSize: '0.9rem' }}><strong>Student:</strong> {fee.student.name}</p>
+          <p style={{ margin: 0, fontSize: '0.9rem' }}><strong>Amount:</strong> ₹{fee.amount}</p>
         </div>
 
         {!settings?.upi_id ? (
-          <div className="alert alert-warning">
+          <div className="alert alert-warning" style={{ fontSize: '0.9rem', padding: '10px' }}>
             The school has not configured a UPI ID for payments yet. Please contact the administrator.
           </div>
         ) : (
-          <div style={{ textAlign: 'center', marginBottom: '25px', padding: '20px', background: '#f8f9fa', borderRadius: '8px' }}>
-            <h3 style={{ marginBottom: '15px' }}>Scan & Pay</h3>
+          <div style={{ textAlign: 'center', marginBottom: '15px', padding: '15px', background: '#f8f9fa', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>Scan & Pay</h3>
             <div style={{ background: '#fff', display: 'inline-block', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }}>
-              <QRCodeSVG value={generateUPIString()} size={200} />
+              <QRCodeSVG value={generateUPIString()} size={150} />
             </div>
-            <p style={{ marginTop: '15px', color: '#666' }}>School UPI: {settings.upi_id}</p>
+            <p style={{ margin: '10px 0 0 0', color: '#666', fontSize: '0.9rem' }}>UPI ID: <strong>{settings.upi_id}</strong></p>
             {settings.instructions && (
-              <p style={{ marginTop: '10px', fontSize: '14px', fontStyle: 'italic' }}>{settings.instructions}</p>
+              <p style={{ margin: '5px 0 0 0', fontSize: '0.8rem', fontStyle: 'italic' }}>{settings.instructions}</p>
             )}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group" style={{ marginBottom: '20px' }}>
-            <label>UPI Transaction ID / UTR *</label>
+          <div className="form-group" style={{ marginBottom: '15px' }}>
+            <label style={{ fontSize: '0.9rem', marginBottom: '5px', display: 'block' }}>UPI Transaction ID / UTR *</label>
             <input 
               type="text" 
               className="form-control" 
@@ -94,14 +94,14 @@ const PaymentModal = ({ fee, onClose, onSuccess }) => {
               onChange={e => setUtr(e.target.value)}
               placeholder="Enter 12-digit UTR number"
               required
-              style={{ width: '100%', padding: '10px' }}
+              style={{ width: '100%', padding: '10px', fontSize: '0.9rem', borderRadius: '6px', border: '1px solid #ddd' }}
             />
           </div>
           
           <button 
             type="submit" 
             className="btn btn-primary" 
-            style={{ width: '100%', padding: '12px', fontSize: '16px' }}
+            style={{ width: '100%', padding: '10px', fontSize: '1rem', borderRadius: '6px' }}
             disabled={loading || !settings?.upi_id}
           >
             {loading ? 'Submitting...' : "I've Completed Payment"}

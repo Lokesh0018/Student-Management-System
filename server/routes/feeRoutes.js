@@ -5,7 +5,7 @@ const auth = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const adminAuth = roleMiddleware('ADMIN');
 
-router.get('/settings', auth, adminAuth, feeController.getSettings);
+router.get('/settings', auth, feeController.getSettings);
 router.put('/settings', auth, adminAuth, feeController.updateSettings);
 
 router.get('/terms', auth, adminAuth, feeController.getFeeTerms);

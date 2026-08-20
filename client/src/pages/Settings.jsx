@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FaUserCircle, FaLock, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { FaUserCircle, FaLock, FaCheckCircle, FaExclamationCircle, FaMoneyBillWave } from 'react-icons/fa';
 import api from '../utils/api';
+import AdminFeeSettings from './AdminFeeSettings';
+import toast from 'react-hot-toast';
 import './css/Settings.css';
 
 const Settings = () => {
@@ -9,7 +11,6 @@ const Settings = () => {
     const [profile, setProfile] = useState({ name: '', email: '' });
     const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState({ type: '', text: '' });
     const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState('profile');
 
@@ -19,7 +20,7 @@ const Settings = () => {
                 const res = await api.get('/users/profile');
                 setProfile({ name: res.data.data.name, email: res.data.data.email });
             } catch (error) {
-                setMessage({ type: 'error', text: 'Failed to load profile details.' });
+                toast.error('Failed to load profile details.');
             } finally {
                 setLoading(false);
             }
@@ -37,16 +38,15 @@ const Settings = () => {
 
     const handleProfileSubmit = async (e) => {
         e.preventDefault();
-        setMessage({ type: '', text: '' });
         setIsSaving(true);
         try {
             const res = await api.put('/users/profile', profile);
-            setMessage({ type: 'success', text: 'Profile updated successfully!' });
+            toast.success('Profile updated successfully!');
             // Update auth context user
             const updatedUser = { ...user, name: res.data.data.name, email: res.data.data.email };
             login(updatedUser, localStorage.getItem('token'));
         } catch (error) {
-            setMessage({ type: 'error', text: error.response?.data?.message || 'Failed to update profile.' });
+            toast.error(error.response?.data?.message || 'Failed to update profile.');
         } finally {
             setIsSaving(false);
         }
@@ -55,20 +55,19 @@ const Settings = () => {
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
         if (passwords.newPassword !== passwords.confirmPassword) {
-            setMessage({ type: 'error', text: 'New passwords do not match.' });
+            toast.error('New passwords do not match.');
             return;
         }
-        setMessage({ type: '', text: '' });
         setIsSaving(true);
         try {
             await api.put('/users/profile', {
                 currentPassword: passwords.currentPassword,
                 newPassword: passwords.newPassword
             });
-            setMessage({ type: 'success', text: 'Password changed successfully!' });
+            toast.success('Password changed successfully!');
             setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
         } catch (error) {
-            setMessage({ type: 'error', text: error.response?.data?.message || 'Failed to change password.' });
+            toast.error(error.response?.data?.message || 'Failed to change password.');
         } finally {
             setIsSaving(false);
         }
@@ -85,13 +84,6 @@ const Settings = () => {
                 <p className="page-subtitle">Manage your profile and security preferences.</p>
             </div>
 
-            {message.text && (
-                <div className={`alert alert-${message.type}`}>
-                    {message.type === 'success' ? <FaCheckCircle /> : <FaExclamationCircle />}
-                    <span>{message.text}</span>
-                </div>
-            )}
-
             <div className="settings-layout">
                 <div className="settings-sidebar card">
                     <ul className="settings-nav">
@@ -101,6 +93,11 @@ const Settings = () => {
                         <li className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
                             <FaLock /> Account Security
                         </li>
+                        {user?.role === 'ADMIN' && (
+                            <li className={activeTab === 'fee-settings' ? 'active' : ''} onClick={() => setActiveTab('fee-settings')}>
+                                <FaMoneyBillWave /> Fee & Payment Settings
+                            </li>
+                        )}
                     </ul>
                 </div>
 
@@ -154,6 +151,14 @@ const Settings = () => {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    )}
+
+                    {activeTab === 'fee-settings' && user?.role === 'ADMIN' && (
+                        <div className="settings-section">
+                            <h2>Fee & Payment Settings</h2>
+                            <p className="section-desc">Configure UPI ID and payment instructions for parents.</p>
+                            <AdminFeeSettings />
                         </div>
                     )}
                 </div>

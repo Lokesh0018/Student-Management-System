@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import './css/Settings.css';
+import { FaPen, FaTrash } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const AdminFeeTerms = () => {
   const [terms, setTerms] = useState([]);
@@ -11,6 +13,8 @@ const AdminFeeTerms = () => {
   const [classes, setClasses] = useState([]);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [assignData, setAssignData] = useState({ fee_term_id: '', class_id: '' });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [termToDelete, setTermToDelete] = useState(null);
 
   useEffect(() => {
     fetchTerms();
@@ -47,24 +51,32 @@ const AdminFeeTerms = () => {
       } else {
         await api.post('/fees/terms', currentTerm);
       }
+      toast.success('Term saved successfully');
       fetchTerms();
       setIsModalOpen(false);
       setCurrentTerm({ name: '', amount: '', due_date: '', description: '' });
     } catch (error) {
       console.error('Failed to save term', error);
-      alert('Error saving term');
+      toast.error('Error saving term');
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this term?')) {
-      try {
-        await api.delete(`/fees/terms/${id}`);
-        fetchTerms();
-      } catch (error) {
-        console.error('Failed to delete', error);
-        alert('Error deleting term');
-      }
+  const handleDelete = (id) => {
+    setTermToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!termToDelete) return;
+    try {
+      await api.delete(`/fees/terms/${termToDelete}`);
+      toast.success('Term deleted successfully');
+      fetchTerms();
+      setIsDeleteModalOpen(false);
+      setTermToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete', error);
+      toast.error('Error deleting term');
     }
   };
 
@@ -73,14 +85,14 @@ const AdminFeeTerms = () => {
     try {
       const res = await api.post('/fees/assign', assignData);
       if (res.data.success) {
-        alert(res.data.message);
+        toast.success(res.data.message);
         setIsAssignModalOpen(false);
       } else {
-        alert(res.data.message || 'Failed to assign');
+        toast.error(res.data.message || 'Failed to assign');
       }
     } catch (err) {
       console.error(err);
-      alert('Error assigning fees');
+      toast.error(err.response?.data?.message || 'Error assigning fees');
     }
   };
 
@@ -113,7 +125,8 @@ const AdminFeeTerms = () => {
               <th style={{ padding: '10px' }}>Amount (₹)</th>
               <th style={{ padding: '10px' }}>Due Date</th>
               <th style={{ padding: '10px' }}>Status</th>
-              <th style={{ padding: '10px' }}>Actions</th>
+              <th style={{ padding: '10px', textAlign: 'center' }}>Assign</th>
+              <th style={{ padding: '10px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -125,15 +138,23 @@ const AdminFeeTerms = () => {
                 <td style={{ padding: '10px' }}>
                   <span className={`badge ${term.status === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>{term.status}</span>
                 </td>
-                <td style={{ padding: '10px' }}>
-                  <button className="btn btn-sm" style={{ marginRight: '5px', background: '#28a745', color: '#fff' }} onClick={() => openAssign(term)}>Assign to Class</button>
-                  <button className="btn btn-sm" style={{ marginRight: '5px' }} onClick={() => openEdit(term)}>Edit</button>
-                  <button className="btn btn-sm" style={{ background: '#ff4d4f', color: '#fff' }} onClick={() => handleDelete(term.id)}>Delete</button>
+                <td style={{ padding: '10px', textAlign: 'center' }}>
+                  <button className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '4px 8px' }} onClick={() => openAssign(term)}>Assign to Class</button>
+                </td>
+                <td data-label="ACTION" className="text-right" style={{ padding: '10px' }}>
+                  <div className="action-buttons-group">
+                    <button className="action-btn-icon text-gray" onClick={() => openEdit(term)}>
+                      <FaPen />
+                    </button>
+                    <button className="action-btn-icon text-red" onClick={() => handleDelete(term.id)}>
+                      <FaTrash />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
             {terms.length === 0 && (
-              <tr><td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>No fee terms configured.</td></tr>
+              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No fee terms configured.</td></tr>
             )}
           </tbody>
         </table>
@@ -184,6 +205,19 @@ const AdminFeeTerms = () => {
                 <button type="submit" className="btn btn-primary">Assign</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>Confirm Deletion</h3>
+            <p style={{ marginTop: '10px', marginBottom: '20px' }}>Are you sure you want to delete this fee term? This action cannot be undone.</p>
+            <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#e5e7eb', cursor: 'pointer' }} onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+              <button className="btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer' }} onClick={confirmDelete}>Delete</button>
+            </div>
           </div>
         </div>
       )}

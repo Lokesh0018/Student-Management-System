@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog, FaChartLine, FaClipboardList, FaCommentDots } from 'react-icons/fa';
+import { FaSearch, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog, FaChartLine, FaClipboardList, FaCommentDots, FaMoneyBillWave } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import './css/CommandPalette.css';
@@ -23,6 +23,8 @@ export const CommandPalette = ({ isOpen, onClose }) => {
             { id: 'teachers', name: 'View All Teachers', path: '/admin/teachers', icon: <FaChalkboardTeacher /> },
             { id: 'classes', name: 'Manage Classes', path: '/admin/classes', icon: <FaBook /> },
             { id: 'exams', name: 'Manage Examinations', path: '/admin/exams', icon: <FaBook /> },
+            { id: 'fees', name: 'Manage Fees', path: '/admin/fees', icon: <FaMoneyBillWave /> },
+            { id: 'payments', name: 'Verify Payments', path: '/admin/payments', icon: <FaClipboardList /> },
             { id: 'settings', name: 'System Settings', path: '/admin/settings', icon: <FaCog /> },
         ];
     } else if (user?.role === 'CLASS_TEACHER' || user?.role === 'TEACHER') {
@@ -31,6 +33,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
             { id: 'students', name: 'My Class Students', path: '/teacher/students', icon: <FaUserGraduate /> },
             { id: 'attendance', name: 'Mark Attendance', path: '/teacher/attendance', icon: <FaClipboardList /> },
             { id: 'marks', name: 'Enter Marks', path: '/teacher/marks', icon: <FaBook /> },
+            { id: 'assignments', name: 'Manage Assignments', path: '/teacher/assignments', icon: <FaClipboardList /> },
             { id: 'performance', name: 'Class Performance', path: '/teacher/performance', icon: <FaChartLine /> },
             { id: 'remarks', name: 'Manage Remarks', path: '/teacher/remarks', icon: <FaCommentDots /> },
             { id: 'settings', name: 'Settings', path: '/teacher/settings', icon: <FaCog /> },
@@ -41,6 +44,8 @@ export const CommandPalette = ({ isOpen, onClose }) => {
             { id: 'dashboard', name: 'Go to Dashboard', path: '/parent/dashboard', icon: <FaSearch /> },
             { id: 'children', name: 'My Children', path: '/parent/children', icon: <FaUserGraduate /> },
             { id: 'scorecards', name: 'Scorecards', path: '/parent/scorecards', icon: <FaBook /> },
+            { id: 'fees', name: 'Pay Fees', path: '/parent/fees', icon: <FaMoneyBillWave /> },
+            { id: 'assignments', name: 'Homework & Assignments', path: '/parent/assignments', icon: <FaClipboardList /> },
             { id: 'performance', name: 'Performance Analytics', path: '/parent/performance', icon: <FaChartLine /> },
             { id: 'attendance', name: 'Attendance', path: '/parent/attendance', icon: <FaClipboardList /> },
             { id: 'remarks', name: 'Teacher Remarks', path: '/parent/remarks', icon: <FaCommentDots /> },
