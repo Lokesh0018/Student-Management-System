@@ -88,7 +88,8 @@ export const Layout = ({ children }) => {
   };
 
   const handleProfileClick = () => {
-    navigate(`/${user?.role?.toLowerCase() || 'admin'}/settings`);
+    const roleBasePath = user?.role === 'ADMIN' ? 'admin' : user?.role === 'CLASS_TEACHER' ? 'teacher' : 'parent';
+    navigate(`/${roleBasePath}/settings`);
   };
 
   const toggleDarkMode = () => {

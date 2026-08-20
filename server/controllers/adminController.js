@@ -12,7 +12,9 @@ exports.getDashboardStats = async (req, res) => {
             [avgScoreRow],
             classStats,
             attendanceStats,
-            examStats
+            examStats,
+            [recentRemarksData],
+            [upcomingExamsData]
         ] = await Promise.all([
             pool.execute('SELECT COUNT(*) as count FROM students'),
             pool.execute('SELECT COUNT(*) as count FROM teachers'),
@@ -29,6 +31,17 @@ exports.getDashboardStats = async (req, res) => {
                 GROUP BY e.id
                 ORDER BY e.start_date ASC
                 LIMIT 5
+            `),
+            pool.execute(`
+                SELECT r.*, u.name as sender_name 
+                FROM remarks r 
+                LEFT JOIN users u ON r.sender_id = u.id 
+                ORDER BY r.created_at DESC LIMIT 5
+            `),
+            pool.execute(`
+                SELECT * FROM exams 
+                WHERE status = 'UPCOMING' OR start_date >= CURDATE() 
+                ORDER BY start_date ASC LIMIT 5
             `)
         ]);
         
@@ -69,7 +82,8 @@ exports.getDashboardStats = async (req, res) => {
             classData,
             attendanceData,
             performanceData,
-            recentRemarks: [] // Removed hardcoded remarks for now, or fetch from DB
+            recentRemarks: recentRemarksData,
+            upcomingExams: upcomingExamsData
         });
     } catch (error) {
         logger.error('Error fetching dashboard stats: %O', error);

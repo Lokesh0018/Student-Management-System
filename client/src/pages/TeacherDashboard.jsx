@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUserGraduate, FaCalendarCheck, FaRegClipboard, FaCheckCircle } from 'react-icons/fa';
+import { FaUserGraduate, FaCalendarCheck, FaRegClipboard, FaCheckCircle, FaUserCircle } from 'react-icons/fa';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -95,13 +95,12 @@ const TeacherDashboard = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}>
-                                <FaUserGraduate />
+                                <FaUserCircle />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Active</span>
                         </div>
                         <div>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Students</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.totalStudents || '42'}</h3>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>My Students</span>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.totalStudents || '0'}</h3>
                         </div>
                     </div>
                 </motion.div>
@@ -112,7 +111,6 @@ const TeacherDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)' }}>
                                 <FaCalendarCheck />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+2.1%</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Average Attendance</span>
@@ -127,7 +125,6 @@ const TeacherDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.3)' }}>
                                 <FaCheckCircle />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+1.4%</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Class Average</span>
@@ -142,7 +139,6 @@ const TeacherDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(244, 63, 94, 0.3)' }}>
                                 <FaRegClipboard />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#e11d48', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>Action Needed</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Unread Remarks</span>

@@ -95,7 +95,6 @@ const AdminDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)' }}>
                                 <FaUserGraduate />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+4.2%</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Students</span>
@@ -110,7 +109,6 @@ const AdminDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)' }}>
                                 <FaChalkboardTeacher />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+2</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Teachers</span>
@@ -125,7 +123,6 @@ const AdminDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.3)' }}>
                                 <FaUsers />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+5.1%</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Parents</span>
@@ -140,7 +137,6 @@ const AdminDashboard = () => {
                             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '0 4px 6px -1px rgba(139, 92, 246, 0.3)' }}>
                                 <FaBook />
                             </div>
-                            <span style={{ padding: '4px 10px', backgroundColor: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>+0</span>
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Total Classes</span>
@@ -230,43 +226,30 @@ const AdminDashboard = () => {
                     </div>
                 </motion.div>
 
-                {/* Remarks List */}
                 <motion.div className="dash-panel panel-remarks" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Recent Remarks</h3>
                         <a href="#" className="link-view-all">View All</a>
                     </div>
                     <div className="remark-list">
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Rahul" />
-                            </div>
-                            <div className="remark-content">
-                                <h4>Rahul Kumar</h4>
-                                <p>Excellent improvement in Mathematics</p>
-                                <span className="remark-meta">By: Class Teacher • 2 hours ago</span>
-                            </div>
-                        </div>
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya" />
-                            </div>
-                            <div className="remark-content">
-                                <h4>Priya Sharma</h4>
-                                <p>Good performance in Science</p>
-                                <span className="remark-meta">By: Class Teacher • 5 hours ago</span>
-                            </div>
-                        </div>
-                        <div className="remark-item">
-                            <div className="remark-avatar">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Aarav" />
-                            </div>
-                            <div className="remark-content">
-                                <h4>Aarav Mehta</h4>
-                                <p>Needs to focus more on Social Studies</p>
-                                <span className="remark-meta">By: Class Teacher • 1 day ago</span>
-                            </div>
-                        </div>
+                        {stats?.recentRemarks?.length > 0 ? (
+                            stats.recentRemarks.map((remark, index) => (
+                                <div className="remark-item" key={index}>
+                                    <div className="remark-avatar">
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>
+                                            {remark.sender_name?.charAt(0) || 'U'}
+                                        </div>
+                                    </div>
+                                    <div className="remark-content">
+                                        <h4>{remark.title}</h4>
+                                        <p>{remark.message}</p>
+                                        <span className="remark-meta">By: {remark.sender_name} • {new Date(remark.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="empty-state" style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No recent remarks found.</div>
+                        )}
                     </div>
                 </motion.div>
             </div>
@@ -287,21 +270,19 @@ const AdminDashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td className="fw-500 text-blue">Unit Test - 1</td>
-                                <td>Class 10-A</td>
-                                <td>24 May 2024</td>
-                            </tr>
-                            <tr>
-                                <td className="fw-500 text-blue">Mid Term Exam</td>
-                                <td>Class 9-B</td>
-                                <td>10 Jun 2024</td>
-                            </tr>
-                            <tr>
-                                <td className="fw-500 text-blue">Quarterly Exam</td>
-                                <td>Class 8-A</td>
-                                <td>22 Jun 2024</td>
-                            </tr>
+                            {stats?.upcomingExams?.length > 0 ? (
+                                stats.upcomingExams.map((exam, index) => (
+                                    <tr key={index}>
+                                        <td className="fw-500 text-blue">{exam.exam_name}</td>
+                                        <td>Class {exam.class_id}</td>
+                                        <td>{new Date(exam.start_date).toLocaleDateString()}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3" style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>No upcoming exams.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </motion.div>

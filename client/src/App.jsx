@@ -39,6 +39,7 @@ const ParentAttendance = React.lazy(() => import('./pages/ParentAttendance'));
 const ParentPerformance = React.lazy(() => import('./pages/ParentPerformance'));
 const ParentRemarks = React.lazy(() => import('./pages/ParentRemarks'));
 const PlaceholderPage = React.lazy(() => import('./pages/PlaceholderPage'));
+const Settings = React.lazy(() => import('./pages/Settings'));
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
     
@@ -292,6 +293,24 @@ function App() {
         <Route path="/parent/remarks" element={
           <ProtectedRoute allowedRoles={['PARENT']}>
             <ParentRemarks />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/settings" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <Settings />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/teacher/settings" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <Settings />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/parent/settings" element={
+          <ProtectedRoute allowedRoles={['PARENT']}>
+            <Settings />
           </ProtectedRoute>
         } />
       </Routes>

@@ -42,11 +42,11 @@ exports.getTeacherDashboardStats = async (req, res) => {
 
         // Calculate attendance stats
         const [attendanceStats] = await pool.execute(`
-            SELECT status as name, COUNT(*) as value 
+            SELECT a.status as name, COUNT(*) as value 
             FROM attendance a
             JOIN students s ON a.student_id = s.id
             WHERE s.class_id = ?
-            GROUP BY status
+            GROUP BY a.status
         `, [classId]);
 
         let presentCount = 0;

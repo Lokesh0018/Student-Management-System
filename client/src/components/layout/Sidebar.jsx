@@ -3,13 +3,14 @@ import { NavLink } from 'react-router-dom';
 import { 
     FaSignOutAlt, FaTachometerAlt, FaUserGraduate, FaChalkboardTeacher, 
     FaUsers, FaBook, FaCalendarCheck, FaClipboardList, FaChartLine, 
-    FaRegFileAlt, FaCog, FaBookOpen, FaUserCircle, FaBell
+    FaRegFileAlt, FaCog, FaBookOpen, FaUserCircle, FaBell, FaUserCog
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import './css/Sidebar.css';
 
 export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
   const { logout, user } = useAuth();
+  const roleBasePath = user?.role === 'ADMIN' ? '/admin' : user?.role === 'CLASS_TEACHER' ? '/teacher' : '/parent';
 
   return (
     <>
@@ -109,6 +110,9 @@ export const Sidebar = ({ isOpen, isCollapsed, onClose }) => {
         </nav>
 
         <div className="sidebar-footer">
+          <NavLink to={`${roleBasePath}/settings`} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center' }}>
+            <FaUserCog className="sidebar-icon" /> <span>Settings</span>
+          </NavLink>
           <button className="logout-btn" onClick={logout}>
             <FaSignOutAlt className="sidebar-icon text-red" style={{ color: '#ef4444' }} /> <span>Logout</span>
           </button>
