@@ -443,6 +443,40 @@
         background-color: #f8fafc !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+        text-align: left !important;
+    }
+    /* Force table layout to prevent responsive mobile card view from triggering in print */
+    .print-only-child .data-table {
+        display: table !important;
+        width: 100% !important;
+    }
+    .print-only-child .data-table thead {
+        display: table-header-group !important;
+    }
+    .print-only-child .data-table thead tr {
+        position: static !important;
+        display: table-row !important;
+    }
+    .print-only-child .data-table tbody {
+        display: table-row-group !important;
+    }
+    .print-only-child .data-table tr {
+        display: table-row !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        border-bottom: 1px solid var(--border) !important;
+    }
+    .print-only-child .data-table td,
+    .print-only-child .data-table th {
+        display: table-cell !important;
+        position: static !important;
+        padding-left: 1rem !important;
+        text-align: left !important;
+    }
+    .print-only-child .data-table td:before {
+        display: none !important;
     }
 }
 

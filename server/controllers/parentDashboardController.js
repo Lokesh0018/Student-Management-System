@@ -27,7 +27,7 @@ exports.getParentDashboardStats = async (req, res) => {
             JOIN subjects sub ON m.subject_id = sub.id
             JOIN exams e ON m.exam_id = e.id
             WHERE m.student_id IN (${placeholders})
-            ORDER BY m.id DESC LIMIT 10
+            ORDER BY m.id DESC
         `, studentIds);
 
         // Fetch attendance summary for these children
