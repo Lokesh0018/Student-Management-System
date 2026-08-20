@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
@@ -181,7 +181,7 @@ const Login = () => {
                                 <label className="remember-me">
                                     <input type="checkbox" /> Remember me
                                 </label>
-                                <a href="#" className="forgot-password">Forgot Password?</a>
+                                <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
                             </motion.div>
                             
                             <motion.div variants={itemVariants}>
