@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import toast from 'react-hot-toast';
 import api from '../utils/api';
 
 const PaymentModal = ({ fee, onClose, onSuccess }) => {
@@ -24,7 +25,10 @@ const PaymentModal = ({ fee, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!utr) return alert('Please enter UTR number');
+    if (!utr) {
+      toast.error('Please enter UTR number');
+      return;
+    }
     
     setLoading(true);
     try {
@@ -33,14 +37,14 @@ const PaymentModal = ({ fee, onClose, onSuccess }) => {
         amount: fee.amount
       });
       if (res.data.success) {
-        alert('Payment submitted successfully for verification.');
+        toast.success('Payment submitted successfully for verification.');
         onSuccess();
       } else {
-        alert(res.data.message || 'Failed to submit payment');
+        toast.error(res.data.message || 'Failed to submit payment');
       }
     } catch (error) {
       console.error(error);
-      alert('Error submitting payment');
+      toast.error('Error submitting payment');
     } finally {
       setLoading(false);
     }

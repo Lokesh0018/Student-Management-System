@@ -44,7 +44,21 @@ exports.updateSettings = async (req, res) => {
 // Fee Terms CRUD
 exports.getFeeTerms = async (req, res) => {
     try {
-        const [terms] = await db.execute('SELECT * FROM fee_terms ORDER BY due_date ASC');
+        await db.execute('UPDATE fee_terms SET status = "ACTIVE" WHERE due_date >= CURDATE() AND status = "INACTIVE"');
+        await db.execute('UPDATE student_fees SET status = "PENDING" WHERE due_date >= CURDATE() AND status = "OVERDUE"');
+        await db.execute('UPDATE fee_terms SET status = "INACTIVE" WHERE due_date < CURDATE() AND status = "ACTIVE"');
+        await db.execute('UPDATE student_fees SET status = "OVERDUE" WHERE due_date < CURDATE() AND (status = "ACTIVE" OR status = "PENDING")');
+        
+        const [terms] = await db.execute(`
+            SELECT f.*, 
+                (SELECT GROUP_CONCAT(DISTINCT CONCAT(c.class_name, ' ', c.section) SEPARATOR ', ') 
+                 FROM student_fees sf 
+                 JOIN students s ON sf.student_id = s.id 
+                 JOIN classes c ON s.class_id = c.id 
+                 WHERE sf.fee_term_id = f.id) as assigned_classes
+            FROM fee_terms f 
+            ORDER BY f.due_date ASC
+        `);
         res.json({ success: true, data: terms });
     } catch (error) {
         console.error(error);
@@ -79,6 +93,13 @@ exports.updateFeeTerm = async (req, res) => {
             'UPDATE fee_terms SET name=?, academic_year_id=?, amount=?, due_date=?, description=?, status=? WHERE id=?',
             [name, academic_year_id || null, amount, due_date, description || '', status || 'ACTIVE', id]
         );
+        
+        // Also update linked student_fees with new amount and due_date
+        await db.execute(
+            'UPDATE student_fees SET amount=?, due_date=? WHERE fee_term_id=?',
+            [amount, due_date, id]
+        );
+
         res.json({ success: true, message: 'Fee term updated successfully' });
     } catch (error) {
         console.error(error);
@@ -134,6 +155,11 @@ exports.getMyChildrenFees = async (req, res) => {
     try {
         const parentId = req.user.id;
         
+        await db.execute('UPDATE fee_terms SET status = "ACTIVE" WHERE due_date >= CURDATE() AND status = "INACTIVE"');
+        await db.execute('UPDATE student_fees SET status = "PENDING" WHERE due_date >= CURDATE() AND status = "OVERDUE"');
+        await db.execute('UPDATE fee_terms SET status = "INACTIVE" WHERE due_date < CURDATE() AND status = "ACTIVE"');
+        await db.execute('UPDATE student_fees SET status = "OVERDUE" WHERE due_date < CURDATE() AND (status = "ACTIVE" OR status = "PENDING")');
+
         // Find children of this parent
         const [children] = await db.execute(
             'SELECT id, first_name, last_name, class_id FROM students WHERE parent_user_id=?',

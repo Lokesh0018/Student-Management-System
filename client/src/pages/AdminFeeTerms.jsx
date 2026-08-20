@@ -110,38 +110,49 @@ const AdminFeeTerms = () => {
 
   return (
     <div className="page-container">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
         <h1>Fee Terms</h1>
         <button className="btn btn-primary" onClick={() => { setCurrentTerm({ name: '', amount: '', due_date: '', description: '' }); setIsModalOpen(true); }}>
           + Create Term
         </button>
       </div>
 
-      <div className="card">
-        <table className="table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+      <div className="table-card">
+        <table className="data-table">
           <thead>
-            <tr style={{ borderBottom: '1px solid #ddd' }}>
-              <th style={{ padding: '10px' }}>Term Name</th>
-              <th style={{ padding: '10px' }}>Amount (₹)</th>
-              <th style={{ padding: '10px' }}>Due Date</th>
-              <th style={{ padding: '10px' }}>Status</th>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Assign</th>
-              <th style={{ padding: '10px', textAlign: 'right' }}>Actions</th>
+            <tr>
+              <th>TERM NAME</th>
+              <th>AMOUNT (₹)</th>
+              <th>DUE DATE</th>
+              <th>STATUS</th>
+              <th className="text-center">ASSIGN</th>
+              <th className="text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {terms.map(term => (
-              <tr key={term.id} style={{ borderBottom: '1px solid #ddd' }}>
-                <td style={{ padding: '10px' }}>{term.name}</td>
-                <td style={{ padding: '10px' }}>₹{term.amount}</td>
-                <td style={{ padding: '10px' }}>{new Date(term.due_date).toLocaleDateString()}</td>
-                <td style={{ padding: '10px' }}>
+              <tr key={term.id}>
+                <td>{term.name}</td>
+                <td><span className="font-semibold">₹{term.amount}</span></td>
+                <td>{new Date(term.due_date).toLocaleDateString()}</td>
+                <td>
                   <span className={`badge ${term.status === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>{term.status}</span>
                 </td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>
-                  <button className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '4px 8px' }} onClick={() => openAssign(term)}>Assign to Class</button>
+                <td className="text-center">
+                  {term.assigned_classes ? (
+                    <span 
+                      className="badge badge-info" 
+                      style={{ cursor: 'pointer', textDecoration: 'underline' }} 
+                      onClick={() => openAssign(term)} 
+                      title="Click to reassign"
+                    >
+                      {term.assigned_classes}
+                    </span>
+                  ) : (
+                    <button className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '4px 8px' }} onClick={() => openAssign(term)}>Assign to Class</button>
+                  )}
                 </td>
-                <td data-label="ACTION" className="text-right" style={{ padding: '10px' }}>
+                <td data-label="ACTION" className="text-right">
                   <div className="action-buttons-group">
                     <button className="action-btn-icon text-gray" onClick={() => openEdit(term)}>
                       <FaPen />
@@ -154,7 +165,7 @@ const AdminFeeTerms = () => {
               </tr>
             ))}
             {terms.length === 0 && (
-              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No fee terms configured.</td></tr>
+              <tr><td colSpan="6" className="text-center" style={{ padding: '2rem' }}>No fee terms configured.</td></tr>
             )}
           </tbody>
         </table>

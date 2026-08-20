@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import api from '../utils/api';
 
 const AdminPayments = () => {
@@ -6,6 +7,7 @@ const AdminPayments = () => {
   const [loading, setLoading] = useState(true);
   const [rejecting, setRejecting] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [verifying, setVerifying] = useState(null);
 
   useEffect(() => {
     fetchPayments();
@@ -24,34 +26,39 @@ const AdminPayments = () => {
     }
   };
 
-  const handleVerify = async (id) => {
-    if (!window.confirm('Are you sure you want to verify this payment?')) return;
+  const handleVerify = async () => {
+    if (!verifying) return;
     try {
-      const res = await api.put(`/fees/payments/${id}/verify`);
+      const res = await api.put(`/fees/payments/${verifying}/verify`);
       if (res.data.success) {
-        alert('Payment verified');
+        toast.success('Payment verified successfully');
+        setVerifying(null);
         fetchPayments();
       }
     } catch (error) {
       console.error('Error verifying payment', error);
-      alert('Error verifying payment');
+      toast.error('Error verifying payment');
+      setVerifying(null);
     }
   };
 
   const handleReject = async (e) => {
     e.preventDefault();
-    if (!rejectReason) return alert('Reason is required');
+    if (!rejectReason) {
+      toast.error('Reason is required');
+      return;
+    }
     try {
       const res = await api.put(`/fees/payments/${rejecting.id}/reject`, { reason: rejectReason });
       if (res.data.success) {
-        alert('Payment rejected');
+        toast.success('Payment rejected');
         setRejecting(null);
         setRejectReason('');
         fetchPayments();
       }
     } catch (error) {
       console.error('Error rejecting payment', error);
-      alert('Error rejecting payment');
+      toast.error('Error rejecting payment');
     }
   };
 
@@ -98,8 +105,8 @@ const AdminPayments = () => {
                 <td style={{ padding: '10px' }}>
                   {payment.status === 'SUBMITTED' && (
                     <>
-                      <button className="btn btn-sm btn-success" style={{ marginRight: '5px' }} onClick={() => handleVerify(payment.id)}>Verify</button>
-                      <button className="btn btn-sm btn-danger" onClick={() => setRejecting(payment)}>Reject</button>
+                        <button className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '4px 8px', marginRight: '5px' }} onClick={() => setVerifying(payment.id)}>Verify</button>
+                        <button className="btn btn-danger" style={{ fontSize: '0.8rem', padding: '4px 8px' }} onClick={() => setRejecting(payment)}>Reject</button>
                     </>
                   )}
                   {payment.status === 'REJECTED' && <small className="text-danger d-block">{payment.rejection_reason}</small>}
@@ -134,6 +141,19 @@ const AdminPayments = () => {
                 <button type="submit" className="btn btn-danger">Reject</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {verifying && (
+        <div className="modal-overlay" onClick={() => setVerifying(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: '#fff', padding: '20px', borderRadius: '8px', width: '400px' }}>
+            <h3>Confirm Verification</h3>
+            <p style={{ marginTop: '10px', marginBottom: '20px' }}>Are you sure you want to verify this payment? The fee status will be marked as Paid.</p>
+            <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #ccc', background: '#fff', cursor: 'pointer' }} onClick={() => setVerifying(null)}>Cancel</button>
+              <button className="btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#3b82f6', color: '#fff', cursor: 'pointer' }} onClick={handleVerify}>Verify Payment</button>
+            </div>
           </div>
         </div>
       )}
