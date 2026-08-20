@@ -13,7 +13,7 @@ const AddStudent = () => {
     const { user } = useAuth();
     const [classes, setClasses] = useState([]);
     
-    const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
             first_name: '',
             last_name: '',
@@ -45,6 +45,9 @@ const AddStudent = () => {
                 const res = await api.get('/classes');
                 if (res.data.success) {
                     setClasses(res.data.data);
+                    if (user?.role === 'CLASS_TEACHER' && res.data.data.length > 0) {
+                        setValue('class_id', res.data.data[0].id.toString());
+                    }
                 }
             } catch (err) {
                 console.error("Failed to fetch classes", err);
@@ -52,7 +55,7 @@ const AddStudent = () => {
             }
         };
         fetchClasses();
-    }, []);
+    }, [user, setValue]);
 
     const onSubmit = async (data) => {
         try {
@@ -134,8 +137,11 @@ const AddStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Class <span className="req">*</span></label>
-                                <select {...register('class_id', { required: 'Class is required' })}>
-                                    <option value="">Select class</option>
+                                <select 
+                                    {...register('class_id', { required: 'Class is required' })}
+                                    style={user?.role === 'CLASS_TEACHER' ? { pointerEvents: 'none', backgroundColor: '#f1f5f9' } : {}}
+                                >
+                                    {user?.role !== 'CLASS_TEACHER' && <option value="">Select class</option>}
                                     {classes.map(c => (
                                         <option key={c.id} value={c.id}>
                                             {c.class_name} - {c.section}

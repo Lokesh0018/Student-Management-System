@@ -180,8 +180,14 @@ const EditStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Class <span className="req">*</span></label>
-                                <select name="class_id" value={formData.class_id} onChange={handleChange} required>
-                                    <option value="">Select class</option>
+                                <select 
+                                    name="class_id" 
+                                    value={formData.class_id} 
+                                    onChange={handleChange} 
+                                    required
+                                    style={user?.role === 'CLASS_TEACHER' ? { pointerEvents: 'none', backgroundColor: '#f1f5f9' } : {}}
+                                >
+                                    {user?.role !== 'CLASS_TEACHER' && <option value="">Select class</option>}
                                     {classes.map(c => (
                                         <option key={c.id} value={c.id}>
                                             {c.class_name} - {c.section}

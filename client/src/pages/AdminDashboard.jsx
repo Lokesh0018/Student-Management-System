@@ -84,7 +84,7 @@ const AdminDashboard = () => {
                     <h1 className="dash-title">{getGreeting()}, Admin! 👋</h1>
                     <p className="dash-subtitle">Here's what's happening in your school today.</p>
                 </div>
-                <div style={{ padding: '8px 16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#475569', fontSize: '13px', fontWeight: '500' }}>
+                <div style={{ padding: '8px 16px', backgroundColor: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '500' }}>
                     {getCurrentDate()}
                 </div>
             </div>
@@ -154,7 +154,7 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-chart" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Student Performance Overview</h3>
-                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
                             <option value="this">This Month</option>
                             <option value="last">Last Month</option>
                         </select>
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-donut" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Attendance Overview</h3>
-                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
                             <option value="this">This Month</option>
                             <option value="last">Last Month</option>
                         </select>
@@ -302,7 +302,7 @@ const AdminDashboard = () => {
                 <motion.div className="dash-panel panel-students-class" whileHover={{ y: -2, boxShadow: 'var(--shadow-1)' }}>
                     <div className="panel-header-split">
                         <h3 className="panel-title">Students by Class</h3>
-                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'transparent', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
+                        <select className="btn-outline" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: '6px', padding: '4px 8px', fontSize: '13px', cursor: 'pointer' }}>
                             <option value="this">This Month</option>
                             <option value="last">Last Month</option>
                         </select>
