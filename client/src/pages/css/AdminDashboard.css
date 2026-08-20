@@ -408,3 +408,41 @@
     }
 }
 
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .print-only-child, .print-only-child * {
+        visibility: visible;
+    }
+    .print-only-child {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .print-only-child img {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        opacity: 1 !important;
+    }
+    .print-only-child .card {
+        page-break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+    }
+    .print-only-child .data-table th {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+

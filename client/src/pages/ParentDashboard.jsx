@@ -29,8 +29,12 @@ const ParentDashboard = () => {
 
     if (loading) {
         return (
-            <div className="page-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-                <div className="spinner">Loading Dashboard...</div>
+            <div className="page-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ width: '50px', height: '50px', border: '4px solid var(--border, #e2e8f0)', borderTopColor: 'var(--primary, #3b82f6)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} className="spinner"></div>
+                <p style={{ color: 'var(--text-secondary, #64748b)', fontWeight: 500 }}>Loading Dashboard...</p>
+                <style>{`
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                `}</style>
             </div>
         );
     }

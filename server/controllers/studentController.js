@@ -35,7 +35,7 @@ exports.createStudent = async (req, res, next) => {
     try {
         const { 
             admission_number, first_name, last_name, email, class_id, roll_number, 
-            photo, dob, gender, phone, address, admission_date, status,
+            photo, dob, gender, blood_group, phone, address, admission_date, status,
             parent_name, parent_email, parent_phone, parent_relationship, parent_password
         } = req.body;
         
@@ -87,8 +87,8 @@ exports.createStudent = async (req, res, next) => {
         }
 
         const [studentResult] = await connection.execute(
-            'INSERT INTO students (admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, phone, address, admission_date, status, parent_name, parent_email, parent_phone, parent_relationship, parent_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, parentUserId]
+            'INSERT INTO students (admission_number, first_name, last_name, email, class_id, roll_number, photo, dob, gender, blood_group, phone, address, admission_date, status, parent_name, parent_email, parent_phone, parent_relationship, parent_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, blood_group || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, parentUserId]
         );
         const studentId = studentResult.insertId;
 
@@ -107,7 +107,7 @@ exports.updateStudent = async (req, res, next) => {
     try {
         const { 
             admission_number, first_name, last_name, email, class_id, roll_number, 
-            photo, dob, gender, phone, address, admission_date, status,
+            photo, dob, gender, blood_group, phone, address, admission_date, status,
             parent_name, parent_email, parent_phone, parent_relationship, parent_password
         } = req.body;
         
@@ -155,8 +155,8 @@ exports.updateStudent = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Roll number already exists in this class.' });
         }
 
-        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, phone = ?, address = ?, admission_date = ?, status = ?, parent_name = ?, parent_email = ?, parent_phone = ?, parent_relationship = ? WHERE id = ?';
-        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, req.params.id];
+        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, blood_group = ?, phone = ?, address = ?, admission_date = ?, status = ?, parent_name = ?, parent_email = ?, parent_phone = ?, parent_relationship = ? WHERE id = ?';
+        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, blood_group || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, req.params.id];
 
         await connection.execute(query, params);
 

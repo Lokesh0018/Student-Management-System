@@ -23,6 +23,7 @@ const AddStudent = () => {
             admission_number: '',
             dob: '',
             gender: '',
+            blood_group: '',
             phone: '',
             address: '',
             admission_date: '',
@@ -97,6 +98,20 @@ const AddStudent = () => {
                                     <option value="">Select gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="blood_group">Blood Group</label>
+                                <select id="blood_group" {...register('blood_group')}>
+                                    <option value="">Select blood group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
                                 </select>
                             </div>
                             <div className="form-group">

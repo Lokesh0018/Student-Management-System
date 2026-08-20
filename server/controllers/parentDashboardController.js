@@ -21,7 +21,7 @@ exports.getParentDashboardStats = async (req, res) => {
         const placeholders = studentIds.map(() => '?').join(',');
 
         // Fetch recent marks for these children
-        const [marks] = await pool.execute(`
+        const [marks] = await pool.query(`
             SELECT m.*, sub.subject_name, e.exam_name 
             FROM marks m
             JOIN subjects sub ON m.subject_id = sub.id
@@ -31,7 +31,7 @@ exports.getParentDashboardStats = async (req, res) => {
         `, studentIds);
 
         // Fetch attendance summary for these children
-        const [attendance] = await pool.execute(`
+        const [attendance] = await pool.query(`
             SELECT student_id, 
                    SUM(CASE WHEN status='PRESENT' THEN 1 ELSE 0 END) as present_days,
                    SUM(CASE WHEN status='ABSENT' THEN 1 ELSE 0 END) as absent_days
@@ -39,6 +39,54 @@ exports.getParentDashboardStats = async (req, res) => {
             WHERE student_id IN (${placeholders})
             GROUP BY student_id
         `, studentIds);
+
+        // --- Rank Calculation ---
+        const classIds = [...new Set(children.map(c => c.class_id))].filter(id => id !== null);
+        if (classIds.length > 0) {
+            const classPlaceholders = classIds.map(() => '?').join(',');
+            
+            const [classRanks] = await pool.query(`
+                SELECT s.class_id, m.student_id, SUM(m.marks_obtained) as total_score
+                FROM students s
+                JOIN marks m ON s.id = m.student_id
+                WHERE s.class_id IN (${classPlaceholders})
+                GROUP BY s.class_id, m.student_id
+                ORDER BY s.class_id, total_score DESC
+            `, classIds);
+
+            const [classSizes] = await pool.query(`
+                SELECT class_id, COUNT(id) as total_students
+                FROM students
+                WHERE class_id IN (${classPlaceholders})
+                GROUP BY class_id
+            `, classIds);
+            
+            const classSizeMap = {};
+            classSizes.forEach(r => classSizeMap[r.class_id] = r.total_students);
+
+            const rankMap = {};
+            classIds.forEach(cid => {
+                const studentsInClass = classRanks.filter(r => r.class_id === cid);
+                let currentRank = 1;
+                for (let i = 0; i < studentsInClass.length; i++) {
+                    if (i > 0 && studentsInClass[i].total_score < studentsInClass[i-1].total_score) {
+                        currentRank = i + 1;
+                    }
+                    rankMap[studentsInClass[i].student_id] = currentRank;
+                }
+            });
+
+            children.forEach(c => {
+                c.rank = rankMap[c.id] || 'N/A';
+                c.class_size = classSizeMap[c.class_id] || 0;
+            });
+        } else {
+            children.forEach(c => {
+                c.rank = 'N/A';
+                c.class_size = 0;
+            });
+        }
+        // --- End Rank Calculation ---
 
         res.json({
             success: true,

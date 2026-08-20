@@ -21,6 +21,7 @@ const EditStudent = () => {
         admission_number: '',
         dob: '',
         gender: '',
+        blood_group: '',
         phone: '',
         address: '',
         admission_date: '',
@@ -66,6 +67,7 @@ const EditStudent = () => {
                         admission_number: s.admission_number || '',
                         dob: s.dob ? s.dob.split('T')[0] : '',
                         gender: s.gender || '',
+                        blood_group: s.blood_group || '',
                         phone: s.phone || '',
                         address: s.address || '',
                         admission_date: s.admission_date ? s.admission_date.split('T')[0] : '',
@@ -141,6 +143,20 @@ const EditStudent = () => {
                                     <option value="">Select gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Blood Group</label>
+                                <select name="blood_group" value={formData.blood_group} onChange={handleChange}>
+                                    <option value="">Select blood group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
                                 </select>
                             </div>
                             <div className="form-group">

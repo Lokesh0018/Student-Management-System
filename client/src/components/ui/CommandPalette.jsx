@@ -38,7 +38,12 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     } else {
         // Fallback or Parent
         commands = [
-            { id: 'dashboard', name: 'Go to Dashboard', path: '/dashboard', icon: <FaSearch /> }
+            { id: 'dashboard', name: 'Go to Dashboard', path: '/parent/dashboard', icon: <FaSearch /> },
+            { id: 'children', name: 'My Children', path: '/parent/children', icon: <FaUserGraduate /> },
+            { id: 'scorecards', name: 'Scorecards', path: '/parent/scorecards', icon: <FaBook /> },
+            { id: 'performance', name: 'Performance Analytics', path: '/parent/performance', icon: <FaChartLine /> },
+            { id: 'attendance', name: 'Attendance', path: '/parent/attendance', icon: <FaClipboardList /> },
+            { id: 'remarks', name: 'Teacher Remarks', path: '/parent/remarks', icon: <FaCommentDots /> },
         ];
     }
 
