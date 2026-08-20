@@ -4,6 +4,7 @@ const http = require('http');
 const StudentService = require('../services/studentService');
 const ApiResponse = require('../utils/ApiResponse');
 const logger = require('../utils/logger');
+const bcrypt = require('bcrypt');
 
 exports.getAllStudents = async (req, res) => {
     try {
@@ -79,9 +80,12 @@ exports.createStudent = async (req, res, next) => {
             parentUserId = existingUser[0].id;
         } else {
             // Create user for parent
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(parent_password || 'parent123', salt);
+            
             const [userResult] = await connection.execute(
                 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-                [parent_name, parent_email, parent_password || 'parent123', 'PARENT']
+                [parent_name, parent_email, hashedPassword, 'PARENT']
             );
             parentUserId = userResult.insertId;
         }
@@ -166,18 +170,22 @@ exports.updateStudent = async (req, res, next) => {
             const parentUserId = student[0].parent_user_id;
             
             if (parent_password && parent_password.trim() !== '') {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(parent_password, salt);
                 await connection.execute(
                     'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
-                    [parent_name, parent_email, parent_password, parentUserId]
+                    [parent_name, parent_email, hashedPassword, parentUserId]
                 );
             } else {
                 const [existingUser] = await connection.execute('SELECT password FROM users WHERE id = ?', [parentUserId]);
                 if (existingUser.length > 0) {
                     const dbPassword = existingUser[0].password;
                     if (!dbPassword || dbPassword.trim() === '') {
+                        const salt = await bcrypt.genSalt(10);
+                        const hashedPassword = await bcrypt.hash('parent123', salt);
                         await connection.execute(
                             'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
-                            [parent_name, parent_email, 'parent123', parentUserId]
+                            [parent_name, parent_email, hashedPassword, parentUserId]
                         );
                     } else {
                         await connection.execute(

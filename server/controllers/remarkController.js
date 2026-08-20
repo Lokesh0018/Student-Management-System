@@ -46,6 +46,20 @@ exports.sendRemark = async (req, res) => {
         const { receiver_id, student_id, title, category, priority, message } = req.body;
         const sender_id = req.user.id;
         
+        // Access Control: If teacher, ensure they only remark on their own students
+        if (req.user.role === 'CLASS_TEACHER' && student_id) {
+            const [validStudents] = await pool.execute(`
+                SELECT s.id FROM students s
+                JOIN classes c ON s.class_id = c.id
+                JOIN teachers t ON c.teacher_id = t.id
+                WHERE t.user_id = ? AND s.id = ?
+            `, [sender_id, student_id]);
+            
+            if (validStudents.length === 0) {
+                return res.status(403).json({ success: false, message: 'You can only add remarks for students in your assigned class.' });
+            }
+        }
+
         await pool.execute(
             'INSERT INTO remarks (sender_id, receiver_id, student_id, title, category, priority, message) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [sender_id, receiver_id || null, student_id || null, title, category || 'General', priority || 'Normal', message]
@@ -94,12 +108,28 @@ exports.sendRemark = async (req, res) => {
 exports.markAsRead = async (req, res) => {
     try {
         const remarkId = req.params.id;
+        const userId = req.user.id;
         
-        await pool.execute(
-            'UPDATE remarks SET is_read = 1 WHERE id = ?',
-            [remarkId]
-        );
+        // Simple check to ensure they have some link to this remark
+        const [remark] = await pool.execute(`
+            SELECT r.id FROM remarks r
+            LEFT JOIN students s ON r.student_id = s.id
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN teachers t ON c.teacher_id = t.id
+            WHERE r.id = ? AND (
+                r.sender_id = ? OR 
+                r.receiver_id = ? OR 
+                (s.parent_user_id = ?) OR
+                (t.user_id = ?) OR
+                (? = 'ADMIN')
+            )
+        `, [remarkId, userId, userId, userId, userId, req.user.role]);
+
+        if (remark.length === 0) {
+            return res.status(403).json({ success: false, message: 'Unauthorized' });
+        }
         
+        await pool.execute('UPDATE remarks SET is_read = 1 WHERE id = ?', [remarkId]);
         res.json({ success: true, message: 'Remark marked as read' });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error' });
@@ -109,12 +139,28 @@ exports.markAsRead = async (req, res) => {
 exports.markAsUnread = async (req, res) => {
     try {
         const remarkId = req.params.id;
+        const userId = req.user.id;
         
-        await pool.execute(
-            'UPDATE remarks SET is_read = 0 WHERE id = ?',
-            [remarkId]
-        );
+        // Simple check to ensure they have some link to this remark
+        const [remark] = await pool.execute(`
+            SELECT r.id FROM remarks r
+            LEFT JOIN students s ON r.student_id = s.id
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN teachers t ON c.teacher_id = t.id
+            WHERE r.id = ? AND (
+                r.sender_id = ? OR 
+                r.receiver_id = ? OR 
+                (s.parent_user_id = ?) OR
+                (t.user_id = ?) OR
+                (? = 'ADMIN')
+            )
+        `, [remarkId, userId, userId, userId, userId, req.user.role]);
+
+        if (remark.length === 0) {
+            return res.status(403).json({ success: false, message: 'Unauthorized' });
+        }
         
+        await pool.execute('UPDATE remarks SET is_read = 0 WHERE id = ?', [remarkId]);
         res.json({ success: true, message: 'Remark marked as unread' });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error' });

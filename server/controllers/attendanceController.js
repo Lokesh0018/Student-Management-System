@@ -52,6 +52,25 @@ exports.saveAttendance = async (req, res) => {
         }
 
         await connection.beginTransaction();
+
+        // Access Control: If teacher, ensure they only modify their own students
+        if (req.user && req.user.role === 'CLASS_TEACHER') {
+            const studentIds = [...new Set(attendanceData.map(a => a.student_id))];
+            if (studentIds.length > 0) {
+                const placeholders = studentIds.map(() => '?').join(',');
+                const [validStudents] = await connection.execute(`
+                    SELECT s.id FROM students s
+                    JOIN classes c ON s.class_id = c.id
+                    JOIN teachers t ON c.teacher_id = t.id
+                    WHERE t.user_id = ? AND s.id IN (${placeholders})
+                `, [req.user.id, ...studentIds]);
+                
+                if (validStudents.length !== studentIds.length) {
+                    await connection.rollback();
+                    return res.status(403).json({ success: false, message: 'You can only save attendance for students in your assigned class.' });
+                }
+            }
+        }
         
         for (const record of attendanceData) {
             const [existing] = await connection.execute(

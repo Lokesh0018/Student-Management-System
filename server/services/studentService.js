@@ -36,7 +36,23 @@ class StudentService {
             LEFT JOIN classes c ON s.class_id = c.id
             WHERE s.id = ?
         `, [studentId]);
-        return rows[0] || null;
+        
+        if (rows.length === 0) return null;
+        
+        const student = rows[0];
+        
+        // Fetch marks for the student
+        const [marks] = await pool.execute(`
+            SELECT m.marks_obtained, m.max_marks, m.grade, sub.subject_name, e.exam_name 
+            FROM marks m
+            JOIN subjects sub ON m.subject_id = sub.id
+            JOIN exams e ON m.exam_id = e.id
+            WHERE m.student_id = ?
+            ORDER BY e.start_date DESC, sub.subject_name ASC
+        `, [studentId]);
+        
+        student.marks = marks;
+        return student;
     }
 }
 

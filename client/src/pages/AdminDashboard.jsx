@@ -31,10 +31,15 @@ const AdminDashboard = () => {
                 setStats(response.data.data);
             } catch (err) {
                 setStats({
-                    totalStudents: 1245,
-                    totalTeachers: 68,
-                    totalParents: 1080,
-                    totalClasses: 32
+                    totalStudents: 0,
+                    totalTeachers: 0,
+                    totalParents: 0,
+                    totalClasses: 0,
+                    averagePerformance: 0,
+                    attendanceRate: 0,
+                    classData: [],
+                    attendanceData: [],
+                    performanceData: []
                 });
             } finally {
                 setLoading(false);
@@ -62,29 +67,9 @@ const AdminDashboard = () => {
         </div>
     );
 
-    const performanceData = [
-        { name: '1 May', score: 75 },
-        { name: '8 May', score: 82 },
-        { name: '15 May', score: 85 },
-        { name: '22 May', score: 80 },
-        { name: '29 May', score: 90 },
-    ];
-
-    const attendanceData = [
-        { name: 'Present', value: 94, color: '#10b981' },
-        { name: 'Absent', value: 4, color: '#f43f5e' },
-        { name: 'Leave', value: 2, color: '#6366f1' },
-    ];
-
-    const classData = [
-        { name: '6th', students: 120 },
-        { name: '7th', students: 140 },
-        { name: '8th', students: 160 },
-        { name: '9th', students: 150 },
-        { name: '10th', students: 180 },
-        { name: '11th', students: 170 },
-        { name: '12th', students: 140 },
-    ];
+    const performanceData = stats?.performanceData || [];
+    const attendanceData = stats?.attendanceData || [];
+    const classData = stats?.classData || [];
     
     return (
         <motion.div

@@ -36,7 +36,9 @@ const TeacherDashboard = () => {
                     attendance: 0,
                     averageScore: 0,
                     unreadRemarks: 0,
-                    recentMarks: []
+                    recentMarks: [],
+                    performanceData: [],
+                    attendanceData: []
                 });
             } finally {
                 setLoading(false);
@@ -68,19 +70,8 @@ const TeacherDashboard = () => {
         </div>
     );
 
-    const performanceData = [
-      { name: '1 May', score: 75 },
-      { name: '8 May', score: 82 },
-      { name: '15 May', score: 85 },
-      { name: '22 May', score: 80 },
-      { name: '29 May', score: 90 },
-    ];
-
-    const attendanceData = [
-      { name: 'Present', value: 94, color: '#10b981' },
-      { name: 'Absent', value: 4, color: '#f43f5e' },
-      { name: 'Leave', value: 2, color: '#6366f1' },
-    ];
+    const performanceData = stats?.performanceData || [];
+    const attendanceData = stats?.attendanceData || [];
 
     return (
         <motion.div 

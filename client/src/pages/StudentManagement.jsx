@@ -49,13 +49,14 @@ const StudentManagement = () => {
             {/* Left Column: Results Table */}
             <div className="profile-panel panel-results">
                 <div className="panel-header">
-                    <h3>Term 1 Results (2023-24)</h3>
+                    <h3>Academic Results</h3>
                     <button className="btn-icon-text"><FaPrint /> Print</button>
                 </div>
                 
                 <table className="results-table">
                     <thead>
                         <tr>
+                            <th>EXAM</th>
                             <th>SUBJECT</th>
                             <th className="text-center">MARKS OBTAINED</th>
                             <th className="text-center">MAX MARKS</th>
@@ -63,45 +64,32 @@ const StudentManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Mathematics</td>
-                            <td className="text-center fw-700">92</td>
-                            <td className="text-center text-secondary">100</td>
-                            <td className="text-center"><span className="grade-badge grade-aplus">A+</span></td>
-                        </tr>
-                        <tr>
-                            <td>Science</td>
-                            <td className="text-center fw-700">87</td>
-                            <td className="text-center text-secondary">100</td>
-                            <td className="text-center"><span className="grade-badge grade-a">A</span></td>
-                        </tr>
-                        <tr>
-                            <td>English</td>
-                            <td className="text-center fw-700">84</td>
-                            <td className="text-center text-secondary">100</td>
-                            <td className="text-center"><span className="grade-badge grade-a">A</span></td>
-                        </tr>
-                        <tr>
-                            <td>Social Studies</td>
-                            <td className="text-center fw-700">79</td>
-                            <td className="text-center text-secondary">100</td>
-                            <td className="text-center"><span className="grade-badge grade-bplus">B+</span></td>
-                        </tr>
-                        <tr>
-                            <td>Hindi</td>
-                            <td className="text-center fw-700">95</td>
-                            <td className="text-center text-secondary">100</td>
-                            <td className="text-center"><span className="grade-badge grade-aplus">A+</span></td>
-                        </tr>
+                        {student.marks && student.marks.length > 0 ? (
+                            student.marks.map((mark, index) => (
+                                <tr key={index}>
+                                    <td>{mark.exam_name}</td>
+                                    <td>{mark.subject_name}</td>
+                                    <td className="text-center fw-700">{mark.marks_obtained}</td>
+                                    <td className="text-center text-secondary">{mark.max_marks}</td>
+                                    <td className="text-center"><span className={`grade-badge grade-${mark.grade.toLowerCase().replace('+', 'plus')}`}>{mark.grade}</span></td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" className="text-center">No marks recorded yet.</td>
+                            </tr>
+                        )}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Total</td>
-                            <td className="text-center total-val">437</td>
-                            <td className="text-center total-max">500</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
+                    {student.marks && student.marks.length > 0 && (
+                        <tfoot>
+                            <tr>
+                                <td colSpan="2">Total (All Exams)</td>
+                                <td className="text-center total-val">{student.marks.reduce((acc, curr) => acc + parseFloat(curr.marks_obtained || 0), 0)}</td>
+                                <td className="text-center total-max">{student.marks.reduce((acc, curr) => acc + parseFloat(curr.max_marks || 0), 0)}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    )}
                 </table>
             </div>
 
@@ -112,29 +100,16 @@ const StudentManagement = () => {
                     <h3>Overall Performance</h3>
                     
                     <div className="overall-score-wrap">
-                        <span className="overall-score">87.4%</span>
-                        <span className="overall-trend"><FaArrowUp /> +2.1%</span>
+                        <span className="overall-score">
+                            {student.marks && student.marks.length > 0 ? 
+                                ((student.marks.reduce((acc, curr) => acc + parseFloat(curr.marks_obtained || 0), 0) / 
+                                student.marks.reduce((acc, curr) => acc + parseFloat(curr.max_marks || 0), 0)) * 100).toFixed(1) + '%' 
+                                : 'N/A'}
+                        </span>
+                        <span className="overall-trend"></span>
                     </div>
 
-                    <div className="progress-section">
-                        <div className="progress-labels">
-                            <span>Class Standing</span>
-                            <strong>4th <span className="text-secondary">/ 42</span></strong>
-                        </div>
-                        <div className="progress-bar-wrap">
-                            <div className="progress-fill" style={{ width: '90%' }}></div>
-                        </div>
-                    </div>
-
-                    <div className="progress-section">
-                        <div className="progress-labels">
-                            <span>Percentile</span>
-                            <strong>91st</strong>
-                        </div>
-                        <div className="progress-bar-wrap">
-                            <div className="progress-fill" style={{ width: '91%' }}></div>
-                        </div>
-                    </div>
+                    {/* Placeholder progress sections removed as they require complex class-wide aggregations not currently available for a single student profile API */}
                 </div>
 
                 <div className="profile-panel panel-quick-actions">

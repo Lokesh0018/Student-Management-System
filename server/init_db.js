@@ -29,6 +29,24 @@ async function initDB() {
         `);
 
         await connection.query(`
+            CREATE TABLE IF NOT EXISTS teachers (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                phone VARCHAR(20),
+                department VARCHAR(100),
+                description TEXT,
+                qualification VARCHAR(100),
+                employee_id VARCHAR(50),
+                joining_date DATE,
+                assigned_classes VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+        `);
+
+        await connection.query(`
             CREATE TABLE IF NOT EXISTS classes (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 class_name VARCHAR(50),
@@ -63,24 +81,6 @@ async function initDB() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL,
                 FOREIGN KEY (parent_user_id) REFERENCES users(id) ON DELETE SET NULL
-            );
-        `);
-
-        await connection.query(`
-            CREATE TABLE IF NOT EXISTS teachers (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT,
-                name VARCHAR(100),
-                email VARCHAR(100),
-                phone VARCHAR(20),
-                department VARCHAR(100),
-                description TEXT,
-                qualification VARCHAR(100),
-                employee_id VARCHAR(50),
-                joining_date DATE,
-                assigned_classes VARCHAR(255),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
         `);
 

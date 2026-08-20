@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const bcrypt = require('bcrypt');
 
 exports.getAllTeachers = async (req, res) => {
     try {
@@ -37,9 +38,12 @@ exports.createTeacher = async (req, res) => {
         }
 
         // 1. Create User
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password || 'teacher123', salt);
+        
         const [userResult] = await connection.execute(
             'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-            [name, email, password || 'teacher123', 'CLASS_TEACHER']
+            [name, email, hashedPassword, 'CLASS_TEACHER']
         );
         const userId = userResult.insertId;
 
@@ -80,7 +84,9 @@ exports.updateTeacher = async (req, res) => {
         // Get user_id to update password
         const [teacher] = await pool.execute('SELECT user_id FROM teachers WHERE id = ?', [req.params.id]);
         if (teacher.length > 0 && password) {
-            await pool.execute('UPDATE users SET password = ? WHERE id = ?', [password, teacher[0].user_id]);
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, teacher[0].user_id]);
         }
 
         await pool.execute(

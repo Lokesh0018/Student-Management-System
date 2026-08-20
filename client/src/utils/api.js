@@ -4,14 +4,11 @@ const api = axios.create({
     baseURL: 'http://localhost:5000/api',
 });
 
-// Interceptor to add custom auth headers since we skipped JWT
 api.interceptors.request.use(
     (config) => {
-        const storedUser = localStorage.getItem('sms_user');
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
-            config.headers['x-user-id'] = user.id;
-            config.headers['x-user-role'] = user.role;
+        const token = localStorage.getItem('sms_token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
     },
