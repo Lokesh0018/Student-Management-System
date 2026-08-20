@@ -333,15 +333,18 @@ const ParentChildren = () => {
                                     {showRemarks && (
                                         <div className="card" style={{ padding: '1.5rem' }}>
                                             <h2 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', fontWeight: 600 }}>Teacher Remarks</h2>
-                                            {childMarks.filter(m => m.remarks).length > 0 ? (
+                                            {stats.remarks && stats.remarks.filter(r => r.student_id === child.id).length > 0 ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                                    {childMarks.filter(m => m.remarks).map((m, idx) => (
+                                                    {stats.remarks.filter(r => r.student_id === child.id).map((r, idx) => (
                                                         <div key={idx} style={{ padding: '1rem', background: '#F1F5F9', borderRadius: '8px' }}>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{m.subject_name}</span>
-                                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{m.exam_name}</span>
+                                                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{r.title || 'General Remark'}</span>
+                                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
                                                             </div>
-                                                            <p style={{ margin: 0, fontSize: '0.9rem', fontStyle: 'italic', color: '#475569' }}>"{m.remarks}"</p>
+                                                            <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginBottom: '0.5rem', fontWeight: 500 }}>
+                                                                From: {r.sender_name} ({r.sender_role})
+                                                            </div>
+                                                            <p style={{ margin: 0, fontSize: '0.9rem', fontStyle: 'italic', color: '#475569' }}>"{r.message}"</p>
                                                         </div>
                                                     ))}
                                                 </div>

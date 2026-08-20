@@ -88,12 +88,22 @@ exports.getParentDashboardStats = async (req, res) => {
         }
         // --- End Rank Calculation ---
 
+        // Fetch general remarks for these children
+        const [remarks] = await pool.query(`
+            SELECT r.*, sender.name as sender_name, sender.role as sender_role
+            FROM remarks r
+            LEFT JOIN users sender ON r.sender_id = sender.id
+            WHERE r.student_id IN (${placeholders})
+            ORDER BY r.created_at DESC
+        `, studentIds);
+
         res.json({
             success: true,
             data: {
                 children,
                 marks,
-                attendance
+                attendance,
+                remarks
             }
         });
 
