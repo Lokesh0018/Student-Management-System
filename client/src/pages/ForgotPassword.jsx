@@ -88,7 +88,7 @@ const ForgotPassword = () => {
                         </motion.div>
 
                         <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '16px' }}>
-                            <Link to="/reset-password" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '500', marginRight: '16px' }}>Have a token?</Link>
+                            <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '500', marginRight: '16px' }}>Have a token?</Link>
                             <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500' }}>Back to Login</Link>
                         </motion.div>
                     </form>
