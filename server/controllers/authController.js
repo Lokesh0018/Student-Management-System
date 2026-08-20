@@ -2,6 +2,15 @@ const pool = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'munakalalokesh222@gmail.com',
+        pass: 'pvah qhsi ujpo sfkf'
+    }
+});
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
@@ -82,11 +91,30 @@ exports.forgotPassword = async (req, res) => {
             [email, resetToken, expiresAt]
         );
 
-        // For dev/testing purposes, returning the token in the response
+        // Send email with OTP
+        const mailOptions = {
+            from: 'munakalalokesh222@gmail.com',
+            to: email,
+            subject: 'Password Reset OTP - School Management System',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <h2 style="color: #075CB8; text-align: center;">Password Reset</h2>
+                    <p>We received a request to reset your password for the School Management System.</p>
+                    <p>Please use the following 4-digit OTP to reset your password:</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #001E54; background-color: #f8fafc; padding: 15px 30px; border-radius: 8px; display: inline-block;">${resetToken}</span>
+                    </div>
+                    <p style="color: #64748b; font-size: 14px; text-align: center;">This code will expire in 15 minutes.</p>
+                    <p style="font-size: 14px;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+
         res.json({
             success: true,
-            message: 'Password reset link generated successfully.',
-            resetToken: resetToken
+            message: 'An OTP has been sent to your email.'
         });
     } catch (error) {
         console.error('Forgot password error:', error);

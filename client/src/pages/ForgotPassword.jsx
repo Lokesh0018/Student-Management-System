@@ -40,7 +40,6 @@ const ForgotPassword = () => {
             const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
             
             if (response.data.success) {
-                alert(`Dev Mode: Your OTP is ${response.data.resetToken}`);
                 navigate('/verify-otp', { state: { email } });
             }
         } catch (err) {
