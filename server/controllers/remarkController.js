@@ -94,15 +94,28 @@ exports.sendRemark = async (req, res) => {
 exports.markAsRead = async (req, res) => {
     try {
         const remarkId = req.params.id;
-        const userId = req.user.id;
         
-        // Only receiver can mark as read
         await pool.execute(
-            'UPDATE remarks SET is_read = 1 WHERE id = ? AND receiver_id = ?',
-            [remarkId, userId]
+            'UPDATE remarks SET is_read = 1 WHERE id = ?',
+            [remarkId]
         );
         
         res.json({ success: true, message: 'Remark marked as read' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+exports.markAsUnread = async (req, res) => {
+    try {
+        const remarkId = req.params.id;
+        
+        await pool.execute(
+            'UPDATE remarks SET is_read = 0 WHERE id = ?',
+            [remarkId]
+        );
+        
+        res.json({ success: true, message: 'Remark marked as unread' });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error' });
     }

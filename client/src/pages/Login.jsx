@@ -74,7 +74,8 @@ const Login = () => {
 
             if (response.data.success) {
                 const user = response.data.data;
-                login(user);
+                const token = response.data.token;
+                login(user, token);
                 
                 if (user.role === 'ADMIN') {
                     navigate('/admin/dashboard');
