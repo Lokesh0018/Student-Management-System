@@ -22,7 +22,7 @@ const AdminPaymentDetails = () => {
                 <div className="payment-details-card">
                     <div className="card-header">
                         <h2>Transaction Information</h2>
-                        <span className={`badge ${payment.status === 'VERIFIED' ? 'badge-success' :
+                        <span className={`badge payment-status-badge ${payment.status === 'VERIFIED' ? 'badge-success' :
                                 payment.status === 'REJECTED' ? 'badge-danger' :
                                     'badge-info'
                             }`}>
