@@ -104,9 +104,9 @@ const ParentDashboard = () => {
     const recentRemarks = (stats.remarks || []).slice(0, 3).map((r, idx) => ({
         id: r.id || idx,
         text: r.message,
-        sender: r.sender_name || 'Admin/Teacher',
-        time: new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        img: `https://i.pravatar.cc/150?img=${(idx * 5) + 32}`
+        sender: r.sender_name || 'Admin',
+        role: r.sender_role || 'Staff',
+        time: new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }));
 
     // Mock mini chart data to make it look active (since we don't have historical trend data yet)
@@ -245,11 +245,13 @@ const ParentDashboard = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {recentRemarks.length > 0 ? recentRemarks.map(remark => (
                                 <div key={remark.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', padding: '1rem', background: 'var(--bg)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-2)', border: '1px solid var(--border)' }}>
-                                    <img src={remark.img} alt="teacher" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', boxShadow: 'var(--shadow-1)' }} />
+                                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px', flexShrink: 0, boxShadow: 'var(--shadow-1)' }}>
+                                        {remark.sender.charAt(0).toUpperCase()}
+                                    </div>
                                     <div style={{ flex: 1, overflow: 'hidden' }}>
                                         <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{remark.text}</p>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.2rem' }}>
-                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{remark.sender}</span>
+                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{remark.sender} ({remark.role})</span>
                                             <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>{remark.time}</span>
                                         </div>
                                     </div>

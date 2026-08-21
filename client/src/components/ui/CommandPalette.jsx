@@ -9,6 +9,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef(null);
+    const resultsRef = useRef(null);
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -69,6 +70,15 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     }, [query]);
 
     useEffect(() => {
+        if (resultsRef.current) {
+            const activeEl = resultsRef.current.querySelector('.palette-item.active');
+            if (activeEl) {
+                activeEl.scrollIntoView({ block: 'nearest' });
+            }
+        }
+    }, [activeIndex]);
+
+    useEffect(() => {
         const handleKeyDown = (e) => {
             if (!isOpen) return;
 
@@ -122,7 +132,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                         <div className="palette-hint">ESC to close</div>
                     </div>
                     
-                    <div className="palette-results">
+                    <div className="palette-results" ref={resultsRef}>
                         {filteredCommands.length > 0 ? (
                             filteredCommands.map((cmd, index) => (
                                 <div
