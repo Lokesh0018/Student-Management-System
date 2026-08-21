@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-function StudentImage({ studentId, studentName, className, style }) {
+import { getDirectImageUrl } from '../utils/imageUtils';
+
+function StudentImage({ studentId, studentName, photoUrl, className, style }) {
     const [failed, setFailed] = useState(false);
 
     if (failed || !studentId) {
@@ -42,7 +44,7 @@ function StudentImage({ studentId, studentName, className, style }) {
 
     return (
         <img
-            src={`http://localhost:5000/api/students/${studentId}/image`}
+            src={photoUrl ? getDirectImageUrl(photoUrl) : `http://localhost:5000/api/students/${studentId}/image`}
             alt={studentName || "Student"}
             className={className}
             style={style}

@@ -172,6 +172,7 @@ const StudentList = () => {
                                                 <StudentImage 
                                                     studentId={student.id} 
                                                     studentName={`${student.first_name}`} 
+                                                    photoUrl={student.photo}
                                                     className="table-avatar" 
                                                 />
                                             ) : (

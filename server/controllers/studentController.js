@@ -268,6 +268,16 @@ exports.getStudentImage = async (req, res) => {
 
     const imageUrl = rows[0].photo;
 
+    // Handle Base64 Data URIs directly
+    if (imageUrl.startsWith('data:image')) {
+        const matches = imageUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+            const buffer = Buffer.from(matches[2], 'base64');
+            res.setHeader('Content-Type', matches[1]);
+            return res.send(buffer);
+        }
+    }
+
     // Parse Google Drive URL
     let targetUrl = imageUrl;
     const match = imageUrl.match(/\/d\/([^/]+)/);

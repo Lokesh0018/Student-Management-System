@@ -68,6 +68,28 @@ const AddStudent = () => {
         }
     };
 
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const toastId = toast.loading('Uploading image...');
+            const res = await api.post('/upload/image', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (res.data.success) {
+                setValue('photo', res.data.url, { shouldValidate: true });
+                toast.success('Image uploaded successfully!', { id: toastId });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error(err.response?.data?.message || 'Failed to upload image');
+        }
+    };
+
     return (
         <div className="add-student-page">
             <div className="page-header-row">
@@ -219,7 +241,14 @@ const AddStudent = () => {
                     <div className="form-section photo-upload-section">
                         <h3 className="form-section-title">Student Photo URL</h3>
                         <div className="form-group full-width">
-                            <label>Image Link</label>
+                            <label>Upload Image</label>
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleFileUpload} 
+                                style={{ marginBottom: '10px' }}
+                            />
+                            <label>Or enter Image Link manually</label>
                             <input type="url" placeholder="https://example.com/image.jpg" {...register('photo')} />
                         </div>
                         {photoUrl && (

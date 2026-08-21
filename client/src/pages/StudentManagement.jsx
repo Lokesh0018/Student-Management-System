@@ -243,6 +243,7 @@ const StudentManagement = () => {
                             <StudentImage 
                                 studentId={student.id} 
                                 studentName={`${student.first_name}`} 
+                                photoUrl={student.photo}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                         ) : (

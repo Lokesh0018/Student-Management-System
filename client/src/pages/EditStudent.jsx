@@ -110,6 +110,27 @@ const EditStudent = () => {
         }
     };
 
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const uploadData = new FormData();
+        uploadData.append('image', file);
+
+        try {
+            // Can use a local state or toast for loading, but let's just use window.alert if react-hot-toast isn't imported, but actually toast isn't imported here, so we will import it.
+            const res = await api.post('/upload/image', uploadData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (res.data.success) {
+                setFormData(prev => ({ ...prev, photo: res.data.url }));
+            }
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.message || 'Failed to upload image');
+        }
+    };
+
     return (
         <div className="add-student-page">
             <div className="page-header-row">
@@ -259,7 +280,14 @@ const EditStudent = () => {
                     <div className="form-section photo-upload-section">
                         <h3 className="form-section-title">Student Photo URL</h3>
                         <div className="form-group full-width">
-                            <label>Image Link</label>
+                            <label>Upload Image</label>
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleFileUpload} 
+                                style={{ marginBottom: '10px' }}
+                            />
+                            <label>Or enter Image Link manually</label>
                             <input 
                                 type="url" 
                                 name="photo" 
