@@ -11,6 +11,7 @@ const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const AdminFeeSettings = React.lazy(() => import('./pages/AdminFeeSettings'));
 const AdminFeeTerms = React.lazy(() => import('./pages/AdminFeeTerms'));
 const AdminPayments = React.lazy(() => import('./pages/AdminPayments'));
+const AdminPaymentDetails = React.lazy(() => import('./pages/AdminPaymentDetails'));
 const TeacherDashboard = React.lazy(() => import('./pages/TeacherDashboard'));
 const TeacherAssignments = React.lazy(() => import('./pages/TeacherAssignments'));
 const TeacherAssignmentProgress = React.lazy(() => import('./pages/TeacherAssignmentProgress'));
@@ -230,6 +231,12 @@ function App() {
         <Route path="/admin/payments" element={
           <ProtectedRoute allowedRoles={['ADMIN']}>
             <AdminPayments />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/payments/:id" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminPaymentDetails />
           </ProtectedRoute>
         } />
         

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa';
 import api from '../utils/api';
@@ -9,7 +10,7 @@ const AdminPayments = () => {
   const [rejecting, setRejecting] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [verifying, setVerifying] = useState(null);
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPayments();
@@ -88,7 +89,7 @@ const AdminPayments = () => {
           </thead>
           <tbody>
             {payments.map(payment => (
-              <tr key={payment.id} className="clickable-row" onClick={() => setSelectedPayment(payment)} style={{ cursor: 'pointer' }}>
+              <tr key={payment.id} className="clickable-row" onClick={() => navigate(`/admin/payments/${payment.id}`, { state: { payment } })} style={{ cursor: 'pointer' }}>
                 <td>{new Date(payment.payment_date).toLocaleDateString()}</td>
                 <td><span className="font-semibold">{payment.first_name} {payment.last_name}</span></td>
                 <td>{payment.class_name} {payment.section}</td>
@@ -173,68 +174,6 @@ const AdminPayments = () => {
             <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)', cursor: 'pointer' }} onClick={() => setVerifying(null)}>Cancel</button>
               <button className="btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: 'var(--primary)', color: '#fff', cursor: 'pointer' }} onClick={handleVerify}>Verify Payment</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {selectedPayment && (
-        <div className="modal-overlay" onClick={() => setSelectedPayment(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'var(--surface)', padding: '24px', borderRadius: '12px', width: '500px', boxShadow: 'var(--shadow-2)' }}>
-            <h2 style={{ marginTop: 0, marginBottom: '20px', fontSize: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '12px', color: 'var(--text-primary)' }}>Payment Details</h2>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Student Name</p>
-                    <p style={{ margin: 0, fontWeight: '500', color: 'var(--text-primary)' }}>{selectedPayment.first_name} {selectedPayment.last_name}</p>
-                </div>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Class & Section</p>
-                    <p style={{ margin: 0, fontWeight: '500', color: 'var(--text-primary)' }}>{selectedPayment.class_name} {selectedPayment.section}</p>
-                </div>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Payment Date</p>
-                    <p style={{ margin: 0, fontWeight: '500', color: 'var(--text-primary)' }}>{new Date(selectedPayment.payment_date).toLocaleDateString()}</p>
-                </div>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Term</p>
-                    <p style={{ margin: 0, fontWeight: '500', color: 'var(--text-primary)' }}>{selectedPayment.term_name}</p>
-                </div>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Amount</p>
-                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--primary)', fontSize: '16px' }}>₹{selectedPayment.amount}</p>
-                </div>
-                <div>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>UTR / Transaction ID</p>
-                    <p style={{ margin: 0, fontWeight: '500', fontFamily: 'monospace', color: 'var(--text-primary)' }}>{selectedPayment.utr_number}</p>
-                </div>
-                {selectedPayment.screenshot && (
-                    <div style={{ gridColumn: '1 / -1' }}>
-                        <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Payment Proof</p>
-                        <a href={selectedPayment.screenshot} target="_blank" rel="noreferrer">
-                            <img src={selectedPayment.screenshot} alt="Payment Screenshot" style={{ width: '100%', maxWidth: '300px', borderRadius: '6px', border: '1px solid var(--border-color)', cursor: 'zoom-in' }} />
-                        </a>
-                    </div>
-                )}
-                <div style={{ gridColumn: '1 / -1' }}>
-                    <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Status</p>
-                    <span className={`badge ${
-                        selectedPayment.status === 'VERIFIED' ? 'badge-success' : 
-                        selectedPayment.status === 'REJECTED' ? 'badge-danger' : 
-                        'badge-info'
-                    }`}>
-                        {selectedPayment.status}
-                    </span>
-                    {selectedPayment.status === 'REJECTED' && (
-                        <p style={{ margin: '8px 0 0 0', color: 'var(--danger)', fontSize: '14px' }}>
-                            <strong>Rejection Reason:</strong> {selectedPayment.rejection_reason}
-                        </p>
-                    )}
-                </div>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button className="btn-primary" onClick={() => setSelectedPayment(null)}>Close</button>
             </div>
           </div>
         </div>
