@@ -105,17 +105,17 @@ const AddStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>First Name <span className="req">*</span></label>
-                                <input type="text" {...register('first_name', { required: 'First name is required' })} />
+                                <input type="text" {...register('first_name', { required: 'First name is required' })} minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                                 {errors.first_name && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.first_name.message}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Last Name <span className="req">*</span></label>
-                                <input type="text" {...register('last_name', { required: 'Last name is required' })} />
+                                <input type="text" {...register('last_name', { required: 'Last name is required' })} minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                                 {errors.last_name && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.last_name.message}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Date of Birth</label>
-                                <input type="date" {...register('dob')} />
+                                <input type="date" {...register('dob')} max={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="gender">Gender</label>
@@ -145,7 +145,7 @@ const AddStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Phone</label>
-                                <input type="tel" {...register('phone')} />
+                                <input type="tel" {...register('phone')} pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                             </div>
                             <div className="form-group full-width">
                                 <label>Address</label>
@@ -174,17 +174,17 @@ const AddStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Roll Number <span className="req">*</span></label>
-                                <input type="text" {...register('roll_number', { required: 'Roll number is required' })} />
+                                <input type="text" {...register('roll_number', { required: 'Roll number is required' })} pattern="^[A-Za-z0-9]+$" title="Only alphanumeric characters allowed" />
                                 {errors.roll_number && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.roll_number.message}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Admission Number <span className="req">*</span></label>
-                                <input type="text" {...register('admission_number', { required: 'Admission number is required' })} />
+                                <input type="text" {...register('admission_number', { required: 'Admission number is required' })} pattern="^[A-Za-z0-9]+$" title="Only alphanumeric characters allowed" />
                                 {errors.admission_number && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.admission_number.message}</span>}
                             </div>
                             <div className="form-group">
                                 <label>Admission Date</label>
-                                <input type="date" {...register('admission_date')} />
+                                <input type="date" {...register('admission_date')} max={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="form-group">
                                 <label>Status <span className="req">*</span></label>
@@ -201,7 +201,7 @@ const AddStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Parent Name <span className="req">*</span></label>
-                                <input type="text" {...register('parent_name', { required: 'Parent name is required' })} />
+                                <input type="text" {...register('parent_name', { required: 'Parent name is required' })} minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                                 {errors.parent_name && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.parent_name.message}</span>}
                             </div>
                             <div className="form-group">
@@ -211,7 +211,7 @@ const AddStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Parent Phone <span className="req">*</span></label>
-                                <input type="tel" {...register('parent_phone', { required: 'Parent phone is required' })} />
+                                <input type="tel" {...register('parent_phone', { required: 'Parent phone is required' })} pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                                 {errors.parent_phone && <span className="error-text" style={{color:'red', fontSize:'12px'}}>{errors.parent_phone.message}</span>}
                             </div>
                             <div className="form-group">

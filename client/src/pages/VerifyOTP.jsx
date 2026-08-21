@@ -83,6 +83,9 @@ const VerifyOTP = () => {
                                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                                 placeholder="----"
                                 disabled={loading}
+                                required
+                                pattern="\d{4}"
+                                title="Please enter exactly 4 digits"
                                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)', letterSpacing: '8px', textAlign: 'center', fontSize: '24px', fontWeight: 'bold' }}
                             />
                         </motion.div>

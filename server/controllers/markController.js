@@ -58,18 +58,28 @@ exports.saveMarks = async (req, res) => {
             }
         }
         
-        for (const mark of marksData) {
-            if (mark.marks_obtained === '' || mark.marks_obtained === null || mark.marks_obtained === undefined) {
+        for (let item of marksData) {
+            const { student_id, exam_id, subject_id, marks_obtained, max_marks, remarks } = item;
+            if (marks_obtained !== '' && marks_obtained !== null && marks_obtained !== undefined) {
+                const marks = Number(marks_obtained);
+                const max = Number(max_marks);
+                if (marks < 0 || marks > max) {
+                    await connection.rollback();
+                    return res.status(400).json({ success: false, message: `Marks for student ${student_id} must be between 0 and ${max}` });
+                }
+            }
+
+            if (marks_obtained === '' || marks_obtained === null || marks_obtained === undefined) {
                 // Delete mark if it exists
                 await connection.execute(`
                     DELETE FROM marks 
                     WHERE student_id = ? AND exam_id = ? AND subject_id = ?
-                `, [mark.student_id, mark.exam_id, mark.subject_id]);
+                `, [student_id, exam_id, subject_id]);
                 continue;
             }
 
             // Calculate grade
-            const percentage = (mark.marks_obtained / mark.max_marks) * 100;
+            const percentage = (marks_obtained / max_marks) * 100;
             let grade = 'F';
             if (percentage >= 90) grade = 'A+';
             else if (percentage >= 80) grade = 'A';

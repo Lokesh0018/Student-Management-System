@@ -148,15 +148,15 @@ const EditStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>First Name <span className="req">*</span></label>
-                                <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
+                                <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} required minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Last Name <span className="req">*</span></label>
-                                <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
+                                <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} required minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Date of Birth</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} max={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="form-group">
                                 <label>Gender</label>
@@ -186,7 +186,7 @@ const EditStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Phone</label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                             </div>
                             <div className="form-group full-width">
                                 <label>Address</label>
@@ -218,15 +218,15 @@ const EditStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Roll Number <span className="req">*</span></label>
-                                <input type="text" name="roll_number" value={formData.roll_number} onChange={handleChange} required />
+                                <input type="text" name="roll_number" value={formData.roll_number} onChange={handleChange} required pattern="^[A-Za-z0-9]+$" title="Only alphanumeric characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Admission Number <span className="req">*</span></label>
-                                <input type="text" name="admission_number" value={formData.admission_number} onChange={handleChange} required />
+                                <input type="text" name="admission_number" value={formData.admission_number} onChange={handleChange} required pattern="^[A-Za-z0-9]+$" title="Only alphanumeric characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Admission Date</label>
-                                <input type="date" name="admission_date" value={formData.admission_date} onChange={handleChange} />
+                                <input type="date" name="admission_date" value={formData.admission_date} onChange={handleChange} max={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="form-group">
                                 <label>Status <span className="req">*</span></label>
@@ -244,7 +244,7 @@ const EditStudent = () => {
                         <div className="form-grid">
                             <div className="form-group">
                                 <label>Parent Name <span className="req">*</span></label>
-                                <input type="text" name="parent_name" value={formData.parent_name} onChange={handleChange} required />
+                                <input type="text" name="parent_name" value={formData.parent_name} onChange={handleChange} required minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Parent Email <span className="req">*</span></label>
@@ -252,7 +252,7 @@ const EditStudent = () => {
                             </div>
                             <div className="form-group">
                                 <label>Parent Phone <span className="req">*</span></label>
-                                <input type="tel" name="parent_phone" value={formData.parent_phone} onChange={handleChange} required />
+                                <input type="tel" name="parent_phone" value={formData.parent_phone} onChange={handleChange} required pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                             </div>
                             <div className="form-group">
                                 <label>Relationship <span className="req">*</span></label>

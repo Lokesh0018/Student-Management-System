@@ -139,11 +139,11 @@ const Settings = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>New Password</label>
-                                    <input type="password" name="newPassword" value={passwords.newPassword} onChange={handlePasswordChange} required minLength="6" />
+                                    <input type="password" name="newPassword" value={passwords.newPassword} onChange={handlePasswordChange} required minLength="4" />
                                 </div>
                                 <div className="form-group">
                                     <label>Confirm New Password</label>
-                                    <input type="password" name="confirmPassword" value={passwords.confirmPassword} onChange={handlePasswordChange} required minLength="6" />
+                                    <input type="password" name="confirmPassword" value={passwords.confirmPassword} onChange={handlePasswordChange} required minLength="4" />
                                 </div>
                                 <div className="form-actions">
                                     <button type="submit" className="btn btn-primary" disabled={isSaving}>

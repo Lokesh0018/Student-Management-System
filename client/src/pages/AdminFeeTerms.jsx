@@ -183,7 +183,7 @@ const AdminFeeTerms = () => {
               </div>
               <div className="form-group" style={{ marginBottom: '15px' }}>
                 <label>Amount (₹)</label>
-                <input type="number" className="form-control" value={currentTerm.amount} onChange={e => setCurrentTerm({ ...currentTerm, amount: e.target.value })} required style={{ width: '100%', padding: '8px' }} />
+                <input type="text" pattern="^\d+$" title="Only digits allowed without any symbols" className="form-control" value={currentTerm.amount} onChange={e => setCurrentTerm({ ...currentTerm, amount: e.target.value.replace(/\D/g, '') })} required style={{ width: '100%', padding: '8px' }} />
               </div>
               <div className="form-group" style={{ marginBottom: '15px' }}>
                 <label>Due Date</label>

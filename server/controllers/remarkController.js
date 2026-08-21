@@ -46,6 +46,16 @@ exports.sendRemark = async (req, res) => {
         const { receiver_id, student_id, title, category, priority, message } = req.body;
         const sender_id = req.user.id;
         
+        if (!title || !message) {
+            return res.status(400).json({ success: false, message: 'Title and message are required' });
+        }
+        if (message.length > 500) {
+            return res.status(400).json({ success: false, message: 'Message exceeds 500 characters' });
+        }
+        if (title.length > 100) {
+            return res.status(400).json({ success: false, message: 'Title exceeds 100 characters' });
+        }
+        
         // Access Control: If teacher, ensure they only remark on their own students
         if (req.user.role === 'CLASS_TEACHER' && student_id) {
             const [validStudents] = await pool.execute(`

@@ -45,6 +45,13 @@ exports.createStudent = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Missing required fields' });
         }
 
+        if (phone && !/^\+?[0-9\s-]{10,15}$/.test(phone)) return res.status(400).json({ success: false, message: 'Invalid phone format' });
+        if (parent_phone && !/^\+?[0-9\s-]{10,15}$/.test(parent_phone)) return res.status(400).json({ success: false, message: 'Invalid parent phone format' });
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ success: false, message: 'Invalid email format' });
+        if (parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parent_email)) return res.status(400).json({ success: false, message: 'Invalid parent email format' });
+        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(first_name) || !/^[A-Za-z]+( [A-Za-z]+)*$/.test(last_name)) return res.status(400).json({ success: false, message: 'Names must only contain letters' });
+        if (!/^[A-Za-z0-9]+$/.test(admission_number)) return res.status(400).json({ success: false, message: 'Admission number must be alphanumeric' });
+
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
@@ -119,6 +126,13 @@ exports.updateStudent = async (req, res, next) => {
         if (!first_name || !last_name || !admission_number || !class_id || !parent_name || !parent_email) {
             return res.status(400).json({ success: false, message: 'Missing required fields' });
         }
+
+        if (phone && !/^\+?[0-9\s-]{10,15}$/.test(phone)) return res.status(400).json({ success: false, message: 'Invalid phone format' });
+        if (parent_phone && !/^\+?[0-9\s-]{10,15}$/.test(parent_phone)) return res.status(400).json({ success: false, message: 'Invalid parent phone format' });
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ success: false, message: 'Invalid email format' });
+        if (parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parent_email)) return res.status(400).json({ success: false, message: 'Invalid parent email format' });
+        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(first_name) || !/^[A-Za-z]+( [A-Za-z]+)*$/.test(last_name)) return res.status(400).json({ success: false, message: 'Names must only contain letters' });
+        if (!/^[A-Za-z0-9]+$/.test(admission_number)) return res.status(400).json({ success: false, message: 'Admission number must be alphanumeric' });
 
         connection = await pool.getConnection();
         await connection.beginTransaction();

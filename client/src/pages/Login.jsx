@@ -153,6 +153,7 @@ const Login = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Enter your email"
                                     disabled={loading}
+                                    required
                                 />
                             </motion.div>
                             
@@ -166,6 +167,8 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="Enter your password"
                                         disabled={loading}
+                                        required
+                                        minLength="4"
                                     />
                                     <button 
                                         type="button" 

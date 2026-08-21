@@ -77,6 +77,7 @@ const ForgotPassword = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
                                 disabled={loading}
+                                required
                                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)' }}
                             />
                         </motion.div>

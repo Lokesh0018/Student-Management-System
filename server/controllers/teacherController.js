@@ -30,6 +30,14 @@ exports.createTeacher = async (req, res) => {
         await connection.beginTransaction();
         console.log("createTeacher req.body:", req.body);
         const { name, email, phone, gender, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
+
+        if (!name || !email || !phone || !employee_id) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(name)) return res.status(400).json({ success: false, message: 'Name must only contain letters' });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ success: false, message: 'Invalid email format' });
+        if (!/^\+?[0-9\s-]{10,15}$/.test(phone)) return res.status(400).json({ success: false, message: 'Invalid phone format' });
+        if (!/^[A-Za-z0-9]+$/.test(employee_id)) return res.status(400).json({ success: false, message: 'Employee ID must be alphanumeric' });
         
         let processedClasses = null;
         if (assigned_classes) {
@@ -74,6 +82,14 @@ exports.updateTeacher = async (req, res) => {
     try {
         console.log("updateTeacher req.body:", req.body);
         const { name, email, phone, gender, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
+
+        if (!name || !email || !phone || !employee_id) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(name)) return res.status(400).json({ success: false, message: 'Name must only contain letters' });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ success: false, message: 'Invalid email format' });
+        if (!/^\+?[0-9\s-]{10,15}$/.test(phone)) return res.status(400).json({ success: false, message: 'Invalid phone format' });
+        if (!/^[A-Za-z0-9]+$/.test(employee_id)) return res.status(400).json({ success: false, message: 'Employee ID must be alphanumeric' });
         
         let processedClasses = null;
         if (assigned_classes) {

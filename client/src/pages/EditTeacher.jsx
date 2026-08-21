@@ -88,7 +88,7 @@ const EditTeacher = () => {
                         <div className="form-grid">
                             <div className="form-group full-width">
                                 <label>Full Name <span className="req">*</span></label>
-                                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required minLength="2" pattern="^[A-Za-z]+( [A-Za-z]+)*$" title="Only alphabetic characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Email Address <span className="req">*</span></label>
@@ -108,11 +108,11 @@ const EditTeacher = () => {
                             </div>
                             <div className="form-group">
                                 <label>Phone Number <span className="req">*</span></label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                             </div>
                             <div className="form-group">
                                 <label>Employee ID <span className="req">*</span></label>
-                                <input type="text" name="employee_id" value={formData.employee_id} onChange={handleChange} required />
+                                <input type="text" name="employee_id" value={formData.employee_id} onChange={handleChange} required pattern="^[A-Za-z0-9]+$" title="Only alphanumeric characters allowed" />
                             </div>
                             <div className="form-group">
                                 <label>Department <span className="req">*</span></label>
@@ -124,7 +124,7 @@ const EditTeacher = () => {
                             </div>
                             <div className="form-group">
                                 <label>Joining Date <span className="req">*</span></label>
-                                <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} required />
+                                <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} required max={new Date().toISOString().split('T')[0]} />
                             </div>
                             <div className="form-group full-width">
                                 <label>About Teacher</label>

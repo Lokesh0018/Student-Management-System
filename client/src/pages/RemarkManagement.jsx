@@ -302,6 +302,7 @@ const RemarkManagement = () => {
                                 <label>Message *</label>
                                 <textarea 
                                     required 
+                                    maxLength="500"
                                     placeholder="Enter remark details..."
                                     value={newRemark.message}
                                     onChange={e => setNewRemark({...newRemark, message: e.target.value})}

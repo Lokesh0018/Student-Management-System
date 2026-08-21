@@ -19,6 +19,11 @@ exports.login = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Please provide email and password' });
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
     try {
         const [users] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
         const user = users[0];
@@ -68,6 +73,11 @@ exports.forgotPassword = async (req, res) => {
     
     if (!email) {
         return res.status(400).json({ success: false, message: 'Please provide an email address' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
     }
 
     try {
@@ -151,6 +161,10 @@ exports.resetPassword = async (req, res) => {
 
     if (!token || !newPassword) {
         return res.status(400).json({ success: false, message: 'Please provide token and new password' });
+    }
+
+    if (newPassword.length < 4) {
+        return res.status(400).json({ success: false, message: 'Password must be at least 4 characters long' });
     }
 
     try {

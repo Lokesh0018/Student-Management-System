@@ -105,6 +105,8 @@ const ResetPassword = () => {
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Enter new password"
                                     disabled={loading}
+                                    required
+                                    minLength="4"
                                     style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)' }}
                                 />
                                 <button 
@@ -128,6 +130,8 @@ const ResetPassword = () => {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Confirm new password"
                                     disabled={loading}
+                                    required
+                                    minLength="4"
                                     style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)' }}
                                 />
                                 <button 

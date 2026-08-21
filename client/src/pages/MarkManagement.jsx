@@ -201,7 +201,9 @@ const MarkManagement = () => {
                                     <td>{maxMarks}</td>
                                     <td>
                                         <input 
-                                            type="text" 
+                                            type="number" 
+                                            min="0"
+                                            max={maxMarks}
                                             value={marksData[s.id] || ''} 
                                             onChange={e => handleMarkChange(s.id, e.target.value)}
                                             style={{
