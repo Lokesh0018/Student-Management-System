@@ -83,12 +83,12 @@ const ForgotPassword = () => {
                         
                         <motion.div variants={itemVariants}>
                             <Button type="submit" variant="primary" className="login-btn" disabled={loading} style={{ width: '100%', padding: '12px', marginBottom: '16px' }}>
-                                {loading ? 'Sending...' : 'Send Reset Link'}
+                                {loading ? 'Sending...' : 'Send OTP'}
                             </Button>
                         </motion.div>
 
                         <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '16px' }}>
-                            <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '500', marginRight: '16px' }}>Have a token?</Link>
+                            <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '500', marginRight: '16px' }}>Have password?</Link>
                             <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500' }}>Back to Login</Link>
                         </motion.div>
                     </form>

@@ -130,6 +130,14 @@ const ResetPassword = () => {
                                     disabled={loading}
                                     style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)' }}
                                 />
+                                <button 
+                                    type="button" 
+                                    className="toggle-password"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
                             </div>
                         </motion.div>
                         

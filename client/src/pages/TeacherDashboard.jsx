@@ -103,7 +103,7 @@ const TeacherDashboard = () => {
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>My Students</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.totalStudents || '0'}</h3>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.totalStudents ?? 0}</h3>
                         </div>
                     </div>
                 </motion.div>
@@ -117,7 +117,7 @@ const TeacherDashboard = () => {
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Average Attendance</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.attendance || '94'}%</h3>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.attendance ?? 0}%</h3>
                         </div>
                     </div>
                 </motion.div>
@@ -131,7 +131,7 @@ const TeacherDashboard = () => {
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Class Average</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.averageScore || '78.6'}%</h3>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.averageScore ?? 0}%</h3>
                         </div>
                     </div>
                 </motion.div>
@@ -145,7 +145,7 @@ const TeacherDashboard = () => {
                         </div>
                         <div>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>Unread Remarks</span>
-                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.unreadRemarks || '8'}</h3>
+                            <h3 style={{ margin: '4px 0 0 0', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>{stats?.unreadRemarks ?? 0}</h3>
                         </div>
                     </div>
                 </motion.div>
