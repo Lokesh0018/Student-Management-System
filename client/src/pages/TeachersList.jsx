@@ -65,6 +65,8 @@ const TeachersList = () => {
         }
     };
 
+    const availableDepartments = [...new Set(teachers.map(t => t.department).filter(Boolean))].sort();
+
     return (
         <div className="student-list-page">
             <div className="page-header-row">
@@ -89,12 +91,9 @@ const TeachersList = () => {
                 <div className="filter-dropdowns">
                     <select className="filter-select" value={filterSubject} onChange={(e) => setFilterSubject(e.target.value)}>
                         <option value="">All Departments</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                        <option value="Social Studies">Social Studies</option>
-                        <option value="Computer">Computer</option>
-                        <option value="Physics">Physics</option>
+                        {availableDepartments.map(dept => (
+                            <option key={dept} value={dept}>{dept}</option>
+                        ))}
                     </select>
                 </div>
             </div>

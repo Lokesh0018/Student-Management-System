@@ -416,3 +416,9 @@ input, select, textarea {
 .dark-mode .btn-secondary:hover:not(:disabled) {
     background: rgba(255,255,255,0.05);
 }
+
+/* Remove default browser eye icon from password inputs */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
