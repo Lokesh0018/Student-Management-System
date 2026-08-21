@@ -33,6 +33,11 @@ export const Layout = ({ children }) => {
     }
   }, [user]);
 
+  // Close sidebar on page change for smaller devices
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
