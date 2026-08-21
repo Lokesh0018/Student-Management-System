@@ -208,6 +208,14 @@ const AdminPayments = () => {
                     <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>UTR / Transaction ID</p>
                     <p style={{ margin: 0, fontWeight: '500', fontFamily: 'monospace', color: 'var(--text-primary)' }}>{selectedPayment.utr_number}</p>
                 </div>
+                {selectedPayment.screenshot && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Payment Proof</p>
+                        <a href={selectedPayment.screenshot} target="_blank" rel="noreferrer">
+                            <img src={selectedPayment.screenshot} alt="Payment Screenshot" style={{ width: '100%', maxWidth: '300px', borderRadius: '6px', border: '1px solid var(--border-color)', cursor: 'zoom-in' }} />
+                        </a>
+                    </div>
+                )}
                 <div style={{ gridColumn: '1 / -1' }}>
                     <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>Status</p>
                     <span className={`badge ${

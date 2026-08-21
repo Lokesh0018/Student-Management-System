@@ -205,11 +205,11 @@ exports.getMyChildrenFees = async (req, res) => {
 exports.submitPayment = async (req, res) => {
     try {
         const { studentFeeId } = req.params;
-        const { utr_number, amount } = req.body;
+        const { utr_number, amount, screenshot } = req.body;
         const parentId = req.user.id;
 
-        if (!utr_number) {
-            return res.status(400).json({ success: false, message: 'UTR number is required' });
+        if (!utr_number && !screenshot) {
+            return res.status(400).json({ success: false, message: 'Please provide either a UTR number or a payment screenshot' });
         }
 
         // Verify this fee belongs to a child of this parent
@@ -234,14 +234,14 @@ exports.submitPayment = async (req, res) => {
         if (existingPayment.length > 0) {
             // Update existing payment record to avoid duplicate rows
             await db.execute(
-                'UPDATE payments SET amount = ?, utr_number = ?, payment_date = CURDATE(), status = ?, rejection_reason = NULL, verified_by = NULL, verified_at = NULL WHERE id = ?',
-                [amount, utr_number, 'SUBMITTED', existingPayment[0].id]
+                'UPDATE payments SET amount = ?, utr_number = ?, screenshot = ?, payment_date = CURDATE(), status = ?, rejection_reason = NULL, verified_by = NULL, verified_at = NULL WHERE id = ?',
+                [amount, utr_number, screenshot || null, 'SUBMITTED', existingPayment[0].id]
             );
         } else {
             // Create new payment record
             await db.execute(
-                'INSERT INTO payments (student_fee_id, parent_id, amount, utr_number, payment_date, status) VALUES (?, ?, ?, ?, CURDATE(), ?)',
-                [studentFeeId, parentId, amount, utr_number, 'SUBMITTED']
+                'INSERT INTO payments (student_fee_id, parent_id, amount, utr_number, screenshot, payment_date, status) VALUES (?, ?, ?, ?, ?, CURDATE(), ?)',
+                [studentFeeId, parentId, amount, utr_number, screenshot || null, 'SUBMITTED']
             );
         }
 
@@ -262,7 +262,7 @@ exports.submitPayment = async (req, res) => {
 exports.getPayments = async (req, res) => {
     try {
         const [payments] = await db.execute(`
-            SELECT p.id, p.amount, p.utr_number, p.payment_date, p.status, p.rejection_reason,
+            SELECT p.id, p.amount, p.utr_number, p.screenshot, p.payment_date, p.status, p.rejection_reason,
                    sf.due_date, ft.name as term_name,
                    s.first_name, s.last_name, c.class_name, c.section
             FROM payments p
