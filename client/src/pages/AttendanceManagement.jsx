@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import FaceScanner from '../components/attendance/FaceScanner';
 import './css/StudentList.css';
 
 const AttendanceManagement = () => {
@@ -10,6 +11,7 @@ const AttendanceManagement = () => {
     const [classes, setClasses] = useState([]);
     const [students, setStudents] = useState([]);
     const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+    const [activeTab, setActiveTab] = useState('MANUAL');
     
     const [filters, setFilters] = useState({ 
         class_id: '', 
@@ -105,7 +107,27 @@ const AttendanceManagement = () => {
             fetchStudentsAndAttendance();
         } catch (error) {
             console.error('Error saving attendance', error);
-            showNotification('Failed to save attendance.', 'error');
+            showNotification('Failed to save attendance', 'error');
+        }
+    };
+
+    const handleFaceRecognized = async (student) => {
+        if (!filters.class_id) {
+            showNotification('Please select a class first.', 'error');
+            return;
+        }
+        
+        try {
+            await api.post('/attendance', { 
+                class_id: filters.class_id,
+                date: filters.date,
+                attendanceData: [{ student_id: student.student_id, status: 'PRESENT' }]
+            });
+            showNotification(`Marked PRESENT: ${student.first_name} ${student.last_name}`, 'success');
+            setAttendanceData(prev => ({ ...prev, [student.student_id]: 'PRESENT' }));
+        } catch (error) {
+            console.error('Error auto-saving attendance', error);
+            showNotification(`Failed to mark attendance for ${student.first_name}`, 'error');
         }
     };
 
@@ -121,8 +143,23 @@ const AttendanceManagement = () => {
         <div className="student-list-page">
             <div className="page-header-row">
                 <div className="page-header-left">
-                    <h1 className="page-title">Attendance Management</h1>
-                    </div>
+                    <h2 className="page-title">Attendance</h2>
+                </div>
+            </div>
+
+            <div className="tab-container" style={{ display: 'flex', gap: '16px', marginBottom: '24px', borderBottom: '1px solid var(--border)' }}>
+                <button 
+                    style={{ padding: '8px 16px', background: 'none', border: 'none', borderBottom: activeTab === 'MANUAL' ? '2px solid var(--primary)' : '2px solid transparent', color: activeTab === 'MANUAL' ? 'var(--primary)' : 'var(--text-secondary)', fontWeight: activeTab === 'MANUAL' ? '600' : '500', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('MANUAL')}
+                >
+                    Manual Attendance
+                </button>
+                <button 
+                    style={{ padding: '8px 16px', background: 'none', border: 'none', borderBottom: activeTab === 'FACE_RECOGNITION' ? '2px solid var(--primary)' : '2px solid transparent', color: activeTab === 'FACE_RECOGNITION' ? 'var(--primary)' : 'var(--text-secondary)', fontWeight: activeTab === 'FACE_RECOGNITION' ? '600' : '500', cursor: 'pointer' }}
+                    onClick={() => setActiveTab('FACE_RECOGNITION')}
+                >
+                    Face Recognition
+                </button>
             </div>
 
             {notification.show && (
@@ -141,6 +178,8 @@ const AttendanceManagement = () => {
                 </div>
             )}
 
+            {activeTab === 'MANUAL' && (
+            <>
             <div className="filter-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
                 {!isTeacher && (
                 <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
@@ -242,6 +281,52 @@ const AttendanceManagement = () => {
                             Save Attendance
                         </button>
                     </div>
+                </div>
+            )}
+            </>
+            )}
+
+            {activeTab === 'FACE_RECOGNITION' && (
+                <div className="form-section photo-upload-section">
+                    <h3 className="form-section-title">Face Recognition Scanner</h3>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', fontSize: '0.875rem' }}>
+                        Make sure to select your class and date before starting the camera. Recognized students will automatically be marked PRESENT.
+                    </p>
+                    
+                    <div className="filter-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '24px' }}>
+                        {!isTeacher && (
+                        <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Class</label>
+                            <select 
+                                value={filters.class_id} 
+                                onChange={e => setFilters({...filters, class_id: e.target.value})}
+                                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                            >
+                                <option value="">Select Class</option>
+                                {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
+                            </select>
+                        </div>
+                        )}
+                        <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Date</label>
+                            <input 
+                                type="date" 
+                                value={filters.date} 
+                                onChange={e => setFilters({...filters, date: e.target.value})} 
+                                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                            />
+                        </div>
+                    </div>
+
+                    {(!isTeacher && !filters.class_id) ? (
+                        <div className="alert-banner">Please select a class to start Face Recognition.</div>
+                    ) : (
+                        <FaceScanner 
+                            classId={filters.class_id || (classes[0]?.id)} 
+                            date={filters.date} 
+                            onStudentRecognized={handleFaceRecognized} 
+                        />
+                    )}
                 </div>
             )}
         </div>

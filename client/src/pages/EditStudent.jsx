@@ -5,6 +5,7 @@ import api from '../utils/api';
 import { getDirectImageUrl } from '../utils/imageUtils';
 import { useBreadcrumb } from '../context/BreadcrumbContext';
 import { useAuth } from '../context/AuthContext';
+import FaceRegistration from '../components/face/FaceRegistration';
 import './css/AddStudent.css';
 
 const EditStudent = () => {
@@ -311,7 +312,10 @@ const EditStudent = () => {
                         )}
                     </div>
 
-                    <div className="form-actions">
+                    {/* Inject Face Registration if id exists */}
+                    {id && <FaceRegistration studentId={id} />}
+
+                    <div className="form-actions" style={{ marginTop: '24px' }}>
                         <button type="button" className="btn-secondary" onClick={() => navigate(user?.role === 'CLASS_TEACHER' ? '/teacher/students' : '/admin/students')}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={loading}>
                             {loading ? (

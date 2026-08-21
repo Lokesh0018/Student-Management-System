@@ -87,6 +87,9 @@ app.use('/api/reports', reportRoutes);
 const uploadRoutes = require('./routes/uploadRoutes');
 app.use('/api/upload', uploadRoutes);
 
+const faceRoutes = require('./routes/faceRoutes');
+app.use('/api/faces', faceRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
