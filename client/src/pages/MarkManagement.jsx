@@ -207,10 +207,8 @@ const MarkManagement = () => {
                                             style={{
                                                 width: '80px', 
                                                 padding: '8px', 
-                                                border: '1px solid #e2e8f0', 
                                                 borderRadius: '6px',
                                                 outline: 'none',
-                                                color: '#0f172a',
                                                 fontWeight: '500'
                                             }}
                                         />
