@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaPlus, FaPen, FaTrash, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 import './css/StudentList.css'; 
 
 const TeacherAssignments = () => {
+  const navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -171,6 +173,7 @@ const TeacherAssignments = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                     className="clickable-row"
+                    onClick={() => navigate(`/teacher/assignments/${a.id}`)}
                 >
                     <td className="fw-500">{a.title}</td>
                     <td>{a.class_name} {a.section}</td>

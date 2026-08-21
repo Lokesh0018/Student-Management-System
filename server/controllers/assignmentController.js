@@ -90,6 +90,59 @@ exports.deleteAssignment = async (req, res) => {
     }
 };
 
+exports.getAssignmentProgress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const teacherUserId = req.user.id;
+
+        const [teacher] = await db.execute('SELECT id FROM teachers WHERE user_id = ?', [teacherUserId]);
+        if (teacher.length === 0) return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+        const [assignment] = await db.execute('SELECT class_id FROM assignments WHERE id = ? AND teacher_id = ?', [id, teacher[0].id]);
+        if (assignment.length === 0) return res.status(403).json({ success: false, message: 'Unauthorized or not found' });
+
+        const class_id = assignment[0].class_id;
+
+        const [progressData] = await db.execute(`
+            SELECT s.id as student_id, s.first_name, s.last_name, s.roll_number, h.status, h.completed_at 
+            FROM students s
+            LEFT JOIN homework h ON s.id = h.student_id AND h.assignment_id = ?
+            WHERE s.class_id = ?
+            ORDER BY s.first_name ASC, s.last_name ASC
+        `, [id, class_id]);
+
+        res.json({ success: true, data: progressData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+exports.getAssignmentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const teacherUserId = req.user.id;
+
+        const [teacher] = await db.execute('SELECT id FROM teachers WHERE user_id = ?', [teacherUserId]);
+        if (teacher.length === 0) return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+        const [assignment] = await db.execute(`
+            SELECT a.*, c.class_name, c.section, s.subject_name 
+            FROM assignments a
+            JOIN classes c ON a.class_id = c.id
+            JOIN subjects s ON a.subject_id = s.id
+            WHERE a.id = ? AND a.teacher_id = ?
+        `, [id, teacher[0].id]);
+
+        if (assignment.length === 0) return res.status(404).json({ success: false, message: 'Assignment not found' });
+
+        res.json({ success: true, data: assignment[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
 // Parent Endpoints
 exports.getParentAssignments = async (req, res) => {
     try {

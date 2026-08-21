@@ -13,6 +13,7 @@ const AdminFeeTerms = React.lazy(() => import('./pages/AdminFeeTerms'));
 const AdminPayments = React.lazy(() => import('./pages/AdminPayments'));
 const TeacherDashboard = React.lazy(() => import('./pages/TeacherDashboard'));
 const TeacherAssignments = React.lazy(() => import('./pages/TeacherAssignments'));
+const TeacherAssignmentProgress = React.lazy(() => import('./pages/TeacherAssignmentProgress'));
 const ParentDashboard = React.lazy(() => import('./pages/ParentDashboard'));
 const ParentFeeDashboard = React.lazy(() => import('./pages/ParentFeeDashboard'));
 const ParentAssignments = React.lazy(() => import('./pages/ParentAssignments'));
@@ -289,6 +290,12 @@ function App() {
         <Route path="/teacher/assignments" element={
           <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
             <TeacherAssignments />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/teacher/assignments/:id" element={
+          <ProtectedRoute allowedRoles={['CLASS_TEACHER']}>
+            <TeacherAssignmentProgress />
           </ProtectedRoute>
         } />
         
