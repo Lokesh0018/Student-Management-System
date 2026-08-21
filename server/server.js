@@ -78,6 +78,9 @@ app.use('/api/assignments', assignmentRoutes);
 const homeworkRoutes = require('./routes/homeworkRoutes');
 app.use('/api/homework', homeworkRoutes);
 
+const reportRoutes = require('./routes/reportRoutes');
+app.use('/api/reports', reportRoutes);
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'Backend is running' });
 });
