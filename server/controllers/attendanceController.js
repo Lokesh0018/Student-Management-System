@@ -89,6 +89,33 @@ exports.saveAttendance = async (req, res) => {
                     [record.student_id, date, classIdToUse, record.status]
                 );
             }
+            
+            if (record.status === 'ABSENT' || record.status === 'Absent') {
+                const [studentInfo] = await connection.execute(
+                    'SELECT parent_user_id, first_name, last_name FROM students WHERE id = ?',
+                    [record.student_id]
+                );
+                if (studentInfo.length > 0 && studentInfo[0].parent_user_id) {
+                    const studentName = `${studentInfo[0].first_name} ${studentInfo[0].last_name}`;
+                    // Format date nicely: YYYY-MM-DD to readable format
+                    const dateObj = new Date(date);
+                    const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+                    const title = 'Attendance Alert: Absent';
+                    const message = `${studentName} has been marked absent on ${formattedDate}.`;
+                    
+                    const [existingNotif] = await connection.execute(
+                        'SELECT id FROM notifications WHERE user_id = ? AND message = ? AND DATE(created_at) = CURDATE()',
+                        [studentInfo[0].parent_user_id, message]
+                    );
+                    
+                    if (existingNotif.length === 0) {
+                        await connection.execute(
+                            'INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)',
+                            [studentInfo[0].parent_user_id, title, message]
+                        );
+                    }
+                }
+            }
         }
         
         await connection.commit();

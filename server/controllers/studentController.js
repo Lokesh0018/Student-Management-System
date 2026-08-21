@@ -159,43 +159,77 @@ exports.updateStudent = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Roll number already exists in this class.' });
         }
 
-        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, blood_group = ?, phone = ?, address = ?, admission_date = ?, status = ?, parent_name = ?, parent_email = ?, parent_phone = ?, parent_relationship = ? WHERE id = ?';
-        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, blood_group || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, req.params.id];
-
-        await connection.execute(query, params);
-
-        // Try to update the user account associated with the parent (if we can find it)
-        const [student] = await connection.execute('SELECT parent_user_id FROM students WHERE id = ?', [req.params.id]);
-        if (student.length > 0 && student[0].parent_user_id) {
-            const parentUserId = student[0].parent_user_id;
-            
+        // Check if parent email belongs to an existing PARENT user
+        const [existingUser] = await connection.execute('SELECT id, password FROM users WHERE email = ? AND role = "PARENT"', [parent_email]);
+        let parentUserId;
+        
+        if (existingUser.length > 0) {
+            parentUserId = existingUser[0].id;
+            // Update name and password if provided, without changing email
             if (parent_password && parent_password.trim() !== '') {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(parent_password, salt);
                 await connection.execute(
-                    'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
-                    [parent_name, parent_email, hashedPassword, parentUserId]
+                    'UPDATE users SET name = ?, password = ? WHERE id = ?',
+                    [parent_name, hashedPassword, parentUserId]
                 );
             } else {
-                const [existingUser] = await connection.execute('SELECT password FROM users WHERE id = ?', [parentUserId]);
-                if (existingUser.length > 0) {
-                    const dbPassword = existingUser[0].password;
-                    if (!dbPassword || dbPassword.trim() === '') {
-                        const salt = await bcrypt.genSalt(10);
-                        const hashedPassword = await bcrypt.hash('parent123', salt);
-                        await connection.execute(
-                            'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
-                            [parent_name, parent_email, hashedPassword, parentUserId]
-                        );
-                    } else {
-                        await connection.execute(
-                            'UPDATE users SET name = ?, email = ? WHERE id = ?',
-                            [parent_name, parent_email, parentUserId]
-                        );
+                await connection.execute(
+                    'UPDATE users SET name = ? WHERE id = ?',
+                    [parent_name, parentUserId]
+                );
+            }
+        } else {
+            // Email does not exist, check if current parent_user_id is shared
+            const [studentInfo] = await connection.execute('SELECT parent_user_id FROM students WHERE id = ?', [req.params.id]);
+            const currentParentId = studentInfo.length > 0 ? studentInfo[0].parent_user_id : null;
+            
+            if (currentParentId) {
+                // Check how many students use this parent
+                const [linkedStudents] = await connection.execute('SELECT count(*) as count FROM students WHERE parent_user_id = ?', [currentParentId]);
+                
+                if (linkedStudents[0].count > 1) {
+                    // Current parent has other children, so we must create a NEW parent user for this student
+                    const salt = await bcrypt.genSalt(10);
+                    const hashedPassword = await bcrypt.hash(parent_password || 'parent123', salt);
+                    const [newUser] = await connection.execute(
+                        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+                        [parent_name, parent_email, hashedPassword, 'PARENT']
+                    );
+                    parentUserId = newUser.insertId;
+                } else {
+                    // Current parent only has this child, we can safely update the email
+                    const salt = await bcrypt.genSalt(10);
+                    let query = 'UPDATE users SET name = ?, email = ?';
+                    let params = [parent_name, parent_email];
+                    
+                    if (parent_password && parent_password.trim() !== '') {
+                        const hashedPassword = await bcrypt.hash(parent_password, salt);
+                        query += ', password = ?';
+                        params.push(hashedPassword);
                     }
+                    query += ' WHERE id = ?';
+                    params.push(currentParentId);
+                    
+                    await connection.execute(query, params);
+                    parentUserId = currentParentId;
                 }
+            } else {
+                // No current parent (shouldn't happen, but fallback)
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(parent_password || 'parent123', salt);
+                const [newUser] = await connection.execute(
+                    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+                    [parent_name, parent_email, hashedPassword, 'PARENT']
+                );
+                parentUserId = newUser.insertId;
             }
         }
+
+        let query = 'UPDATE students SET admission_number = ?, first_name = ?, last_name = ?, email = ?, class_id = ?, roll_number = ?, photo = ?, dob = ?, gender = ?, blood_group = ?, phone = ?, address = ?, admission_date = ?, status = ?, parent_name = ?, parent_email = ?, parent_phone = ?, parent_relationship = ?, parent_user_id = ? WHERE id = ?';
+        let params = [admission_number, first_name, last_name, email, class_id || null, roll_number, photo || null, dob || null, gender || null, blood_group || null, phone || null, address || null, admission_date || null, status || 'ACTIVE', parent_name, parent_email, parent_phone, parent_relationship, parentUserId, req.params.id];
+
+        await connection.execute(query, params);
 
         await connection.commit();
         res.json({ success: true, message: 'Student and Parent updated' });

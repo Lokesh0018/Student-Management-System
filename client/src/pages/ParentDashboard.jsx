@@ -101,11 +101,11 @@ const ParentDashboard = () => {
         icon: <FaCheckCircle style={{ color: '#3B82F6' }} />
     }));
 
-    const recentRemarks = stats.marks.filter(m => m.remarks).slice(0, 3).map((m, idx) => ({
-        id: idx,
-        text: m.remarks,
-        sender: `${m.subject_name} Teacher`,
-        time: 'Recently',
+    const recentRemarks = (stats.remarks || []).slice(0, 3).map((r, idx) => ({
+        id: r.id || idx,
+        text: r.message,
+        sender: r.sender_name || 'Admin/Teacher',
+        time: new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         img: `https://i.pravatar.cc/150?img=${(idx * 5) + 32}`
     }));
 
