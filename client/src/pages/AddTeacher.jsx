@@ -8,6 +8,7 @@ const AddTeacher = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        gender: '',
         phone: '',
         department: '',
         qualification: '',
@@ -68,24 +69,32 @@ const AddTeacher = () => {
                                 <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Default: teacher123" />
                             </div>
                             <div className="form-group">
-                                <label>Phone Number</label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
+                                <label>Gender <span className="req">*</span></label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="form-control" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
                             </div>
                             <div className="form-group">
-                                <label>Employee ID</label>
-                                <input type="text" name="employee_id" value={formData.employee_id} onChange={handleChange} />
+                                <label>Phone Number <span className="req">*</span></label>
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>Department</label>
-                                <input type="text" name="department" value={formData.department} onChange={handleChange} placeholder="e.g. Mathematics" />
+                                <label>Employee ID <span className="req">*</span></label>
+                                <input type="text" name="employee_id" value={formData.employee_id} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label>Qualification</label>
-                                <input type="text" name="qualification" value={formData.qualification} onChange={handleChange} placeholder="e.g. M.Sc. Math" />
+                                <label>Department <span className="req">*</span></label>
+                                <input type="text" name="department" value={formData.department} onChange={handleChange} placeholder="e.g. Mathematics" required />
                             </div>
                             <div className="form-group">
-                                <label>Joining Date</label>
-                                <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} />
+                                <label>Qualification <span className="req">*</span></label>
+                                <input type="text" name="qualification" value={formData.qualification} onChange={handleChange} placeholder="e.g. M.Sc. Math" required />
+                            </div>
+                            <div className="form-group">
+                                <label>Joining Date <span className="req">*</span></label>
+                                <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} required />
                             </div>
                             <div className="form-group full-width">
                                 <label>About Teacher</label>

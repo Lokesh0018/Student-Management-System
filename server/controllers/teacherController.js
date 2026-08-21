@@ -29,7 +29,7 @@ exports.createTeacher = async (req, res) => {
     try {
         await connection.beginTransaction();
         console.log("createTeacher req.body:", req.body);
-        const { name, email, phone, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
+        const { name, email, phone, gender, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
         
         let processedClasses = null;
         if (assigned_classes) {
@@ -49,8 +49,8 @@ exports.createTeacher = async (req, res) => {
 
         // 2. Create Teacher
         const [teacherResult] = await connection.execute(
-            'INSERT INTO teachers (user_id, name, email, phone, department, description, qualification, employee_id, joining_date, assigned_classes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [userId, name, email, phone, department, description || null, qualification || null, employee_id || null, joining_date || null, processedClasses]
+            'INSERT INTO teachers (user_id, name, email, gender, phone, department, description, qualification, employee_id, joining_date, assigned_classes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [userId, name, email, gender || null, phone, department, description || null, qualification || null, employee_id || null, joining_date || null, processedClasses]
         );
 
         await connection.commit();
@@ -73,7 +73,7 @@ exports.createTeacher = async (req, res) => {
 exports.updateTeacher = async (req, res) => {
     try {
         console.log("updateTeacher req.body:", req.body);
-        const { name, email, phone, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
+        const { name, email, phone, gender, department, description, qualification, employee_id, joining_date, assigned_classes, password } = req.body;
         
         let processedClasses = null;
         if (assigned_classes) {
@@ -90,8 +90,8 @@ exports.updateTeacher = async (req, res) => {
         }
 
         await pool.execute(
-            'UPDATE teachers SET name = ?, email = ?, phone = ?, department = ?, description = ?, qualification = ?, employee_id = ?, joining_date = ?, assigned_classes = ? WHERE id = ?',
-            [name, email, phone, department, description || null, qualification || null, employee_id || null, joining_date || null, processedClasses, req.params.id]
+            'UPDATE teachers SET name = ?, email = ?, gender = ?, phone = ?, department = ?, description = ?, qualification = ?, employee_id = ?, joining_date = ?, assigned_classes = ? WHERE id = ?',
+            [name, email, gender || null, phone, department, description || null, qualification || null, employee_id || null, joining_date || null, processedClasses, req.params.id]
         );
         // Should also update User table name/email ideally, keeping it simple for now
         res.json({ success: true, message: 'Teacher updated' });

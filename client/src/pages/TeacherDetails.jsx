@@ -80,6 +80,10 @@ const TeacherDetails = () => {
                                     <span className="info-val-clean text-blue">{teacher.phone || '-'}</span>
                                 </div>
                                 <div className="info-item-clean">
+                                    <span className="info-label-clean">👤 Gender</span>
+                                    <span className="info-val-clean">{teacher.gender || '-'}</span>
+                                </div>
+                                <div className="info-item-clean">
                                     <span className="info-label-clean">🎓 Qualification</span>
                                     <span className="info-val-clean">{teacher.qualification || '-'}</span>
                                 </div>
