@@ -7,7 +7,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
     const [isModelsLoaded, setIsModelsLoaded] = useState(false);
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [faceMatcher, setFaceMatcher] = useState(null);
-    const [statusText, setStatusText] = useState('Idle');
+    const [scannerState, setScannerState] = useState({ status: 'Idle', studentName: null, distance: null });
     const [labeledFaces, setLabeledFaces] = useState([]);
     
     const videoRef = useRef(null);
@@ -92,7 +92,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
             });
             streamRef.current = stream;
             setIsCameraActive(true);
-            setStatusText('Camera active. Scanning...');
+            setScannerState({ status: 'Camera active. Scanning...', studentName: null, distance: null });
             
             setTimeout(() => {
                 if (videoRef.current) {
@@ -105,7 +105,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
         } catch (err) {
             console.error("Camera access error:", err);
             toast.error("Camera access denied or unavailable");
-            setStatusText('Camera Error');
+            setScannerState({ status: 'Camera Error', studentName: null, distance: null });
         }
     };
 
@@ -130,7 +130,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
         }
         
         setIsCameraActive(false);
-        setStatusText('Idle');
+        setScannerState({ status: 'Idle', studentName: null, distance: null });
         matchCounts.current = {}; // Reset counts
     };
 
@@ -166,7 +166,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                 ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
                 if (detections.length === 0) {
-                    setStatusText('Scanning... No face detected');
+                    setScannerState({ status: 'Scanning... No face detected', studentName: null, distance: null });
                     matchCounts.current = {}; // Reset if no one is in frame
                 } else {
                     const { faceMatcher: currentMatcher, labeledFaces: currentLabeled, onStudentRecognized: currentOnRecognized } = latestProps.current;
@@ -187,13 +187,13 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                         if (result.label !== 'unknown') {
                             const studentId = result.label;
                             const distance = result.distance.toFixed(2);
-                            setStatusText(`${displayName} (dist: ${distance})`);
+                            setScannerState({ status: 'Recognized', studentName: displayName, distance: distance });
                             
                             // Increment consecutive match count
                             matchCounts.current[studentId] = (matchCounts.current[studentId] || 0) + 1;
                             
                             if (matchCounts.current[studentId] >= REQUIRED_CONSECUTIVE_FRAMES) {
-                                setStatusText(`Verified! Marking attendance...`);
+                                setScannerState({ status: 'Verified! Marking attendance...', studentName: displayName, distance: distance });
                                 
                                 if (studentDetails && currentOnRecognized) {
                                     currentOnRecognized(studentDetails);
@@ -202,7 +202,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                                 }
                             }
                         } else {
-                            setStatusText(`Unknown face detected (dist: ${result.distance.toFixed(2)})`);
+                            setScannerState({ status: 'Unknown face detected', studentName: null, distance: result.distance.toFixed(2) });
                         }
                     });
                 }
@@ -225,7 +225,7 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                 <div style={{ 
                     display: 'flex', 
                     flexWrap: 'wrap',
-                    gap: '24px', 
+                    gap: '20px', 
                     padding: '20px', 
                     backgroundColor: 'var(--surface)', 
                     borderRadius: '16px', 
@@ -279,15 +279,27 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                         
                         {/* Status Panel */}
                         <div style={{ 
-                            backgroundColor: 'rgba(0, 168, 232, 0.08)', 
+                            backgroundColor: '#f0f9ff', 
                             padding: '16px', 
                             borderRadius: '12px',
-                            border: '1px solid rgba(0, 168, 232, 0.3)',
+                            border: '1px solid #bae6fd',
                             marginBottom: '20px'
                         }}>
-                            <h4 style={{ margin: '0 0 8px 0', color: 'var(--primary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scanner Status</h4>
-                            <div style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '1.1rem', wordBreak: 'break-word', lineHeight: '1.4' }}>
-                                {statusText}
+                            <h4 style={{ margin: '0 0 12px 0', color: '#0284c7', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scanner Status</h4>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ color: '#0369a1', fontWeight: '600', fontSize: '1rem' }}>
+                                    {scannerState.status}
+                                </div>
+                                {scannerState.studentName && (
+                                    <div style={{ color: '#0369a1', fontWeight: '600', fontSize: '0.95rem' }}>
+                                        Student: {scannerState.studentName}
+                                    </div>
+                                )}
+                                {scannerState.distance && (
+                                    <div style={{ color: '#0369a1', fontWeight: '500', fontSize: '0.9rem' }}>
+                                        Distance: {scannerState.distance}
+                                    </div>
+                                )}
                             </div>
                         </div>
                         

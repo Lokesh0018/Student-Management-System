@@ -90,18 +90,18 @@ exports.saveMarks = async (req, res) => {
 
             const [existing] = await connection.execute(
                 'SELECT id FROM marks WHERE student_id = ? AND exam_id = ? AND subject_id = ? LIMIT 1',
-                [mark.student_id, mark.exam_id, mark.subject_id]
+                [item.student_id, item.exam_id, item.subject_id]
             );
 
             if (existing.length > 0) {
                 await connection.execute(
                     'UPDATE marks SET marks_obtained = ?, max_marks = ?, grade = ?, remarks = ? WHERE id = ?',
-                    [mark.marks_obtained, mark.max_marks, grade, mark.remarks, existing[0].id]
+                    [item.marks_obtained, item.max_marks, grade, item.remarks, existing[0].id]
                 );
             } else {
                 await connection.execute(
                     'INSERT INTO marks (student_id, exam_id, subject_id, marks_obtained, max_marks, grade, remarks) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    [mark.student_id, mark.exam_id, mark.subject_id, mark.marks_obtained, mark.max_marks, grade, mark.remarks]
+                    [item.student_id, item.exam_id, item.subject_id, item.marks_obtained, item.max_marks, grade, item.remarks]
                 );
             }
         }

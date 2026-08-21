@@ -44,7 +44,7 @@ const StudentList = () => {
         
         const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               String(student.admission_number).toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesClass = filterClass ? student.class_id == filterClass : true;
+        const matchesClass = filterClass ? String(student.class_name) === String(filterClass) : true;
         // Skipping section and status filters since DB doesn't fully track them yet
         return matchesSearch && matchesClass;
     });
@@ -86,12 +86,12 @@ const StudentList = () => {
     const uniqueClasses = [];
     const classMap = new Map();
     students.forEach(s => {
-        if (s.class_id && !classMap.has(s.class_id)) {
-            classMap.set(s.class_id, true);
-            uniqueClasses.push({ id: s.class_id, name: s.class_name });
+        if (s.class_name && !classMap.has(s.class_name)) {
+            classMap.set(s.class_name, true);
+            uniqueClasses.push(s.class_name);
         }
     });
-    uniqueClasses.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    uniqueClasses.sort((a, b) => String(a).localeCompare(String(b)));
 
     return (
         <div className="student-list-page">
@@ -117,8 +117,8 @@ const StudentList = () => {
                 <div className="filter-dropdowns">
                     <select className="filter-select" value={filterClass} onChange={(e) => setFilterClass(e.target.value)}>
                         <option value="">Class</option>
-                        {uniqueClasses.map(c => (
-                            <option key={c.id} value={c.id}>Class {c.name}</option>
+                        {uniqueClasses.map(className => (
+                            <option key={className} value={className}>Class {className}</option>
                         ))}
                     </select>
                     <button className="btn-clear-filters" onClick={clearFilters}>Clear Filters</button>

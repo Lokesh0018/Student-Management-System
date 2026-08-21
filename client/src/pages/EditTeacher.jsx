@@ -108,7 +108,7 @@ const EditTeacher = () => {
                             </div>
                             <div className="form-group">
                                 <label>Phone Number <span className="req">*</span></label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required pattern="^\+?[0-9\s-]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required pattern="^\+?[0-9 -]{10,15}$" title="Enter a valid phone number (10-15 digits, +, spaces, and dashes allowed)" />
                             </div>
                             <div className="form-group">
                                 <label>Employee ID <span className="req">*</span></label>
