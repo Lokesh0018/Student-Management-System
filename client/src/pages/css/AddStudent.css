@@ -181,3 +181,35 @@
 .form-group input, .form-group select, .form-group textarea {
   background-color: var(--surface);
 }
+
+.styled-file-input {
+    padding: 10px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background-color: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.styled-file-input:hover {
+    border-color: var(--primary);
+}
+
+.styled-file-input::file-selector-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.styled-file-input::file-selector-button:hover {
+    opacity: 0.9;
+}

@@ -12,6 +12,8 @@ const AttendanceManagement = () => {
     const [students, setStudents] = useState([]);
     const [notification, setNotification] = useState({ show: false, message: '', type: '' });
     const [activeTab, setActiveTab] = useState('MANUAL');
+    const [recentScans, setRecentScans] = useState([]);
+    const [confirmStudent, setConfirmStudent] = useState(null);
     
     const [filters, setFilters] = useState({ 
         class_id: '', 
@@ -111,11 +113,24 @@ const AttendanceManagement = () => {
         }
     };
 
-    const handleFaceRecognized = async (student) => {
+    const handleFaceRecognized = (student) => {
         if (!filters.class_id) {
             showNotification('Please select a class first.', 'error');
             return;
         }
+        
+        setConfirmStudent(prevConfirm => {
+            // If a popup is already open, do nothing
+            if (prevConfirm) return prevConfirm;
+            
+            // Otherwise, show the confirmation modal
+            return student;
+        });
+    };
+
+    const confirmAttendance = async () => {
+        if (!confirmStudent) return;
+        const student = confirmStudent;
         
         try {
             await api.post('/attendance', { 
@@ -125,9 +140,17 @@ const AttendanceManagement = () => {
             });
             showNotification(`Marked PRESENT: ${student.first_name} ${student.last_name}`, 'success');
             setAttendanceData(prev => ({ ...prev, [student.student_id]: 'PRESENT' }));
+            
+            // Log to recent scans UI
+            setRecentScans(prev => {
+                const newScan = { id: Date.now(), student_id: student.student_id, name: `${student.first_name} ${student.last_name}`, time: new Date().toLocaleTimeString() };
+                return [newScan, ...prev].slice(0, 5); // Keep last 5
+            });
         } catch (error) {
             console.error('Error auto-saving attendance', error);
             showNotification(`Failed to mark attendance for ${student.first_name}`, 'error');
+        } finally {
+            setConfirmStudent(null);
         }
     };
 
@@ -321,12 +344,54 @@ const AttendanceManagement = () => {
                     {(!isTeacher && !filters.class_id) ? (
                         <div className="alert-banner">Please select a class to start Face Recognition.</div>
                     ) : (
-                        <FaceScanner 
-                            classId={filters.class_id || (classes[0]?.id)} 
-                            date={filters.date} 
-                            onStudentRecognized={handleFaceRecognized} 
-                        />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <FaceScanner 
+                                classId={filters.class_id || (classes[0]?.id)} 
+                                date={filters.date} 
+                                onStudentRecognized={handleFaceRecognized} 
+                            />
+                            {recentScans.length > 0 && (
+                                <div className="recent-scans-card" style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+                                    <h4 style={{ margin: '0 0 12px 0', color: '#334155' }}>Recent Successful Scans</h4>
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {recentScans.map(scan => (
+                                            <li key={scan.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', backgroundColor: 'white', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                                                <span style={{ fontWeight: '500', color: '#10b981' }}>✅ {scan.name} marked Present</span>
+                                                <span style={{ color: '#64748b', fontSize: '0.875rem' }}>{scan.time}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     )}
+                </div>
+            )}
+
+            {/* Confirmation Modal */}
+            {confirmStudent && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                    backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                }}>
+                    <div style={{
+                        backgroundColor: 'white', padding: '24px', borderRadius: '12px', width: '90%', maxWidth: '400px',
+                        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        <h3 style={{ margin: '0 0 16px 0', color: '#1e293b' }}>Confirm Attendance</h3>
+                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <p style={{ margin: '0 0 8px 0', color: '#64748b' }}>Student Name:</p>
+                            <p style={{ margin: '0 0 16px 0', fontWeight: '600', fontSize: '1.125rem', color: '#0f172a' }}>
+                                {confirmStudent.first_name} {confirmStudent.last_name}
+                            </p>
+                            <p style={{ margin: '0 0 8px 0', color: '#64748b' }}>Roll Number:</p>
+                            <p style={{ margin: 0, fontWeight: '600', color: '#0f172a' }}>{confirmStudent.roll_number}</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                            <button className="btn-secondary" onClick={() => setConfirmStudent(null)}>Cancel</button>
+                            <button className="btn-primary" onClick={confirmAttendance}>Confirm Present</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

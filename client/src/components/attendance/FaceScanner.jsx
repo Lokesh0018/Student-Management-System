@@ -158,22 +158,23 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
                     
                     results.forEach((result, i) => {
                         const box = resizedDetections[i].detection.box;
-                        const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() });
+                        const studentDetails = labeledFaces.find(s => String(s.student_id) === result.label);
+                        const displayName = studentDetails ? `${studentDetails.first_name} ${studentDetails.last_name}` : result.label;
+                        
+                        const boxLabel = result.label === 'unknown' ? `Unknown (${result.distance.toFixed(2)})` : `${displayName} (${result.distance.toFixed(2)})`;
+                        const drawBox = new faceapi.draw.DrawBox(box, { label: boxLabel });
                         drawBox.draw(canvasRef.current);
                         
                         if (result.label !== 'unknown') {
                             const studentId = result.label;
                             const distance = result.distance.toFixed(2);
-                            setStatusText(`Possible match: ID ${studentId} (dist: ${distance})`);
+                            setStatusText(`${displayName} (dist: ${distance})`);
                             
                             // Increment consecutive match count
                             matchCounts.current[studentId] = (matchCounts.current[studentId] || 0) + 1;
                             
                             if (matchCounts.current[studentId] >= REQUIRED_CONSECUTIVE_FRAMES) {
                                 setStatusText(`Verified! Marking attendance...`);
-                                
-                                // Find student details for callback
-                                const studentDetails = labeledFaces.find(s => String(s.student_id) === studentId);
                                 
                                 if (studentDetails) {
                                     onStudentRecognized(studentDetails);

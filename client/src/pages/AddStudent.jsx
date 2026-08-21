@@ -246,6 +246,7 @@ const AddStudent = () => {
                                 type="file" 
                                 accept="image/*" 
                                 onChange={handleFileUpload} 
+                                className="styled-file-input"
                                 style={{ marginBottom: '10px' }}
                             />
                             <label>Or enter Image Link manually</label>
