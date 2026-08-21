@@ -82,6 +82,29 @@ export const Layout = ({ children }) => {
       }
   };
 
+  const handleNotificationClick = (n) => {
+    const title = n.title?.toLowerCase() || '';
+    const type = n.type?.toLowerCase() || '';
+    const message = n.message?.toLowerCase() || '';
+    
+    if (title.includes('remark') || type.includes('remark') || message.includes('remark')) {
+      if (user?.role === 'CLASS_TEACHER' || user?.role === 'ADMIN') {
+        navigate('/admin/remarks');
+      } else if (user?.role === 'PARENT') {
+        navigate('/parent/remarks');
+      }
+    } 
+    else if (title.includes('attendance') || type.includes('attendance') || message.includes('attendance')) {
+      if (user?.role === 'CLASS_TEACHER' || user?.role === 'ADMIN') {
+        navigate('/admin/attendance');
+      } else if (user?.role === 'PARENT') {
+        navigate('/parent/attendance');
+      }
+    }
+
+    setShowNotifications(false);
+  };
+
   const getAvatarLetter = (role) => {
     switch (role?.toLowerCase()) {
       case 'admin': return 'A';
@@ -205,7 +228,7 @@ export const Layout = ({ children }) => {
                   <div className="notif-body">
                     {unreadNotifications.length > 0 ? (
                       unreadNotifications.map(n => (
-                        <div key={n.id} className={`notif-item unread`}>
+                        <div key={n.id} className={`notif-item unread`} onClick={() => handleNotificationClick(n)} style={{ cursor: 'pointer' }}>
                           <strong>{n.title}</strong>
                           <p>{n.message}</p>
                           <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>
