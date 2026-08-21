@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import * as faceapi from '@vladmandic/face-api';
 import toast from 'react-hot-toast';
 import api from '../../utils/api';
 
-const FaceScanner = ({ classId, date, onStudentRecognized }) => {
+const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }, ref) => {
     const [isModelsLoaded, setIsModelsLoaded] = useState(false);
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [faceMatcher, setFaceMatcher] = useState(null);
@@ -15,8 +15,19 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
     const scanLoopRef = useRef(null);
     const streamRef = useRef(null);
     
+    // Refs for latest props and state to avoid stale closures in requestAnimationFrame
+    const latestProps = useRef({ onStudentRecognized, faceMatcher, labeledFaces });
+    useEffect(() => {
+        latestProps.current = { onStudentRecognized, faceMatcher, labeledFaces };
+    }, [onStudentRecognized, faceMatcher, labeledFaces]);
+
+    const isCameraActiveRef = useRef(isCameraActive);
+    useEffect(() => {
+        isCameraActiveRef.current = isCameraActive;
+    }, [isCameraActive]);
+    
     // Configurable thresholds
-    const FACE_MATCH_DISTANCE_THRESHOLD = 0.60;
+    const FACE_MATCH_DISTANCE_THRESHOLD = 0.68; // Increased from 0.60 to account for WebGL float precision differences across different browsers/devices
     const REQUIRED_CONSECUTIVE_FRAMES = 3;
     const matchCounts = useRef({});
 
@@ -123,6 +134,10 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
         matchCounts.current = {}; // Reset counts
     };
 
+    useImperativeHandle(ref, () => ({
+        stopCamera
+    }));
+
     const scanLoop = async () => {
         if (!videoRef.current || videoRef.current.paused || videoRef.current.ended) {
             return;
@@ -154,11 +169,15 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
                     setStatusText('Scanning... No face detected');
                     matchCounts.current = {}; // Reset if no one is in frame
                 } else {
-                    const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor));
+                    const { faceMatcher: currentMatcher, labeledFaces: currentLabeled, onStudentRecognized: currentOnRecognized } = latestProps.current;
+                    
+                    if (!currentMatcher) return;
+
+                    const results = resizedDetections.map(d => currentMatcher.findBestMatch(d.descriptor));
                     
                     results.forEach((result, i) => {
                         const box = resizedDetections[i].detection.box;
-                        const studentDetails = labeledFaces.find(s => String(s.student_id) === result.label);
+                        const studentDetails = currentLabeled.find(s => String(s.student_id) === result.label);
                         const displayName = studentDetails ? `${studentDetails.first_name} ${studentDetails.last_name}` : result.label;
                         
                         const boxLabel = result.label === 'unknown' ? `Unknown (${result.distance.toFixed(2)})` : `${displayName} (${result.distance.toFixed(2)})`;
@@ -176,8 +195,8 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
                             if (matchCounts.current[studentId] >= REQUIRED_CONSECUTIVE_FRAMES) {
                                 setStatusText(`Verified! Marking attendance...`);
                                 
-                                if (studentDetails) {
-                                    onStudentRecognized(studentDetails);
+                                if (studentDetails && currentOnRecognized) {
+                                    currentOnRecognized(studentDetails);
                                     // Reset count so it doesn't spam
                                     matchCounts.current[studentId] = -100; // Delay before re-detecting
                                 }
@@ -193,52 +212,108 @@ const FaceScanner = ({ classId, date, onStudentRecognized }) => {
         }
 
         // Continue the loop
-        if (isCameraActive) {
+        if (isCameraActiveRef.current) {
             scanLoopRef.current = requestAnimationFrame(scanLoop);
         }
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+        <div style={{ width: '100%' }}>
             {!isModelsLoaded ? (
                 <div className="alert-banner">Loading Face Recognition Models...</div>
             ) : (
-                <>
-                    <div style={{ marginBottom: '16px', fontWeight: 'bold' }}>
-                        Status: <span style={{ color: 'var(--primary)' }}>{statusText}</span>
-                    </div>
+                <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap',
+                    gap: '24px', 
+                    padding: '20px', 
+                    backgroundColor: 'var(--surface)', 
+                    borderRadius: '16px', 
+                    border: '1px solid var(--border)',
+                    width: '100%',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+                }}>
                     
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {!isCameraActive ? (
-                            <button type="button" className="btn-primary" onClick={startCamera}>
-                                Start Scanner
-                            </button>
+                    {/* Left Column - Camera */}
+                    <div style={{ flex: '1 1 60%', minWidth: '320px', display: 'flex', flexDirection: 'column' }}>
+                        {isCameraActive ? (
+                            <div style={{ 
+                                position: 'relative', 
+                                width: '100%', 
+                                aspectRatio: '16/9',
+                                backgroundColor: '#000', 
+                                borderRadius: '12px', 
+                                overflow: 'hidden',
+                                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                            }}>
+                                <video 
+                                    ref={videoRef} 
+                                    autoPlay 
+                                    muted 
+                                    playsInline 
+                                    style={{ width: '100%', height: '100%', display: 'block', transform: 'scaleX(-1)' }}
+                                />
+                                <canvas 
+                                    ref={canvasRef} 
+                                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', transform: 'scaleX(-1)' }}
+                                />
+                            </div>
                         ) : (
-                            <button type="button" className="btn-secondary" onClick={stopCamera}>
-                                Stop Scanner
-                            </button>
+                            <div style={{ 
+                                width: '100%', 
+                                aspectRatio: '16/9',
+                                backgroundColor: 'var(--bg)', 
+                                borderRadius: '12px', 
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: '2px dashed var(--border)'
+                            }}>
+                                <p style={{ color: 'var(--text-secondary)', fontWeight: '500' }}>Camera is off. Click "Start Face Scanner" to begin.</p>
+                            </div>
                         )}
                     </div>
-                    
-                    {isCameraActive && (
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '640px', backgroundColor: '#000', borderRadius: '12px', overflow: 'hidden' }}>
-                            <video 
-                                ref={videoRef} 
-                                autoPlay 
-                                muted 
-                                playsInline 
-                                style={{ width: '100%', display: 'block' }}
-                            />
-                            <canvas 
-                                ref={canvasRef} 
-                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                            />
+
+                    {/* Right Column - Controls */}
+                    <div style={{ flex: '1 1 35%', minWidth: '280px', display: 'flex', flexDirection: 'column' }}>
+                        
+                        {/* Status Panel */}
+                        <div style={{ 
+                            backgroundColor: 'rgba(0, 168, 232, 0.08)', 
+                            padding: '16px', 
+                            borderRadius: '12px',
+                            border: '1px solid rgba(0, 168, 232, 0.3)',
+                            marginBottom: '20px'
+                        }}>
+                            <h4 style={{ margin: '0 0 8px 0', color: 'var(--primary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scanner Status</h4>
+                            <div style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '1.1rem', wordBreak: 'break-word', lineHeight: '1.4' }}>
+                                {statusText}
+                            </div>
                         </div>
-                    )}
-                </>
+                        
+                        {/* Passed Controls (Class/Date Selectors) */}
+                        <div style={{ marginBottom: '20px' }}>
+                            {controls}
+                        </div>
+                        
+                        {/* Start/Stop Button */}
+                        <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
+                            {!isCameraActive ? (
+                                <button type="button" className="btn-primary" onClick={startCamera} style={{ width: '100%', padding: '12px', fontSize: '1rem', borderRadius: '8px' }}>
+                                    Start Face Scanner
+                                </button>
+                            ) : (
+                                <button type="button" className="btn-secondary" onClick={stopCamera} style={{ width: '100%', padding: '12px', fontSize: '1rem', borderRadius: '8px', border: '1px solid var(--border)', backgroundColor: 'var(--bg)', color: 'var(--text-primary)' }}>
+                                    Stop Scanner
+                                </button>
+                            )}
+                        </div>
+                        
+                    </div>
+                </div>
             )}
         </div>
     );
-};
+});
 
 export default FaceScanner;

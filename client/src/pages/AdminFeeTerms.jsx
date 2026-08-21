@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import './css/Settings.css';
+import './css/StudentList.css';
 import { FaPen, FaTrash } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -137,7 +138,9 @@ const AdminFeeTerms = () => {
                 <td><span className="font-semibold">₹{term.amount}</span></td>
                 <td>{new Date(term.due_date).toLocaleDateString()}</td>
                 <td>
-                  <span className={`badge ${term.status === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>{term.status}</span>
+                  <span className={`status-badge status-${(term.status || 'Active').toLowerCase()}`}>
+                    {term.status || 'Active'}
+                  </span>
                 </td>
                 <td className="text-center">
                   {term.assigned_classes ? (

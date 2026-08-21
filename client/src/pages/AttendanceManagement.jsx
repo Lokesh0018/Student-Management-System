@@ -12,8 +12,8 @@ const AttendanceManagement = () => {
     const [students, setStudents] = useState([]);
     const [notification, setNotification] = useState({ show: false, message: '', type: '' });
     const [activeTab, setActiveTab] = useState('MANUAL');
-    const [recentScans, setRecentScans] = useState([]);
     const [confirmStudent, setConfirmStudent] = useState(null);
+    const faceScannerRef = React.useRef(null);
     
     const [filters, setFilters] = useState({ 
         class_id: '', 
@@ -141,11 +141,9 @@ const AttendanceManagement = () => {
             showNotification(`Marked PRESENT: ${student.first_name} ${student.last_name}`, 'success');
             setAttendanceData(prev => ({ ...prev, [student.student_id]: 'PRESENT' }));
             
-            // Log to recent scans UI
-            setRecentScans(prev => {
-                const newScan = { id: Date.now(), student_id: student.student_id, name: `${student.first_name} ${student.last_name}`, time: new Date().toLocaleTimeString() };
-                return [newScan, ...prev].slice(0, 5); // Keep last 5
-            });
+            if (faceScannerRef.current) {
+                faceScannerRef.current.stopCamera();
+            }
         } catch (error) {
             console.error('Error auto-saving attendance', error);
             showNotification(`Failed to mark attendance for ${student.first_name}`, 'error');
@@ -316,55 +314,38 @@ const AttendanceManagement = () => {
                         Make sure to select your class and date before starting the camera. Recognized students will automatically be marked PRESENT.
                     </p>
                     
-                    <div className="filter-card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '24px' }}>
-                        {!isTeacher && (
-                        <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Class</label>
-                            <select 
-                                value={filters.class_id} 
-                                onChange={e => setFilters({...filters, class_id: e.target.value})}
-                                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-                            >
-                                <option value="">Select Class</option>
-                                {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
-                            </select>
-                        </div>
-                        )}
-                        <div className="form-group" style={{ marginBottom: 0, minWidth: '200px' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Date</label>
-                            <input 
-                                type="date" 
-                                value={filters.date} 
-                                onChange={e => setFilters({...filters, date: e.target.value})} 
-                                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-                            />
-                        </div>
-                    </div>
-
-                    {(!isTeacher && !filters.class_id) ? (
-                        <div className="alert-banner">Please select a class to start Face Recognition.</div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            <FaceScanner 
-                                classId={filters.class_id || (classes[0]?.id)} 
-                                date={filters.date} 
-                                onStudentRecognized={handleFaceRecognized} 
-                            />
-                            {recentScans.length > 0 && (
-                                <div className="recent-scans-card" style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', maxWidth: '640px', margin: '0 auto', width: '100%' }}>
-                                    <h4 style={{ margin: '0 0 12px 0', color: '#334155' }}>Recent Successful Scans</h4>
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        {recentScans.map(scan => (
-                                            <li key={scan.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', backgroundColor: 'white', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                                                <span style={{ fontWeight: '500', color: '#10b981' }}>✅ {scan.name} marked Present</span>
-                                                <span style={{ color: '#64748b', fontSize: '0.875rem' }}>{scan.time}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                    <FaceScanner 
+                        ref={faceScannerRef}
+                        classId={filters.class_id || (classes[0]?.id)} 
+                        date={filters.date} 
+                        onStudentRecognized={handleFaceRecognized} 
+                        controls={
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                                {!isTeacher && (
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Class</label>
+                                    <select 
+                                        value={filters.class_id} 
+                                        onChange={e => setFilters({...filters, class_id: e.target.value})}
+                                        style={{ width: '100%', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                                    >
+                                        <option value="">Select Class</option>
+                                        {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}-{c.section}</option>)}
+                                    </select>
                                 </div>
-                            )}
-                        </div>
-                    )}
+                                )}
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#475569' }}>Date</label>
+                                    <input 
+                                        type="date" 
+                                        value={filters.date} 
+                                        onChange={e => setFilters({...filters, date: e.target.value})} 
+                                        style={{ width: '100%', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                                    />
+                                </div>
+                            </div>
+                        }
+                    />
                 </div>
             )}
 
