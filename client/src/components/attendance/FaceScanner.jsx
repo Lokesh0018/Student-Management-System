@@ -279,24 +279,24 @@ const FaceScanner = forwardRef(({ classId, date, onStudentRecognized, controls }
                         
                         {/* Status Panel */}
                         <div style={{ 
-                            backgroundColor: '#f0f9ff', 
+                            backgroundColor: 'var(--surface, #f0f9ff)', 
                             padding: '16px', 
                             borderRadius: '12px',
-                            border: '1px solid #bae6fd',
+                            border: '1px solid var(--border, #bae6fd)',
                             marginBottom: '20px'
                         }}>
-                            <h4 style={{ margin: '0 0 12px 0', color: '#0284c7', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scanner Status</h4>
+                            <h4 style={{ margin: '0 0 12px 0', color: 'var(--primary, #0284c7)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Scanner Status</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ color: '#0369a1', fontWeight: '600', fontSize: '1rem' }}>
+                                <div style={{ color: 'var(--text-primary, #0369a1)', fontWeight: '600', fontSize: '1rem' }}>
                                     {scannerState.status}
                                 </div>
                                 {scannerState.studentName && (
-                                    <div style={{ color: '#0369a1', fontWeight: '600', fontSize: '0.95rem' }}>
+                                    <div style={{ color: 'var(--text-primary, #0369a1)', fontWeight: '600', fontSize: '0.95rem' }}>
                                         Student: {scannerState.studentName}
                                     </div>
                                 )}
                                 {scannerState.distance && (
-                                    <div style={{ color: '#0369a1', fontWeight: '500', fontSize: '0.9rem' }}>
+                                    <div style={{ color: 'var(--text-secondary, #0369a1)', fontWeight: '500', fontSize: '0.9rem' }}>
                                         Distance: {scannerState.distance}
                                     </div>
                                 )}

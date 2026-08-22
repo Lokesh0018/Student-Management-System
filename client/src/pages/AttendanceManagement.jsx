@@ -258,12 +258,12 @@ const AttendanceManagement = () => {
                                             <td>{s.roll_number}</td>
                                             <td className="fw-500">{s.first_name} {s.last_name}</td>
                                             <td className="text-right">
-                                                <div style={{ display: 'inline-flex', backgroundColor: '#f1f5f9', borderRadius: '6px', padding: '4px', gap: '4px' }}>
+                                                <div style={{ display: 'inline-flex', backgroundColor: 'var(--surface)', borderRadius: '6px', padding: '4px', gap: '4px', border: '1px solid var(--border)' }}>
                                                     <button 
                                                         onClick={() => handleStatusChange(s.id, 'PRESENT')}
                                                         style={{
                                                             border: 'none', background: currentStatus === 'PRESENT' ? '#10b981' : 'transparent', 
-                                                            color: currentStatus === 'PRESENT' ? 'white' : '#64748b',
+                                                            color: currentStatus === 'PRESENT' ? 'white' : 'var(--text-secondary)',
                                                             padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: currentStatus === 'PRESENT' ? '600' : '500',
                                                             transition: 'all 0.2s'
                                                         }}>
@@ -273,7 +273,7 @@ const AttendanceManagement = () => {
                                                         onClick={() => handleStatusChange(s.id, 'ABSENT')}
                                                         style={{
                                                             border: 'none', background: currentStatus === 'ABSENT' ? '#ef4444' : 'transparent', 
-                                                            color: currentStatus === 'ABSENT' ? 'white' : '#64748b',
+                                                            color: currentStatus === 'ABSENT' ? 'white' : 'var(--text-secondary)',
                                                             padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: currentStatus === 'ABSENT' ? '600' : '500',
                                                             transition: 'all 0.2s'
                                                         }}>
@@ -283,7 +283,7 @@ const AttendanceManagement = () => {
                                                         onClick={() => handleStatusChange(s.id, 'LATE')}
                                                         style={{
                                                             border: 'none', background: currentStatus === 'LATE' ? '#f59e0b' : 'transparent', 
-                                                            color: currentStatus === 'LATE' ? 'white' : '#64748b',
+                                                            color: currentStatus === 'LATE' ? 'white' : 'var(--text-secondary)',
                                                             padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: currentStatus === 'LATE' ? '600' : '500',
                                                             transition: 'all 0.2s'
                                                         }}>

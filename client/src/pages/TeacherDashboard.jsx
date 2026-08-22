@@ -87,7 +87,7 @@ const TeacherDashboard = () => {
                     <h1 className="dash-title">{getGreeting()}, Teacher! 👋</h1>
                     <p className="dash-subtitle">Here's what's happening in your class today.</p>
                 </div>
-                <div style={{ padding: '8px 16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', color: '#475569', fontSize: '13px', fontWeight: '500' }}>
+                <div style={{ padding: '8px 16px', backgroundColor: 'var(--surface, #f8fafc)', borderRadius: '8px', border: '1px solid var(--border, #e2e8f0)', color: 'var(--text-secondary, #475569)', fontSize: '13px', fontWeight: '500' }}>
                     {getCurrentDate()}
                 </div>
             </div>

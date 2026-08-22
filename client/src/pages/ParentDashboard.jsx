@@ -13,6 +13,11 @@ const ParentDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const getCurrentDate = () => {
+        const options = { day: 'numeric', month: 'short', year: 'numeric', weekday: 'long' };
+        return new Date().toLocaleDateString('en-US', options);
+    };
+
     useEffect(() => {
         const fetchStats = async () => {
             try {
@@ -116,13 +121,18 @@ const ParentDashboard = () => {
     return (
         <div className="page-container">
             <div className="dashboard-container" style={{ gap: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                <header className="dashboard-header" style={{ marginBottom: '0.5rem', borderBottom: 'none', paddingBottom: 0 }}>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                        Welcome, {user?.name || 'Parent'}! <span style={{ fontSize: '1.5rem' }}>👋</span>
-                    </h1>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                        Here's an overview of your children and their progress.
-                    </p>
+                <header className="dashboard-header" style={{ marginBottom: '0.5rem', borderBottom: 'none', paddingBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            Welcome, {user?.name || 'Parent'}! <span style={{ fontSize: '1.5rem' }}>👋</span>
+                        </h1>
+                        <p style={{ color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                            Here's an overview of your children and their progress.
+                        </p>
+                    </div>
+                    <div style={{ padding: '8px 16px', backgroundColor: 'var(--surface, #f8fafc)', borderRadius: '8px', border: '1px solid var(--border, #e2e8f0)', color: 'var(--text-secondary, #475569)', fontSize: '13px', fontWeight: '500' }}>
+                        {getCurrentDate()}
+                    </div>
                 </header>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', alignItems: 'stretch' }}>
