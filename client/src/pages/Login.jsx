@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLock, FaEnvelope } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Button } from '../components/ui/Button';
 import './css/Login.css';
@@ -122,15 +122,15 @@ const Login = () => {
                     
                     <motion.div className="brand-content" variants={itemVariants}>
                         <h1 className="brand-title">School<br/>Management<br/>System</h1>
-                        <p className="brand-subtitle">Manage students, teachers, parents and academic activities efficiently.</p>
+                        <p className="brand-subtitle">Manage students, teachers, parents and academic activities effortlessly.</p>
                     </motion.div>
                     
                     <motion.div 
-                        className="brand-illustration" 
+                        className="brand-illustration glow-shadow" 
                         variants={floatVariants}
                         animate="float"
                     >
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYA_qhyqNOCr2HQLs2CMPYwEWcz43Um75QwdtNN88zqhYA81aH4KvnGWAgzsNkWDNowahRyecakrf0kzLZICcQh6QUxR6Awnu08uF5Z791pt27A-A0hVH7jCd8D9xQ3Cbkus7cgAWnUMgc6TP9VnYLzDa0eB8hxfDt6SydULIyiym1V_SAeQ-YPdPeT_KYTkiiHm70-QoMyG1STlzK0_oEJEHLi5eVAOhnYftuYrzTpDiU03dPVqd_YQ" alt="School Illustration" />
+                        <img src="/school-illustration.jpg" alt="School Illustration" style={{ objectFit: 'cover' }} />
                     </motion.div>
                 </motion.div>
 
@@ -146,20 +146,24 @@ const Login = () => {
                         <form onSubmit={handleLogin} className="login-form">
                             <motion.div className="input-group" variants={itemVariants}>
                                 <label htmlFor="email">Email</label>
-                                <input 
-                                    id="email"
-                                    type="email" 
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Enter your email"
-                                    disabled={loading}
-                                    required
-                                />
+                                <div className="input-icon-wrapper">
+                                    <FaEnvelope className="input-icon" />
+                                    <input 
+                                        id="email"
+                                        type="email" 
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        disabled={loading}
+                                        required
+                                    />
+                                </div>
                             </motion.div>
                             
                             <motion.div className="input-group password-group" variants={itemVariants}>
                                 <label htmlFor="password">Password</label>
-                                <div className="password-input-wrapper">
+                                <div className="input-icon-wrapper password-input-wrapper">
+                                    <FaLock className="input-icon" />
                                     <input 
                                         id="password"
                                         type={showPassword ? "text" : "password"} 
@@ -188,7 +192,7 @@ const Login = () => {
                             </motion.div>
                             
                             <motion.div variants={itemVariants}>
-                                <Button type="submit" variant="primary" className="login-btn" disabled={loading} style={{ width: '100%' }}>
+                                <Button type="submit" variant="primary" className="login-btn premium-btn" disabled={loading} style={{ width: '100%' }}>
                                     {loading ? 'Signing In...' : 'Sign In'}
                                 </Button>
                             </motion.div>
