@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/Button';
 import { FaArrowRight } from "react-icons/fa";
@@ -45,7 +45,7 @@ const VerifyOTP = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/verify-otp', { token: otp });
+            const response = await api.post('/auth/verify-otp', { token: otp });
             
             if (response.data.success) {
                 navigate('/reset-password', { state: { email, otp } });

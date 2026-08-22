@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/Button';
 import { FaEye, FaEyeSlash, FaLock, FaArrowRight } from "react-icons/fa";
@@ -60,7 +60,7 @@ const ResetPassword = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/reset-password', { 
+            const response = await api.post('/auth/reset-password', { 
                 token, 
                 newPassword 
             });

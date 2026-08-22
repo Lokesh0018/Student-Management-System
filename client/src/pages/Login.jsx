@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { FaEye, FaEyeSlash, FaLock, FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -41,15 +41,15 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await api.post('/auth/login', {
                 email,
                 password
             });
 
             if (response.data.success) {
-                login(response.data.user, response.data.token);
+                login(response.data.data, response.data.token);
                 
-                const role = response.data.user.role;
+                const role = response.data.data.role;
                 if (role === 'ADMIN') {
                     navigate('/admin/dashboard');
                 } else if (role === 'TEACHER') {
@@ -61,7 +61,11 @@ const Login = () => {
                 }
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to connect to server');
+            console.error("Login API Error:", err);
+            const errMsg = err.response?.data?.message 
+                || (err.message === 'Network Error' ? 'Network Error: Backend server unreachable (CORS or down)' : err.message) 
+                || 'Failed to connect to server';
+            setError(errMsg);
         } finally {
             setLoading(false);
         }

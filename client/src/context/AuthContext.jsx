@@ -5,7 +5,13 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem('sms_user');
-        return storedUser ? JSON.parse(storedUser) : null;
+        try {
+            return storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null;
+        } catch (e) {
+            console.error("Failed to parse sms_user from localStorage", e);
+            localStorage.removeItem('sms_user');
+            return null;
+        }
     });
 
     const [token, setToken] = useState(() => {
