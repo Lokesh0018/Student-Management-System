@@ -104,37 +104,32 @@ const Login = () => {
     }
 
     return (
-        <div className="login-page-bg">
+        <div className="login-page-bg full-bleed">
             <motion.div 
-                className="login-split-card"
+                className="login-split-screen"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
             >
                 
-                <motion.div className="login-brand-panel" variants={leftPanelVariants}>
-                    <motion.div className="brand-header" variants={itemVariants}>
-                        <div className="brand-icon">
-                            <img src="/icon.png" alt="Logo" className="light-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                            <img src="/logo.png" alt="Logo" className="dark-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                        </div>
-                    </motion.div>
-                    
-                    <motion.div className="brand-content" variants={itemVariants}>
-                        <h1 className="brand-title">School<br/>Management<br/>System</h1>
-                        <p className="brand-subtitle">Manage students, teachers, parents and academic activities effortlessly.</p>
-                    </motion.div>
-                    
-                    <motion.div 
-                        className="brand-illustration glow-shadow" 
-                        variants={floatVariants}
-                        animate="float"
-                    >
-                        <img src="/school-illustration.jpg" alt="School Illustration" style={{ objectFit: 'cover' }} />
-                    </motion.div>
+                <motion.div className="login-left-panel" variants={leftPanelVariants}>
+                    <div className="login-left-overlay"></div>
+                    <div className="login-left-content">
+                        <motion.div className="brand-header" variants={itemVariants}>
+                            <div className="brand-icon">
+                                <img src="/icon.png" alt="Logo" className="light-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                <img src="/logo.png" alt="Logo" className="dark-mode-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            </div>
+                        </motion.div>
+                        
+                        <motion.div className="brand-content" variants={itemVariants}>
+                            <h1 className="brand-title">School<br/>Management<br/>System</h1>
+                            <p className="brand-subtitle">Manage students, teachers, parents and academic activities effortlessly.</p>
+                        </motion.div>
+                    </div>
                 </motion.div>
 
-                <motion.div className="login-form-panel" variants={rightPanelVariants}>
+                <motion.div className="login-right-panel" variants={itemVariants}>
                     <div className="login-form-inner">
                         <motion.div className="form-header" variants={itemVariants}>
                             <h2>Welcome Back! 👋</h2>
