@@ -66,12 +66,12 @@ const ParentAssignments = () => {
 
       <div className="card" style={{ background: 'transparent', boxShadow: 'none', padding: 0 }}>
         {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', background: '#fff', borderRadius: '12px', boxShadow: 'var(--shadow-1)' }}>
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary, #64748b)', background: 'var(--surface, #fff)', borderRadius: '12px', boxShadow: 'var(--shadow-1)' }}>
             Loading assignments...
           </div>
         ) : assignments.length === 0 ? (
-          <div style={{ padding: '60px 20px', textAlign: 'center', color: '#64748b', background: '#fff', borderRadius: '12px', boxShadow: 'var(--shadow-1)' }}>
-            <FaBook style={{ fontSize: '48px', color: '#cbd5e1', marginBottom: '16px' }} />
+          <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-secondary, #64748b)', background: 'var(--surface, #fff)', borderRadius: '12px', boxShadow: 'var(--shadow-1)' }}>
+            <FaBook style={{ fontSize: '48px', color: 'var(--border, #cbd5e1)', marginBottom: '16px' }} />
             <h3>No Active Assignments</h3>
             <p>Your children currently have no active assignments.</p>
           </div>
@@ -84,7 +84,7 @@ const ParentAssignments = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
                 style={{ 
-                    background: '#fff', 
+                    background: 'var(--surface, #fff)', 
                     borderRadius: '16px', 
                     padding: '24px', 
                     boxShadow: 'var(--shadow-1)',
@@ -112,20 +112,20 @@ const ParentAssignments = () => {
                     <span style={{ fontWeight: '500' }}>{a.student_name}</span>
                 </div>
                 
-                <p style={{ color: '#475569', fontSize: '14px', lineHeight: '1.5', marginBottom: '16px', flexGrow: 1 }}>
+                <p style={{ color: 'var(--text-secondary, #475569)', fontSize: '14px', lineHeight: '1.5', marginBottom: '16px', flexGrow: 1 }}>
                     {a.description || 'No description provided.'}
                 </p>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: '#f8fafc', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: 'var(--bg, #f8fafc)', borderRadius: '8px', marginBottom: '20px', fontSize: '13px' }}>
                   <div>
-                      <div style={{ color: '#64748b', marginBottom: '4px' }}>Assigned</div>
-                      <div style={{ fontWeight: '500', color: '#334155' }}>
-                          <FaCalendarAlt style={{ marginRight: '6px', color: '#94a3b8' }}/> 
+                      <div style={{ color: 'var(--text-secondary, #64748b)', marginBottom: '4px' }}>Assigned</div>
+                      <div style={{ fontWeight: '500', color: 'var(--text-primary, #334155)' }}>
+                          <FaCalendarAlt style={{ marginRight: '6px', color: 'var(--text-secondary, #94a3b8)' }}/> 
                           {new Date(a.assigned_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                      <div style={{ color: '#64748b', marginBottom: '4px' }}>Due Date</div>
+                      <div style={{ color: 'var(--text-secondary, #64748b)', marginBottom: '4px' }}>Due Date</div>
                       <div style={{ fontWeight: '500', color: '#ef4444' }}>
                           <FaCalendarAlt style={{ marginRight: '6px', color: '#fca5a5' }}/> 
                           {new Date(a.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -147,13 +147,13 @@ const ParentAssignments = () => {
                       <span style={{ fontWeight: '500', fontSize: '14px', color: 'var(--text-secondary)' }}>Status:</span>
                       <select 
                         className="form-control" 
-                        style={{ width: 'auto', padding: '6px 12px', fontSize: '14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: a.homework_status === 'COMPLETED' ? '#ecfdf5' : '#fff' }}
+                        style={{ width: 'auto', padding: '6px 12px', fontSize: '14px', borderRadius: '8px', border: '1px solid var(--border)', background: a.homework_status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.15)' : 'var(--surface)', color: 'var(--text-primary)' }}
                         value={a.homework_status} 
                         onChange={(e) => handleUpdateStatus(a.homework_id, e.target.value)}
                       >
-                        <option value="TO_DO">To Do</option>
-                        <option value="IN_PROGRESS">In Progress</option>
-                        <option value="COMPLETED">Completed</option>
+                        <option value="TO_DO" style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}>To Do</option>
+                        <option value="IN_PROGRESS" style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}>In Progress</option>
+                        <option value="COMPLETED" style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}>Completed</option>
                       </select>
                     </div>
                   )}
@@ -178,7 +178,8 @@ const ParentAssignments = () => {
                   maxWidth: '400px', 
                   textAlign: 'center', 
                   padding: '32px 24px',
-                  borderRadius: '20px'
+                  borderRadius: '20px',
+                  background: 'var(--surface, #fff)'
               }}
             >
               <div style={{ 

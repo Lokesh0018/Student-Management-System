@@ -185,12 +185,12 @@ const ParentPerformance = () => {
                                     <h3 style={{ fontSize: '1.75rem', margin: 0, fontWeight: 700 }}>{lowest.score.toFixed(1)}%</h3>
                                     <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>{lowest.subject}</p>
                                 </div>
-                                <div style={{ background: showImprovement ? (improvementVal >= 0 ? '#DCFCE7' : '#FEE2E2') : '#F1F5F9', padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                    <p style={{ fontSize: '0.85rem', color: showImprovement ? (improvementVal >= 0 ? '#166534' : '#991B1B') : 'var(--text-secondary)', margin: '0 0 0.25rem 0', fontWeight: 500 }}>Improvement</p>
-                                    <h3 style={{ fontSize: '1.5rem', margin: 0, color: showImprovement ? (improvementVal >= 0 ? '#166534' : '#991B1B') : 'var(--text-primary)', fontWeight: 700 }}>
+                                <div style={{ background: showImprovement ? (improvementVal >= 0 ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)') : 'var(--bg, #F1F5F9)', padding: '1rem', borderRadius: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                    <p style={{ fontSize: '0.85rem', color: showImprovement ? (improvementVal >= 0 ? '#10B981' : '#EF4444') : 'var(--text-secondary)', margin: '0 0 0.25rem 0', fontWeight: 500 }}>Improvement</p>
+                                    <h3 style={{ fontSize: '1.5rem', margin: 0, color: showImprovement ? (improvementVal >= 0 ? '#10B981' : '#EF4444') : 'var(--text-primary)', fontWeight: 700 }}>
                                         {showImprovement ? (improvementVal >= 0 ? `+${improvementVal}%` : `${improvementVal}%`) : 'N/A'}
                                     </h3>
-                                    <p style={{ fontSize: '0.75rem', color: showImprovement ? (improvementVal >= 0 ? '#166534' : '#991B1B') : 'var(--text-secondary)', margin: 0, opacity: 0.8 }}>From Last Exam</p>
+                                    <p style={{ fontSize: '0.75rem', color: showImprovement ? (improvementVal >= 0 ? '#10B981' : '#EF4444') : 'var(--text-secondary)', margin: 0, opacity: 0.8 }}>From Last Exam</p>
                                 </div>
                             </div>
                         </div>
@@ -200,10 +200,10 @@ const ParentPerformance = () => {
                             <div style={{ width: '100%', height: '300px' }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }} barSize={40}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                                        <XAxis dataKey="subject" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dy={10} />
-                                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(val) => `${val}%`} />
-                                        <Tooltip cursor={{ fill: '#F1F5F9' }} />
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                                        <XAxis dataKey="subject" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} dy={10} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(val) => `${val}%`} />
+                                        <Tooltip cursor={{ fill: 'rgba(128,128,128,0.1)' }} contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }} itemStyle={{ color: 'var(--text-primary)' }} />
                                         <Bar dataKey="score" radius={[4, 4, 0, 0]}>
                                             {performanceData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill="#3B82F6" />

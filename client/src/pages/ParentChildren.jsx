@@ -300,15 +300,15 @@ const ParentChildren = () => {
                                         <div className="card" style={{ padding: '1.5rem' }}>
                                             <h2 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', fontWeight: 600 }}>Attendance Summary</h2>
                                             <div style={{ display: 'flex', gap: '2rem' }}>
-                                                <div style={{ flex: 1, padding: '1rem', background: '#F1F5F9', borderRadius: '8px', textAlign: 'center' }}>
+                                                <div style={{ flex: 1, padding: '1rem', background: 'var(--bg, #F1F5F9)', borderRadius: '8px', textAlign: 'center' }}>
                                                     <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Total Present Days</p>
                                                     <h3 style={{ margin: '0.5rem 0 0 0', color: '#10B981', fontSize: '1.5rem' }}>{present}</h3>
                                                 </div>
-                                                <div style={{ flex: 1, padding: '1rem', background: '#F1F5F9', borderRadius: '8px', textAlign: 'center' }}>
+                                                <div style={{ flex: 1, padding: '1rem', background: 'var(--bg, #F1F5F9)', borderRadius: '8px', textAlign: 'center' }}>
                                                     <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Total Absent Days</p>
                                                     <h3 style={{ margin: '0.5rem 0 0 0', color: '#EF4444', fontSize: '1.5rem' }}>{absent}</h3>
                                                 </div>
-                                                <div style={{ flex: 1, padding: '1rem', background: '#F1F5F9', borderRadius: '8px', textAlign: 'center' }}>
+                                                <div style={{ flex: 1, padding: '1rem', background: 'var(--bg, #F1F5F9)', borderRadius: '8px', textAlign: 'center' }}>
                                                     <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Attendance %</p>
                                                     <h3 style={{ margin: '0.5rem 0 0 0', color: 'var(--primary)', fontSize: '1.5rem' }}>{attendancePercent}%</h3>
                                                 </div>
@@ -324,7 +324,7 @@ const ParentChildren = () => {
                                                  averageScore >= 60 ? 'Good performance. There is room for improvement in specific subjects.' :
                                                  averageScore > 0 ? 'Needs attention. Please review subject-wise scores and consult teachers.' : 'No data available yet.'}
                                             </p>
-                                            <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#F8FAFC', borderRadius: '8px' }}>
+                                            <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--bg, #F8FAFC)', borderRadius: '8px' }}>
                                                 <strong>Rank in Class:</strong> {child.rank !== 'N/A' ? `${child.rank} out of ${child.class_size}` : 'N/A'}
                                             </div>
                                         </div>
@@ -336,7 +336,7 @@ const ParentChildren = () => {
                                             {stats.remarks && stats.remarks.filter(r => r.student_id === child.id).length > 0 ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                                     {stats.remarks.filter(r => r.student_id === child.id).map((r, idx) => (
-                                                        <div key={idx} style={{ padding: '1rem', background: '#F1F5F9', borderRadius: '8px' }}>
+                                                        <div key={idx} style={{ padding: '1rem', background: 'var(--bg, #F1F5F9)', borderRadius: '8px' }}>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                                                 <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{r.title || 'General Remark'}</span>
                                                                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{new Date(r.created_at).toLocaleDateString()}</span>
@@ -344,7 +344,7 @@ const ParentChildren = () => {
                                                             <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginBottom: '0.5rem', fontWeight: 500 }}>
                                                                 From: {r.sender_name} ({r.sender_role})
                                                             </div>
-                                                            <p style={{ margin: 0, fontSize: '0.9rem', fontStyle: 'italic', color: '#475569' }}>"{r.message}"</p>
+                                                            <p style={{ margin: 0, fontSize: '0.9rem', fontStyle: 'italic', color: 'var(--text-primary, #475569)' }}>"{r.message}"</p>
                                                         </div>
                                                     ))}
                                                 </div>

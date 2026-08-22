@@ -356,17 +356,17 @@ const AttendanceManagement = () => {
                     backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
                 }}>
                     <div style={{
-                        backgroundColor: 'white', padding: '24px', borderRadius: '12px', width: '90%', maxWidth: '400px',
+                        backgroundColor: 'var(--surface, white)', padding: '24px', borderRadius: '12px', width: '90%', maxWidth: '400px',
                         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
                     }}>
-                        <h3 style={{ margin: '0 0 16px 0', color: '#1e293b' }}>Confirm Attendance</h3>
-                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                            <p style={{ margin: '0 0 8px 0', color: '#64748b' }}>Student Name:</p>
-                            <p style={{ margin: '0 0 16px 0', fontWeight: '600', fontSize: '1.125rem', color: '#0f172a' }}>
+                        <h3 style={{ margin: '0 0 16px 0', color: 'var(--text-primary)' }}>Confirm Attendance</h3>
+                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: 'var(--bg, #f8fafc)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                            <p style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)' }}>Student Name:</p>
+                            <p style={{ margin: '0 0 16px 0', fontWeight: '600', fontSize: '1.125rem', color: 'var(--text-primary)' }}>
                                 {confirmStudent.first_name} {confirmStudent.last_name}
                             </p>
-                            <p style={{ margin: '0 0 8px 0', color: '#64748b' }}>Roll Number:</p>
-                            <p style={{ margin: 0, fontWeight: '600', color: '#0f172a' }}>{confirmStudent.roll_number}</p>
+                            <p style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)' }}>Roll Number:</p>
+                            <p style={{ margin: 0, fontWeight: '600', color: 'var(--text-primary)' }}>{confirmStudent.roll_number}</p>
                         </div>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
                             <button className="btn-secondary" onClick={() => setConfirmStudent(null)}>Cancel</button>
