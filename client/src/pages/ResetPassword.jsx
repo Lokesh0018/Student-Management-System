@@ -14,6 +14,7 @@ const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -117,7 +118,7 @@ const ResetPassword = () => {
                         <FaLock className="input-icon" />
                         <input 
                             id="confirmPassword"
-                            type={showPassword ? "text" : "password"} 
+                            type={showConfirmPassword ? "text" : "password"} 
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm new password"
@@ -125,6 +126,13 @@ const ResetPassword = () => {
                             required
                             minLength="6"
                         />
+                        <button 
+                            type="button" 
+                            className="toggle-password"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                     </div>
                 </motion.div>
                 
