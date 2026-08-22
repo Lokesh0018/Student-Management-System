@@ -233,10 +233,10 @@ const ReportsList = () => {
                                     </PieChart>
                                 ) : (
                                     <BarChart data={getPerformanceAnalytics()}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                        <XAxis dataKey="name" />
-                                        <YAxis allowDecimals={false} />
-                                        <Tooltip cursor={{fill: 'rgba(0,0,0,0.05)'}} />
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                                        <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)' }} />
+                                        <YAxis allowDecimals={false} tick={{ fill: 'var(--text-secondary)' }} />
+                                        <Tooltip cursor={{fill: 'rgba(128,128,128,0.1)'}} contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }} itemStyle={{ color: 'var(--text-primary)' }} />
                                         <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 )}

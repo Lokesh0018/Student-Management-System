@@ -327,14 +327,14 @@ const RemarkManagement = () => {
                             <span style={{ fontSize: '12px', color: '#64748b' }}>{viewingRemark.date}</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', backgroundColor: '#f8fafc', borderRadius: '6px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', backgroundColor: 'var(--surface-active, #f8fafc)', borderRadius: '6px' }}>
                                 <div>
-                                    <span style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>Student</span>
-                                    <strong style={{ color: '#0f172a' }}>{viewingRemark.student_name}</strong>
+                                    <span style={{ fontSize: '12px', color: 'var(--text-secondary, #64748b)', display: 'block' }}>Student</span>
+                                    <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{viewingRemark.student_name}</strong>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                    <span style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>Sender</span>
-                                    <strong style={{ color: '#0f172a' }}>{viewingRemark.sender_id === user?.id ? 'Me' : 'Staff / Admin'}</strong>
+                                    <span style={{ fontSize: '12px', color: 'var(--text-secondary, #64748b)', display: 'block' }}>Sender</span>
+                                    <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{viewingRemark.sender_id === user?.id ? 'Me' : 'Staff / Admin'}</strong>
                                 </div>
                             </div>
                             <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
@@ -342,7 +342,7 @@ const RemarkManagement = () => {
                                 <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600', ...getPriorityStyle(viewingRemark.priority) }}>{viewingRemark.priority}</span>
                                 <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600', ...getStatusStyle(viewingRemark.status), backgroundColor: viewingRemark.status === 'Unread' ? '#fffbeb' : '#ecfdf5' }}>{viewingRemark.status}</span>
                             </div>
-                            <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '6px', minHeight: '100px', whiteSpace: 'pre-wrap', color: '#334155', lineHeight: '1.5' }}>
+                            <div style={{ padding: '16px', border: '1px solid var(--border, #e2e8f0)', borderRadius: '6px', minHeight: '100px', whiteSpace: 'pre-wrap', color: 'var(--text-primary, #334155)', lineHeight: '1.5' }}>
                                 {viewingRemark.message}
                             </div>
                         </div>

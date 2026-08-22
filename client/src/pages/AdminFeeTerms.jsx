@@ -177,7 +177,7 @@ const AdminFeeTerms = () => {
 
       {isModalOpen && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ background: '#fff', padding: '20px', borderRadius: '8px', width: '400px' }}>
+          <div className="modal-content" style={{ background: 'var(--surface)', padding: '20px', borderRadius: '8px', width: '400px' }}>
             <h2>{currentTerm.id ? 'Edit Term' : 'Create Term'}</h2>
             <form onSubmit={handleSave}>
               <div className="form-group" style={{ marginBottom: '15px' }}>
@@ -203,7 +203,7 @@ const AdminFeeTerms = () => {
 
       {isAssignModalOpen && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ background: '#fff', padding: '20px', borderRadius: '8px', width: '400px' }}>
+          <div className="modal-content" style={{ background: 'var(--surface)', padding: '20px', borderRadius: '8px', width: '400px' }}>
             <h2>Assign Fee to Class</h2>
             <form onSubmit={handleAssign}>
               <div className="form-group" style={{ marginBottom: '15px' }}>
@@ -226,11 +226,11 @@ const AdminFeeTerms = () => {
 
       {isDeleteModalOpen && (
         <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'var(--surface)' }}>
             <h3>Confirm Deletion</h3>
             <p style={{ marginTop: '10px', marginBottom: '20px' }}>Are you sure you want to delete this fee term? This action cannot be undone.</p>
             <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#e5e7eb', cursor: 'pointer' }} onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
+              <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)', cursor: 'pointer' }} onClick={() => setIsDeleteModalOpen(false)}>Cancel</button>
               <button className="btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer' }} onClick={confirmDelete}>Delete</button>
             </div>
           </div>
