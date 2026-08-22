@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { FaEye, FaEyeSlash, FaLock, FaEnvelope } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLock, FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Button } from '../components/ui/Button';
 import './css/Login.css';
@@ -32,13 +32,28 @@ const Login = () => {
     };
 
     const rightPanelVariants = {
-        hidden: { x: 50, opacity: 0 },
-        visible: { x: 0, opacity: 1, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } }
+        hidden: { opacity: 0 },
+        visible: { 
+            opacity: 1, 
+            transition: { 
+                staggerChildren: 0.15,
+                delayChildren: 0.3
+            } 
+        }
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
+        hidden: { opacity: 0, y: 30, scale: 0.95 },
+        visible: { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1,
+            transition: { 
+                type: "spring", 
+                stiffness: 100, 
+                damping: 15
+            } 
+        }
     };
 
     const floatVariants = {
@@ -125,14 +140,30 @@ const Login = () => {
                         <motion.div className="brand-content" variants={itemVariants}>
                             <h1 className="brand-title">School<br/>Management<br/>System</h1>
                             <p className="brand-subtitle">Manage students, teachers, parents and academic activities effortlessly.</p>
+                            
+                            <div className="feature-widget mt-8">
+                                <div className="feature-item">
+                                    <span className="feature-icon">✓</span>
+                                    <span>Seamless Attendance</span>
+                                </div>
+                                <div className="feature-item">
+                                    <span className="feature-icon">✓</span>
+                                    <span>Automated Grading</span>
+                                </div>
+                                <div className="feature-item">
+                                    <span className="feature-icon">✓</span>
+                                    <span>Parent Portal</span>
+                                </div>
+                            </div>
                         </motion.div>
                     </div>
                 </motion.div>
 
                 <motion.div className="login-right-panel" variants={itemVariants}>
-                    <div className="login-form-inner">
+                    <div className="right-panel-blob"></div>
+                    <div className="login-form-inner relative z-10">
                         <motion.div className="form-header" variants={itemVariants}>
-                            <h2>Welcome Back! 👋</h2>
+                            <h2 className="gradient-text">Welcome Back!</h2>
                             <p>Sign in to continue</p>
                         </motion.div>
 
@@ -188,7 +219,10 @@ const Login = () => {
                             
                             <motion.div variants={itemVariants}>
                                 <Button type="submit" variant="primary" className="login-btn premium-btn" disabled={loading} style={{ width: '100%' }}>
-                                    {loading ? 'Signing In...' : 'Sign In'}
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
+                                        {loading ? 'Signing In...' : 'Sign In'}
+                                        {!loading && <FaArrowRight className="btn-arrow" />}
+                                    </div>
                                 </Button>
                             </motion.div>
                         </form>
