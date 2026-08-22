@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/Button';
-import './css/Login.css';
+import { FaEnvelope, FaArrowRight } from "react-icons/fa";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -12,17 +12,18 @@ const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30, scale: 0.95 },
         visible: { 
             opacity: 1, 
-            transition: { duration: 0.6, ease: "easeOut" }
+            y: 0, 
+            scale: 1,
+            transition: { 
+                type: "spring", 
+                stiffness: 100, 
+                damping: 15
+            } 
         }
-    };
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
     };
 
     const handleSubmit = async (e) => {
@@ -50,52 +51,48 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="login-page-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)' }}>
-            <motion.div 
-                className="login-form-panel" 
-                style={{ width: '100%', maxWidth: '450px', borderRadius: '16px', boxShadow: 'var(--shadow-3)', background: 'var(--surface)' }}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <div className="login-form-inner" style={{ padding: '40px' }}>
-                    <motion.div className="form-header" variants={itemVariants}>
-                        <h2>Forgot Password</h2>
-                        <p>Enter your email to receive a password reset link.</p>
-                    </motion.div>
-
-                    {error && <motion.div className="error-message" variants={itemVariants} style={{ color: 'var(--danger)', marginBottom: '16px', padding: '12px', background: 'var(--danger-bg)', borderRadius: '8px' }}>{error}</motion.div>}
-                    {message && <motion.div className="success-message" variants={itemVariants} style={{ color: 'var(--success)', marginBottom: '16px', padding: '12px', background: 'var(--success-bg)', borderRadius: '8px', wordBreak: 'break-word' }}>{message}</motion.div>}     
-
-                    <form onSubmit={handleSubmit} className="login-form">
-                        <motion.div className="input-group" variants={itemVariants} style={{ marginBottom: '24px' }}>
-                            <label htmlFor="email" style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: 'var(--text-primary)' }}>Email</label>
-                            <input 
-                                id="email"
-                                type="email" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                disabled={loading}
-                                required
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)' }}
-                            />
-                        </motion.div>
-                        
-                        <motion.div variants={itemVariants}>
-                            <Button type="submit" variant="primary" className="login-btn" disabled={loading} style={{ width: '100%', padding: '12px', marginBottom: '16px' }}>
-                                {loading ? 'Sending...' : 'Send OTP'}
-                            </Button>
-                        </motion.div>
-
-                        <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '16px' }}>
-                            <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '500', marginRight: '16px' }}>Have password?</Link>
-                            <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500' }}>Back to Login</Link>
-                        </motion.div>
-                    </form>
-                </div>
+        <>
+            <motion.div className="form-header" variants={itemVariants}>
+                <h2 className="gradient-text">Forgot Password</h2>
+                <p>Enter your email to receive a password reset link.</p>
             </motion.div>
-        </div>
+
+            {error && <motion.div className="error-message" variants={itemVariants} initial="hidden" animate="visible">{error}</motion.div>}
+            {message && <motion.div className="success-message" variants={itemVariants} initial="hidden" animate="visible">{message}</motion.div>}     
+
+            <form onSubmit={handleSubmit} className="login-form">
+                <motion.div className="input-group" variants={itemVariants}>
+                    <label htmlFor="email">Email</label>
+                    <div className="input-icon-wrapper">
+                        <FaEnvelope className="input-icon" />
+                        <input 
+                            id="email"
+                            type="email" 
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
+                </motion.div>
+                
+                <motion.div variants={itemVariants}>
+                    <Button type="submit" variant="primary" className="login-btn premium-btn" disabled={loading} style={{ width: '100%', marginTop: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
+                            {loading ? 'Sending...' : 'Send OTP'}
+                            {!loading && <FaArrowRight className="btn-arrow" />}
+                        </div>
+                    </Button>
+                </motion.div>
+
+                <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '24px' }}>
+                    <Link to="/login" state={{ direction: 'back' }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500', transition: 'color 0.2s ease' }} onMouseOver={(e) => e.target.style.color = 'var(--primary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>
+                        Back to Login
+                    </Link>
+                </motion.div>
+            </form>
+        </>
     );
 };
 

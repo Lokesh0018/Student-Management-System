@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/Button';
-import './css/Login.css';
+import { FaArrowRight } from "react-icons/fa";
+import { MdKey } from "react-icons/md";
 
 const VerifyOTP = () => {
     const [otp, setOtp] = useState('');
@@ -19,17 +20,18 @@ const VerifyOTP = () => {
         }
     }, [email, navigate]);
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30, scale: 0.95 },
         visible: { 
             opacity: 1, 
-            transition: { duration: 0.6, ease: "easeOut" }
+            y: 0, 
+            scale: 1,
+            transition: { 
+                type: "spring", 
+                stiffness: 100, 
+                damping: 15
+            } 
         }
-    };
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
     };
 
     const handleSubmit = async (e) => {
@@ -56,53 +58,51 @@ const VerifyOTP = () => {
     };
 
     return (
-        <div className="login-page-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)' }}>
-            <motion.div 
-                className="login-form-panel" 
-                style={{ width: '100%', maxWidth: '450px', borderRadius: '16px', boxShadow: 'var(--shadow-3)', background: 'var(--surface)' }}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <div className="login-form-inner" style={{ padding: '40px' }}>
-                    <motion.div className="form-header" variants={itemVariants}>
-                        <h2>Verify OTP</h2>
-                        <p>Enter the 4-digit code sent to {email}</p>
-                    </motion.div>
-
-                    {error && <motion.div className="error-message" variants={itemVariants} style={{ color: 'var(--danger)', marginBottom: '16px', padding: '12px', background: 'var(--danger-bg)', borderRadius: '8px' }}>{error}</motion.div>}
-
-                    <form onSubmit={handleSubmit} className="login-form">
-                        <motion.div className="input-group" variants={itemVariants} style={{ marginBottom: '24px' }}>
-                            <label htmlFor="otp" style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: 'var(--text-primary)' }}>4-Digit OTP</label>
-                            <input 
-                                id="otp"
-                                type="text" 
-                                maxLength="4"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
-                                placeholder="----"
-                                disabled={loading}
-                                required
-                                pattern="\d{4}"
-                                title="Please enter exactly 4 digits"
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-primary)', letterSpacing: '8px', textAlign: 'center', fontSize: '24px', fontWeight: 'bold' }}
-                            />
-                        </motion.div>
-                        
-                        <motion.div variants={itemVariants}>
-                            <Button type="submit" variant="primary" className="login-btn" disabled={loading} style={{ width: '100%', padding: '12px', marginBottom: '16px' }}>
-                                {loading ? 'Verifying...' : 'Verify OTP'}
-                            </Button>
-                        </motion.div>
-
-                        <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '16px' }}>
-                            <Link to="/forgot-password" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500' }}>Cancel</Link>
-                        </motion.div>
-                    </form>
-                </div>
+        <>
+            <motion.div className="form-header" variants={itemVariants}>
+                <h2 className="gradient-text">Verify OTP</h2>
+                <p>Enter the 4-digit code sent to {email}</p>
             </motion.div>
-        </div>
+
+            {error && <motion.div className="error-message" variants={itemVariants} initial="hidden" animate="visible">{error}</motion.div>}
+
+            <form onSubmit={handleSubmit} className="login-form">
+                <motion.div className="input-group" variants={itemVariants}>
+                    <label htmlFor="otp">4-Digit OTP</label>
+                    <div className="input-icon-wrapper">
+                        <MdKey className="input-icon" style={{ fontSize: '18px' }} />
+                        <input 
+                            id="otp"
+                            type="text" 
+                            maxLength="4"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                            placeholder="----"
+                            disabled={loading}
+                            required
+                            pattern="\d{4}"
+                            title="Please enter exactly 4 digits"
+                            style={{ letterSpacing: '8px', textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}
+                        />
+                    </div>
+                </motion.div>
+                
+                <motion.div variants={itemVariants}>
+                    <Button type="submit" variant="primary" className="login-btn premium-btn" disabled={loading} style={{ width: '100%', marginTop: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
+                            {loading ? 'Verifying...' : 'Verify OTP'}
+                            {!loading && <FaArrowRight className="btn-arrow" />}
+                        </div>
+                    </Button>
+                </motion.div>
+
+                <motion.div variants={itemVariants} style={{ textAlign: 'center', marginTop: '24px' }}>
+                    <Link to="/forgot-password" state={{ direction: 'back' }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: '500', transition: 'color 0.2s ease' }} onMouseOver={(e) => e.target.style.color = 'var(--primary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>
+                        Cancel
+                    </Link>
+                </motion.div>
+            </form>
+        </>
     );
 };
 
